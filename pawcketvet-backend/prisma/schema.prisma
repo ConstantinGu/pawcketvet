@@ -1,0 +1,688 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// UTILISATEURS & AUTHENTIFICATION
+// ============================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      UserRole
+  firstName String
+  lastName  String
+  phone     String?
+  avatar    String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  clinic           Clinic?           @relation(fields: [clinicId], references: [id])
+  clinicId         String?
+  appointments     Appointment[]
+  messages         Message[]
+  consultations    Consultation[]
+  certificates     Certificate[]
+  shareLinks       ShareLink[]
+  createdAnimals   Animal[]          @relation("CreatedBy")
+  notifications    Notification[]
+  activityLogs     ActivityLog[]
+  
+  @@index([email])
+  @@index([clinicId])
+}
+
+enum UserRole {
+  ADMIN
+  VETERINARIAN
+  ASSISTANT
+  OWNER
+}
+
+// ============================================
+// CLINIQUES
+// ============================================
+
+model Clinic {
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  city        String
+  postalCode  String
+  country     String   @default("France")
+  phone       String
+  email       String
+  website     String?
+  logo        String?
+  description String?
+  siret       String?
+  
+  // Horaires
+  openingHours Json?
+  
+  // Abonnement
+  subscription SubscriptionTier @default(STARTER)
+  subscriptionExpiresAt DateTime?
+  
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users         User[]
+  animals       Animal[]
+  appointments  Appointment[]
+  inventory     InventoryItem[]
+  invoices      Invoice[]
+  reviews       Review[]
+  templates     ConsultationTemplate[]
+  
+  @@index([email])
+  @@index([city])
+}
+
+enum SubscriptionTier {
+  STARTER
+  PRO
+  PREMIUM
+}
+
+// ============================================
+// ANIMAUX & PROPRIÉTAIRES
+// ============================================
+
+model Owner {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String
+  address   String?
+  city      String?
+  postalCode String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  animals   Animal[]
+  messages  Message[]
+  invoices  Invoice[]
+  
+  @@index([email])
+  @@index([lastName])
+}
+
+model Animal {
+  id          String       @id @default(uuid())
+  name        String
+  species     AnimalSpecies
+  breed       String?
+  birthDate   DateTime?
+  gender      Gender?
+  color       String?
+  weight      Float?
+  microchip   String?      @unique
+  photos      String[]
+  
+  // Informations médicales
+  allergies   String?
+  chronicConditions String?
+  notes       String?
+  
+  // QR Code
+  qrCode      String?      @unique
+  
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  owner          Owner          @relation(fields: [ownerId], references: [id])
+  ownerId        String
+  clinic         Clinic         @relation(fields: [clinicId], references: [id])
+  clinicId       String
+  createdBy      User           @relation("CreatedBy", fields: [createdById], references: [id])
+  createdById    String
+  
+  appointments   Appointment[]
+  consultations  Consultation[]
+  vaccinations   Vaccination[]
+  prescriptions  Prescription[]
+  certificates   Certificate[]
+  weightHistory  WeightHistory[]
+  shareLinks     ShareLink[]
+  
+  @@index([ownerId])
+  @@index([clinicId])
+  @@index([microchip])
+  @@index([qrCode])
+}
+
+enum AnimalSpecies {
+  DOG
+  CAT
+  RABBIT
+  BIRD
+  RODENT
+  REPTILE
+  OTHER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+// ============================================
+// RENDEZ-VOUS
+// ============================================
+
+model Appointment {
+  id          String            @id @default(uuid())
+  date        DateTime
+  duration    Int               @default(30) // minutes
+  type        AppointmentType
+  status      AppointmentStatus @default(PENDING)
+  reason      String?
+  notes       String?
+  isUrgent    Boolean           @default(false)
+  
+  // Rappels
+  reminderSent    Boolean   @default(false)
+  reminderSentAt  DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  animal      Animal       @relation(fields: [animalId], references: [id])
+  animalId    String
+  clinic      Clinic       @relation(fields: [clinicId], references: [id])
+  clinicId    String
+  veterinarian User        @relation(fields: [veterinarianId], references: [id])
+  veterinarianId String
+  consultation Consultation?
+  
+  @@index([date])
+  @@index([animalId])
+  @@index([clinicId])
+  @@index([veterinarianId])
+  @@index([status])
+}
+
+enum AppointmentType {
+  CONSULTATION
+  VACCINATION
+  SURGERY
+  FOLLOWUP
+  EMERGENCY
+  GROOMING
+  OTHER
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NOSHOW
+}
+
+// ============================================
+// CONSULTATIONS & DOSSIERS MÉDICAUX
+// ============================================
+
+model Consultation {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  reason      String
+  symptoms    String?
+  diagnosis   String?
+  treatment   String?
+  notes       String?
+  
+  // Examens
+  temperature Float?
+  heartRate   Int?
+  weight      Float?
+  
+  // Fichiers
+  attachments String[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  animal        Animal         @relation(fields: [animalId], references: [id])
+  animalId      String
+  veterinarian  User           @relation(fields: [veterinarianId], references: [id])
+  veterinarianId String
+  appointment   Appointment?   @relation(fields: [appointmentId], references: [id])
+  appointmentId String?        @unique
+  prescriptions Prescription[]
+  
+  @@index([animalId])
+  @@index([veterinarianId])
+  @@index([date])
+}
+
+model ConsultationTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  type        AppointmentType
+  template    Json     // Structure du template
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  clinic      Clinic   @relation(fields: [clinicId], references: [id])
+  clinicId    String
+  
+  @@index([clinicId])
+  @@index([type])
+}
+
+// ============================================
+// VACCINATIONS
+// ============================================
+
+model Vaccination {
+  id          String   @id @default(uuid())
+  name        String
+  date        DateTime
+  nextDueDate DateTime?
+  batchNumber String?
+  veterinarian String
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  animalId    String
+  
+  @@index([animalId])
+  @@index([nextDueDate])
+}
+
+// ============================================
+// PRESCRIPTIONS & MÉDICAMENTS
+// ============================================
+
+model Medication {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  dosage      String
+  sideEffects String?
+  contraindications String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  prescriptions Prescription[]
+  
+  @@index([name])
+  @@index([category])
+}
+
+model Prescription {
+  id          String   @id @default(uuid())
+  dosage      String
+  frequency   String
+  duration    String
+  instructions String?
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  animal        Animal       @relation(fields: [animalId], references: [id])
+  animalId      String
+  medication    Medication   @relation(fields: [medicationId], references: [id])
+  medicationId  String
+  consultation  Consultation @relation(fields: [consultationId], references: [id])
+  consultationId String
+  
+  @@index([animalId])
+  @@index([medicationId])
+  @@index([startDate])
+}
+
+// ============================================
+// CERTIFICATS
+// ============================================
+
+model Certificate {
+  id          String          @id @default(uuid())
+  type        CertificateType
+  issueDate   DateTime        @default(now())
+  expiryDate  DateTime?
+  content     Json            // Contenu du certificat
+  pdfUrl      String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  animalId    String
+  veterinarian User    @relation(fields: [veterinarianId], references: [id])
+  veterinarianId String
+  
+  @@index([animalId])
+  @@index([type])
+  @@index([issueDate])
+}
+
+enum CertificateType {
+  HEALTH
+  VACCINATION
+  TRAVEL
+  INSURANCE
+  BREEDING
+  OTHER
+}
+
+// ============================================
+// STOCK & INVENTAIRE
+// ============================================
+
+model InventoryItem {
+  id          String   @id @default(uuid())
+  name        String
+  category    InventoryCategory
+  quantity    Int
+  minStock    Int
+  unit        String
+  price       Float?
+  supplier    String?
+  barcode     String?
+  expiryDate  DateTime?
+  location    String?
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  clinic      Clinic   @relation(fields: [clinicId], references: [id])
+  clinicId    String
+  movements   StockMovement[]
+  
+  @@index([clinicId])
+  @@index([category])
+  @@index([quantity])
+}
+
+enum InventoryCategory {
+  MEDICATION
+  VACCINE
+  EQUIPMENT
+  FOOD
+  SUPPLY
+  OTHER
+}
+
+model StockMovement {
+  id          String   @id @default(uuid())
+  type        MovementType
+  quantity    Int
+  reason      String?
+  date        DateTime @default(now())
+  
+  createdAt   DateTime @default(now())
+
+  // Relations
+  item        InventoryItem @relation(fields: [itemId], references: [id])
+  itemId      String
+  
+  @@index([itemId])
+  @@index([date])
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  EXPIRED
+}
+
+// ============================================
+// FACTURATION & PAIEMENTS
+// ============================================
+
+model Invoice {
+  id          String        @id @default(uuid())
+  number      String        @unique
+  date        DateTime      @default(now())
+  dueDate     DateTime?
+  status      InvoiceStatus @default(PENDING)
+  
+  // Montants
+  subtotal    Float
+  tax         Float         @default(0)
+  discount    Float         @default(0)
+  total       Float
+  
+  // Paiement
+  paidAmount  Float         @default(0)
+  paymentMethod String?
+  paymentDate DateTime?
+  
+  notes       String?
+  items       Json          // Ligne de facturation
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  owner       Owner    @relation(fields: [ownerId], references: [id])
+  ownerId     String
+  clinic      Clinic   @relation(fields: [clinicId], references: [id])
+  clinicId    String
+  
+  @@index([ownerId])
+  @@index([clinicId])
+  @@index([status])
+  @@index([date])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  PAID
+  PARTIAL
+  OVERDUE
+  CANCELLED
+}
+
+// ============================================
+// MESSAGERIE
+// ============================================
+
+model Message {
+  id          String   @id @default(uuid())
+  subject     String?
+  content     String
+  isRead      Boolean  @default(false)
+  attachments String[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  sender      User?    @relation(fields: [senderId], references: [id])
+  senderId    String?
+  owner       Owner?   @relation(fields: [ownerId], references: [id])
+  ownerId     String?
+  
+  @@index([senderId])
+  @@index([ownerId])
+  @@index([createdAt])
+}
+
+// ============================================
+// PARTAGE & QR CODE
+// ============================================
+
+model ShareLink {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  expiresAt   DateTime
+  isActive    Boolean  @default(true)
+  accessCount Int      @default(0)
+  maxAccess   Int?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  animalId    String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById String
+  
+  @@index([code])
+  @@index([animalId])
+  @@index([expiresAt])
+}
+
+// ============================================
+// AVIS & REVIEWS
+// ============================================
+
+model Review {
+  id          String   @id @default(uuid())
+  rating      Int      // 1-5
+  comment     String?
+  isVerified  Boolean  @default(false)
+  isPublished Boolean  @default(false)
+  response    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  clinic      Clinic   @relation(fields: [clinicId], references: [id])
+  clinicId    String
+  ownerName   String
+  ownerEmail  String
+  
+  @@index([clinicId])
+  @@index([rating])
+  @@index([isPublished])
+}
+
+// ============================================
+// NOTIFICATIONS & RAPPELS
+// ============================================
+
+model Notification {
+  id          String           @id @default(uuid())
+  type        NotificationType
+  title       String
+  message     String
+  isRead      Boolean          @default(false)
+  data        Json?
+  
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  APPOINTMENT
+  MESSAGE
+  STOCK_ALERT
+  PAYMENT
+  REMINDER
+  SYSTEM
+}
+
+model Reminder {
+  id          String       @id @default(uuid())
+  type        ReminderType
+  scheduledFor DateTime
+  sent        Boolean      @default(false)
+  sentAt      DateTime?
+  channel     String       // EMAIL, SMS, PUSH
+  recipient   String
+  subject     String?
+  message     String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([scheduledFor])
+  @@index([sent])
+  @@index([type])
+}
+
+enum ReminderType {
+  APPOINTMENT
+  VACCINATION
+  FOLLOWUP
+  PAYMENT
+  BIRTHDAY
+}
+
+// ============================================
+// HISTORIQUE & LOGS
+// ============================================
+
+model WeightHistory {
+  id        String   @id @default(uuid())
+  weight    Float
+  date      DateTime @default(now())
+  notes     String?
+  
+  createdAt DateTime @default(now())
+
+  // Relations
+  animal    Animal   @relation(fields: [animalId], references: [id])
+  animalId  String
+  
+  @@index([animalId])
+  @@index([date])
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  action      String
+  entity      String
+  entityId    String
+  details     Json?
+  ipAddress   String?
+  
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  @@index([userId])
+  @@index([entity])
+  @@index([createdAt])
+}
