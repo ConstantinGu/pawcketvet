@@ -146,16 +146,19 @@ export const invoicesAPI = {
 // ============================================
 
 export const messagesAPI = {
-  getAll: (params) => 
+  getAll: (params) =>
     api.get('/messages', { params }),
-  
-  getById: (id) => 
+
+  getConversations: () =>
+    api.get('/messages/conversations'),
+
+  getById: (id) =>
     api.get(`/messages/${id}`),
-  
-  send: (data) => 
+
+  send: (data) =>
     api.post('/messages', data),
-  
-  markAsRead: (id) => 
+
+  markAsRead: (id) =>
     api.patch(`/messages/${id}/read`),
 };
 
@@ -182,17 +185,62 @@ export const consultationsAPI = {
 // ============================================
 
 export const ownersAPI = {
-  getAll: (params) => 
+  getAll: (params) =>
     api.get('/owners', { params }),
-  
-  getById: (id) => 
+
+  getById: (id) =>
     api.get(`/owners/${id}`),
-  
-  create: (data) => 
+
+  getMyProfile: () =>
+    api.get('/owners/me'),
+
+  create: (data) =>
     api.post('/owners', data),
-  
-  update: (id, data) => 
+
+  update: (id, data) =>
     api.put(`/owners/${id}`, data),
+};
+
+// ============================================
+// REMINDERS (RAPPELS)
+// ============================================
+
+export const remindersAPI = {
+  getAll: (params) =>
+    api.get('/reminders', { params }),
+
+  getMy: () =>
+    api.get('/reminders/my'),
+
+  create: (data) =>
+    api.post('/reminders', data),
+
+  update: (id, data) =>
+    api.put(`/reminders/${id}`, data),
+
+  delete: (id) =>
+    api.delete(`/reminders/${id}`),
+};
+
+// ============================================
+// VACCINATIONS
+// ============================================
+
+export const vaccinationsAPI = {
+  getByAnimal: (animalId) =>
+    api.get(`/vaccinations/animal/${animalId}`),
+
+  getUpcoming: () =>
+    api.get('/vaccinations/upcoming'),
+
+  create: (data) =>
+    api.post('/vaccinations', data),
+
+  update: (id, data) =>
+    api.put(`/vaccinations/${id}`, data),
+
+  delete: (id) =>
+    api.delete(`/vaccinations/${id}`),
 };
 
 export default api;

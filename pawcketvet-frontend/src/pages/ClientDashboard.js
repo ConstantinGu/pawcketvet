@@ -26,9 +26,6 @@ const ClientDashboard = () => {
 
   const styles = {
     container: {
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
-      padding: '2rem',
       animation: 'fadeIn 0.5s ease',
     },
     header: {

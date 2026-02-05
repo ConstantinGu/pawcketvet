@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Layout from './components/Layout';
+import ClientLayout from './components/ClientLayout';
 
 // Pages login
 import LoginPage from './pages/LoginPage';
@@ -20,6 +21,12 @@ import MessagesPage from './pages/MessagesPage';
 import ClientDashboard from './pages/ClientDashboard';
 import ClientBookAppointment from './pages/ClientBookAppointment';
 import ClientAnimalDetail from './pages/ClientAnimalDetail';
+import ClientMyPets from './pages/ClientMyPets';
+import ClientAppointments from './pages/ClientAppointments';
+import ClientMessages from './pages/ClientMessages';
+import ClientDocuments from './pages/ClientDocuments';
+import ClientReminders from './pages/ClientReminders';
+import ClientPayments from './pages/ClientPayments';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,7 +64,6 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
   // Vérifier si le rôle de l'utilisateur est autorisé
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    // Rediriger vers le dashboard approprié selon le rôle
     if (user?.role === 'OWNER') {
       return <Navigate to="/client/dashboard" />;
     } else {
@@ -82,9 +88,7 @@ function AppContent() {
           path="/dashboard"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
-              <Layout>
-                <DashboardPage />
-              </Layout>
+              <Layout><DashboardPage /></Layout>
             </ProtectedRoute>
           }
         />
@@ -92,9 +96,7 @@ function AppContent() {
           path="/patients"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
-              <Layout>
-                <PatientsPage />
-              </Layout>
+              <Layout><PatientsPage /></Layout>
             </ProtectedRoute>
           }
         />
@@ -102,9 +104,7 @@ function AppContent() {
           path="/appointments"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
-              <Layout>
-                <AppointmentsPagePremium />
-              </Layout>
+              <Layout><AppointmentsPagePremium /></Layout>
             </ProtectedRoute>
           }
         />
@@ -112,9 +112,7 @@ function AppContent() {
           path="/messages"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
-              <Layout>
-                <MessagesPage />
-              </Layout>
+              <Layout><MessagesPage /></Layout>
             </ProtectedRoute>
           }
         />
@@ -122,9 +120,7 @@ function AppContent() {
           path="/inventory"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
-              <Layout>
-                <InventoryPage />
-              </Layout>
+              <Layout><InventoryPage /></Layout>
             </ProtectedRoute>
           }
         />
@@ -132,66 +128,33 @@ function AppContent() {
           path="/invoices"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
-              <Layout>
-                <InvoicesPage />
-              </Layout>
+              <Layout><InvoicesPage /></Layout>
             </ProtectedRoute>
           }
         />
 
-        {/* Routes client/propriétaire (OWNER) */}
+        {/* Routes client/propriétaire (OWNER) - avec ClientLayout */}
         <Route
           path="/client/dashboard"
           element={
             <ProtectedRoute allowedRoles={['OWNER']}>
-              <ClientDashboard />
+              <ClientLayout><ClientDashboard /></ClientLayout>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/client/book-appointment"
+          path="/client/my-pets"
           element={
             <ProtectedRoute allowedRoles={['OWNER']}>
-              <ClientBookAppointment />
+              <ClientLayout><ClientMyPets /></ClientLayout>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/client/animal/:id"
+          path="/client/appointments"
           element={
             <ProtectedRoute allowedRoles={['OWNER']}>
-              <ClientAnimalDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/client/documents"
-          element={
-            <ProtectedRoute allowedRoles={['OWNER']}>
-              <div style={{ 
-                minHeight: '100vh', 
-                background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2rem',
-              }}>
-                <div style={{
-                  background: '#fff',
-                  borderRadius: '28px',
-                  padding: '3rem',
-                  maxWidth: '600px',
-                  textAlign: 'center',
-                }}>
-                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
-                  <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#3E2723' }}>
-                    Documents
-                  </h2>
-                  <p style={{ color: '#A1887F', fontSize: '1.1rem' }}>
-                    Cette fonctionnalité sera disponible prochainement
-                  </p>
-                </div>
-              </div>
+              <ClientLayout><ClientAppointments /></ClientLayout>
             </ProtectedRoute>
           }
         />
@@ -199,30 +162,15 @@ function AppContent() {
           path="/client/messages"
           element={
             <ProtectedRoute allowedRoles={['OWNER']}>
-              <div style={{ 
-                minHeight: '100vh', 
-                background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2rem',
-              }}>
-                <div style={{
-                  background: '#fff',
-                  borderRadius: '28px',
-                  padding: '3rem',
-                  maxWidth: '600px',
-                  textAlign: 'center',
-                }}>
-                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💬</div>
-                  <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#3E2723' }}>
-                    Messagerie
-                  </h2>
-                  <p style={{ color: '#A1887F', fontSize: '1.1rem' }}>
-                    Cette fonctionnalité sera disponible prochainement
-                  </p>
-                </div>
-              </div>
+              <ClientLayout><ClientMessages /></ClientLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/documents"
+          element={
+            <ProtectedRoute allowedRoles={['OWNER']}>
+              <ClientLayout><ClientDocuments /></ClientLayout>
             </ProtectedRoute>
           }
         />
@@ -230,50 +178,51 @@ function AppContent() {
           path="/client/reminders"
           element={
             <ProtectedRoute allowedRoles={['OWNER']}>
-              <div style={{ 
-                minHeight: '100vh', 
-                background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2rem',
-              }}>
-                <div style={{
-                  background: '#fff',
-                  borderRadius: '28px',
-                  padding: '3rem',
-                  maxWidth: '600px',
-                  textAlign: 'center',
-                }}>
-                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔔</div>
-                  <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#3E2723' }}>
-                    Rappels & Alertes
-                  </h2>
-                  <p style={{ color: '#A1887F', fontSize: '1.1rem' }}>
-                    Cette fonctionnalité sera disponible prochainement
-                  </p>
-                </div>
-              </div>
+              <ClientLayout><ClientReminders /></ClientLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/payments"
+          element={
+            <ProtectedRoute allowedRoles={['OWNER']}>
+              <ClientLayout><ClientPayments /></ClientLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/book-appointment"
+          element={
+            <ProtectedRoute allowedRoles={['OWNER']}>
+              <ClientLayout><ClientBookAppointment /></ClientLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/animal/:id"
+          element={
+            <ProtectedRoute allowedRoles={['OWNER']}>
+              <ClientLayout><ClientAnimalDetail /></ClientLayout>
             </ProtectedRoute>
           }
         />
 
         {/* Route par défaut - redirection intelligente selon le rôle */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
-            user?.role === 'OWNER' 
+            user?.role === 'OWNER'
               ? <Navigate to="/client/dashboard" />
               : <Navigate to="/dashboard" />
-          } 
+          }
         />
 
         {/* Route 404 */}
-        <Route 
-          path="*" 
+        <Route
+          path="*"
           element={
-            <div style={{ 
-              minHeight: '100vh', 
+            <div style={{
+              minHeight: '100vh',
               background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
               display: 'flex',
               alignItems: 'center',
@@ -311,7 +260,7 @@ function AppContent() {
                 </button>
               </div>
             </div>
-          } 
+          }
         />
       </Routes>
       <Toaster position="top-right" />

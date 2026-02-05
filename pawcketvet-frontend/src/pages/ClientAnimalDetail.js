@@ -30,9 +30,6 @@ const ClientAnimalDetail = () => {
 
   const styles = {
     container: {
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
-      padding: '2rem',
     },
     content: {
       maxWidth: '1200px',
@@ -122,9 +119,9 @@ const ClientAnimalDetail = () => {
   return (
     <div style={styles.container}>
       <div style={styles.content}>
-        <button onClick={() => navigate('/client/dashboard')} style={styles.backButton}>
+        <button onClick={() => navigate('/client/my-pets')} style={styles.backButton}>
           <ArrowLeft size={20} />
-          Retour
+          Retour aux animaux
         </button>
 
         {/* Header avec infos animal */}
