@@ -24,7 +24,6 @@ const login = async (req, res) => {
       where: { email },
       include: {
         clinic: true,
-        owner: true,
       },
     });
 
@@ -163,7 +162,7 @@ const me = async (req, res) => {
       where: { id: req.user.id },
       include: {
         clinic: true,
-        owner: true,
+
       },
       select: {
         id: true,
