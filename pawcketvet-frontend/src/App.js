@@ -12,10 +12,14 @@ import LoginPage from './pages/LoginPage';
 // Pages vétérinaire
 import DashboardPage from './pages/DashboardPage';
 import PatientsPage from './pages/PatientsPage';
+import PatientDetailPage from './pages/PatientDetailPage';
 import AppointmentsPagePremium from './pages/AppointmentsPagePremium';
 import InventoryPage from './pages/InventoryPage';
 import InvoicesPage from './pages/InvoicesPage';
 import MessagesPage from './pages/MessagesPage';
+import PrescriptionsPage from './pages/PrescriptionsPage';
+import CertificatesPage from './pages/CertificatesPage';
+import StaffPage from './pages/StaffPage';
 
 // Pages client/propriétaire
 import ClientDashboard from './pages/ClientDashboard';
@@ -129,6 +133,38 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
               <Layout><InvoicesPage /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patient/:id"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
+              <Layout><PatientDetailPage /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/prescriptions"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
+              <Layout><PrescriptionsPage /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/certificates"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN', 'ASSISTANT']}>
+              <Layout><CertificatesPage /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/staff"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN']}>
+              <Layout><StaffPage /></Layout>
             </ProtectedRoute>
           }
         />

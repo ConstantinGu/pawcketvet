@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { animalsAPI } from '../services/api';
 import toast from 'react-hot-toast';
-import { 
+import {
   Search, Plus, X, Edit2, Trash2, Save, Calendar,
-  Phone, Mail, MapPin, Activity
+  Phone, Mail, MapPin, Activity, Eye
 } from 'lucide-react';
 
 const PatientsPage = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
@@ -343,7 +345,7 @@ const PatientsPage = () => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    openModal(animal);
+                    navigate(`/patient/${animal.id}`);
                   }}
                   style={{
                     ...styles.button,
@@ -351,10 +353,25 @@ const PatientsPage = () => {
                     justifyContent: 'center',
                     fontSize: '0.85rem',
                     padding: '0.75rem',
+                    background: '#fff',
+                    color: '#B8704F',
+                    border: '2px solid #F5E6D3',
+                  }}
+                >
+                  <Eye size={16} />
+                  Dossier
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openModal(animal);
+                  }}
+                  style={{
+                    ...styles.button,
+                    padding: '0.75rem',
                   }}
                 >
                   <Edit2 size={16} />
-                  Modifier
                 </button>
                 <button
                   onClick={(e) => {

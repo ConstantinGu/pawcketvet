@@ -351,4 +351,64 @@ export const analyticsAPI = {
     api.get('/analytics/revenue'),
 };
 
+// ============================================
+// CLINIC (CLINIQUE)
+// ============================================
+
+export const clinicAPI = {
+  getMyClinic: () =>
+    api.get('/clinic/me'),
+
+  update: (data) =>
+    api.put('/clinic/me', data),
+
+  getStats: () =>
+    api.get('/clinic/stats'),
+};
+
+// ============================================
+// REVIEWS (AVIS)
+// ============================================
+
+export const reviewsAPI = {
+  getAll: (params) =>
+    api.get('/reviews', { params }),
+
+  getById: (id) =>
+    api.get(`/reviews/${id}`),
+
+  create: (data) =>
+    api.post('/reviews', data),
+
+  respond: (id, response) =>
+    api.patch(`/reviews/${id}/respond`, { response }),
+
+  togglePublish: (id) =>
+    api.patch(`/reviews/${id}/publish`),
+
+  delete: (id) =>
+    api.delete(`/reviews/${id}`),
+};
+
+// ============================================
+// SHARE LINKS (PARTAGE)
+// ============================================
+
+export const shareLinksAPI = {
+  getAll: () =>
+    api.get('/share-links'),
+
+  create: (data) =>
+    api.post('/share-links', data),
+
+  access: (code) =>
+    api.get(`/share-links/public/${code}`),
+
+  deactivate: (id) =>
+    api.patch(`/share-links/${id}/deactivate`),
+
+  delete: (id) =>
+    api.delete(`/share-links/${id}`),
+};
+
 export default api;

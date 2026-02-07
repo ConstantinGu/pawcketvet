@@ -34,6 +34,9 @@ app.use('/api/prescriptions', require('./routes/prescription.routes'));
 app.use('/api/notifications', require('./routes/notification.routes'));
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/analytics', require('./routes/analytics.routes'));
+app.use('/api/clinic', require('./routes/clinic.routes'));
+app.use('/api/reviews', require('./routes/review.routes'));
+app.use('/api/share-links', require('./routes/shareLink.routes'));
 
 // Route de test
 app.get('/', (req, res) => {
