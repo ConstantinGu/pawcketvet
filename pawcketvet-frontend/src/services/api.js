@@ -243,4 +243,112 @@ export const vaccinationsAPI = {
     api.delete(`/vaccinations/${id}`),
 };
 
+// ============================================
+// CERTIFICATES
+// ============================================
+
+export const certificatesAPI = {
+  getAll: (params) =>
+    api.get('/certificates', { params }),
+
+  getById: (id) =>
+    api.get(`/certificates/${id}`),
+
+  create: (data) =>
+    api.post('/certificates', data),
+
+  delete: (id) =>
+    api.delete(`/certificates/${id}`),
+};
+
+// ============================================
+// PRESCRIPTIONS
+// ============================================
+
+export const prescriptionsAPI = {
+  getAll: (params) =>
+    api.get('/prescriptions', { params }),
+
+  getById: (id) =>
+    api.get(`/prescriptions/${id}`),
+
+  create: (data) =>
+    api.post('/prescriptions', data),
+
+  update: (id, data) =>
+    api.put(`/prescriptions/${id}`, data),
+
+  delete: (id) =>
+    api.delete(`/prescriptions/${id}`),
+
+  getMedications: (params) =>
+    api.get('/prescriptions/medications', { params }),
+
+  createMedication: (data) =>
+    api.post('/prescriptions/medications', data),
+};
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+export const notificationsAPI = {
+  getAll: (params) =>
+    api.get('/notifications', { params }),
+
+  markAsRead: (id) =>
+    api.patch(`/notifications/${id}/read`),
+
+  markAllAsRead: () =>
+    api.patch('/notifications/read-all'),
+
+  clearRead: () =>
+    api.delete('/notifications/clear-read'),
+
+  delete: (id) =>
+    api.delete(`/notifications/${id}`),
+};
+
+// ============================================
+// USERS (STAFF)
+// ============================================
+
+export const usersAPI = {
+  getAll: (params) =>
+    api.get('/users', { params }),
+
+  getById: (id) =>
+    api.get(`/users/${id}`),
+
+  create: (data) =>
+    api.post('/users', data),
+
+  update: (id, data) =>
+    api.put(`/users/${id}`, data),
+
+  deactivate: (id) =>
+    api.patch(`/users/${id}/deactivate`),
+
+  resetPassword: (id, newPassword) =>
+    api.patch(`/users/${id}/reset-password`, { newPassword }),
+};
+
+// ============================================
+// ANALYTICS
+// ============================================
+
+export const analyticsAPI = {
+  getDashboardStats: () =>
+    api.get('/analytics/dashboard'),
+
+  getTodayAppointments: () =>
+    api.get('/analytics/today'),
+
+  getRecentActivity: () =>
+    api.get('/analytics/activity'),
+
+  getMonthlyRevenue: () =>
+    api.get('/analytics/revenue'),
+};
+
 export default api;
