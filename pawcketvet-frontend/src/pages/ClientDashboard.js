@@ -168,39 +168,46 @@ const ClientDashboard = () => {
     },
   ];
 
-  const nextAppointment = appointmentsData?.appointments?.[0];
-  const hasUrgentReminder = true; // Exemple
+  const animals = animalsData?.animals || [];
+  const appointments = appointmentsData?.appointments || [];
+  const nextAppointment = appointments.find(a => new Date(a.date) > new Date() && a.status !== 'CANCELLED');
+
+  // Compute urgent vaccination reminders dynamically
+  const urgentVaccinations = animals.flatMap(animal =>
+    (animal.vaccinations || [])
+      .filter(v => v.nextDueDate && new Date(v.nextDueDate) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))
+      .map(v => ({ ...v, animalName: animal.name, animalId: animal.id }))
+  );
 
   return (
     <div style={styles.container}>
       {/* Header */}
       <div style={styles.header}>
         <h1 style={styles.welcomeTitle}>
-          👋 Bonjour {user?.firstName} !
+          Bonjour {user?.firstName} !
         </h1>
         <p style={styles.subtitle}>
           Bienvenue dans votre espace santé pour vos compagnons
         </p>
-        <div style={styles.clinicBadge}>
-          🏥 {user?.clinic?.name || 'Ma Clinique Vétérinaire'}
-        </div>
       </div>
 
-      {/* Alerte urgente */}
-      {hasUrgentReminder && (
+      {/* Vaccination alerts */}
+      {urgentVaccinations.length > 0 && (
         <div style={{ maxWidth: '1200px', margin: '0 auto 2rem' }}>
           <div style={styles.alertBanner}>
             <AlertCircle size={28} />
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.25rem' }}>
-                🔔 Rappel important
+                Rappel vaccination
               </div>
               <div style={{ fontSize: '0.95rem' }}>
-                Max a besoin de son rappel de vaccin antirabique avant le 20 janvier
+                {urgentVaccinations[0].animalName} a besoin de son rappel de {urgentVaccinations[0].name}
+                {urgentVaccinations[0].nextDueDate && ` avant le ${new Date(urgentVaccinations[0].nextDueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`}
+                {urgentVaccinations.length > 1 && ` (+${urgentVaccinations.length - 1} autre${urgentVaccinations.length > 2 ? 's' : ''})`}
               </div>
             </div>
             <button
-              onClick={() => navigate('/client/book-appointment')}
+              onClick={() => navigate(`/client/book-appointment?animalId=${urgentVaccinations[0].animalId}`)}
               style={{
                 ...styles.button,
                 background: '#fff',
@@ -300,14 +307,14 @@ const ClientDashboard = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.5rem' }}>
                 <div style={{ fontSize: '4rem' }}>
-                  {animal.species === 'DOG' ? '🐕' : '🐈'}
+                  {{ DOG: '🐕', CAT: '🐈', RABBIT: '🐇', BIRD: '🐦', RODENT: '🐹', REPTILE: '🦎' }[animal.species] || '🐾'}
                 </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#3E2723', marginBottom: '0.25rem' }}>
                     {animal.name}
                   </h3>
                   <div style={{ color: '#A1887F', fontSize: '1rem' }}>
-                    {animal.species === 'DOG' ? 'Chien' : 'Chat'} • {animal.breed || 'Race mixte'}
+                    {{ DOG: 'Chien', CAT: 'Chat', RABBIT: 'Lapin', BIRD: 'Oiseau', RODENT: 'Rongeur', REPTILE: 'Reptile' }[animal.species] || 'Autre'} • {animal.breed || 'Race mixte'}
                   </div>
                 </div>
                 <ChevronRight size={24} color="#B8704F" />

@@ -145,7 +145,7 @@ const ClientLayout = ({ children }) => {
               color: '#fff',
               transition: 'all 0.3s',
             }}
-            title="Deconnexion"
+            title="Déconnexion"
           >
             <LogOut size={18} />
           </button>
@@ -200,7 +200,7 @@ const ClientLayout = ({ children }) => {
             onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-            {!collapsed && <span style={{ fontSize: '0.85rem' }}>Reduire</span>}
+            {!collapsed && <span style={{ fontSize: '0.85rem' }}>Réduire</span>}
           </div>
         </div>
 

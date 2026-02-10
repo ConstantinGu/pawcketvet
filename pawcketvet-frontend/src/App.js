@@ -20,6 +20,7 @@ import MessagesPage from './pages/MessagesPage';
 import PrescriptionsPage from './pages/PrescriptionsPage';
 import CertificatesPage from './pages/CertificatesPage';
 import StaffPage from './pages/StaffPage';
+import ClinicSettingsPage from './pages/ClinicSettingsPage';
 
 // Pages client/propriétaire
 import ClientDashboard from './pages/ClientDashboard';
@@ -165,6 +166,14 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN']}>
               <Layout><StaffPage /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clinic-settings"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <Layout><ClinicSettingsPage /></Layout>
             </ProtectedRoute>
           }
         />

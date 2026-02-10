@@ -318,11 +318,11 @@ const PatientsPage = () => {
                     {animal.name}
                   </h3>
                   <p style={{ color: '#A1887F', fontSize: '0.9rem' }}>
-                    {animal.species === 'DOG' ? 'Chien' : 'Chat'} • {animal.breed || 'Race non spécifiée'}
+                    {{ DOG: 'Chien', CAT: 'Chat', RABBIT: 'Lapin', BIRD: 'Oiseau', RODENT: 'Rongeur', REPTILE: 'Reptile' }[animal.species] || 'Autre'} • {animal.breed || 'Race non spécifiée'}
                   </p>
                 </div>
                 <div style={{ fontSize: '2rem' }}>
-                  {animal.species === 'DOG' ? '🐕' : '🐈'}
+                  {{ DOG: '🐕', CAT: '🐈', RABBIT: '🐇', BIRD: '🐦', RODENT: '🐹', REPTILE: '🦎' }[animal.species] || '🐾'}
                 </div>
               </div>
 
