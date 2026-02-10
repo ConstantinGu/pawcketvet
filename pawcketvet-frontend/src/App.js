@@ -21,6 +21,7 @@ import PrescriptionsPage from './pages/PrescriptionsPage';
 import CertificatesPage from './pages/CertificatesPage';
 import StaffPage from './pages/StaffPage';
 import ClinicSettingsPage from './pages/ClinicSettingsPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 
 // Pages client/propriétaire
 import ClientDashboard from './pages/ClientDashboard';
@@ -32,6 +33,7 @@ import ClientMessages from './pages/ClientMessages';
 import ClientDocuments from './pages/ClientDocuments';
 import ClientReminders from './pages/ClientReminders';
 import ClientPayments from './pages/ClientPayments';
+import SOSTriagePage from './pages/SOSTriagePage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -170,6 +172,14 @@ function AppContent() {
           }
         />
         <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN', 'VETERINARIAN']}>
+              <Layout><AnalyticsPage /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/clinic-settings"
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -240,6 +250,14 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={['OWNER']}>
               <ClientLayout><ClientBookAppointment /></ClientLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/sos"
+          element={
+            <ProtectedRoute allowedRoles={['OWNER']}>
+              <ClientLayout><SOSTriagePage /></ClientLayout>
             </ProtectedRoute>
           }
         />

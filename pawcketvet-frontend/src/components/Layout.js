@@ -63,6 +63,7 @@ const Layout = ({ children }) => {
     { id: 'inventory', label: 'Stock', icon: Package, path: '/inventory' },
     { id: 'invoices', label: 'Facturation', icon: CreditCard, path: '/invoices' },
     { id: 'staff', label: 'Équipe', icon: UserPlus, path: '/staff' },
+    { id: 'analytics', label: 'Statistiques', icon: BarChart3, path: '/analytics' },
     { id: 'settings', label: 'Paramètres', icon: Settings, path: '/clinic-settings' },
   ];
 

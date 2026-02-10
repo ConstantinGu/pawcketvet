@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Home, Heart, Calendar, MessageCircle, FileText,
-  Bell, CreditCard, LogOut, ChevronLeft, ChevronRight, Menu
+  Bell, CreditCard, LogOut, ChevronLeft, ChevronRight, Menu, AlertTriangle
 } from 'lucide-react';
 
 const ClientLayout = ({ children }) => {
@@ -25,6 +25,7 @@ const ClientLayout = ({ children }) => {
     { id: 'documents', label: 'Documents', icon: FileText, path: '/client/documents' },
     { id: 'reminders', label: 'Rappels', icon: Bell, path: '/client/reminders' },
     { id: 'payments', label: 'Paiements', icon: CreditCard, path: '/client/payments' },
+    { id: 'sos', label: 'SOS Triage', icon: AlertTriangle, path: '/client/sos' },
   ];
 
   const styles = {
