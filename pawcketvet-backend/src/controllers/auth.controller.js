@@ -14,8 +14,8 @@ const login = async (req, res) => {
 
     // Validation
     if (!email || !password) {
-      return res.status(400).json({ 
-        error: 'Email et mot de passe requis' 
+      return res.status(400).json({
+        error: 'Email et mot de passe requis'
       });
     }
 
@@ -29,8 +29,8 @@ const login = async (req, res) => {
 
     if (!user) {
       console.log('❌ Utilisateur non trouvé:', email);
-      return res.status(401).json({ 
-        error: 'Email ou mot de passe incorrect' 
+      return res.status(401).json({
+        error: 'Email ou mot de passe incorrect'
       });
     }
 
@@ -38,19 +38,30 @@ const login = async (req, res) => {
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       console.log('❌ Mot de passe incorrect pour:', email);
-      return res.status(401).json({ 
-        error: 'Email ou mot de passe incorrect' 
+      return res.status(401).json({
+        error: 'Email ou mot de passe incorrect'
       });
+    }
+
+    // Si OWNER, chercher le Owner associé par email
+    let ownerId = null;
+    if (user.role === 'OWNER') {
+      const owner = await prisma.owner.findUnique({
+        where: { email: user.email },
+      });
+      if (owner) {
+        ownerId = owner.id;
+      }
     }
 
     // Générer le token
     const token = jwt.sign(
-      { 
-        id: user.id, 
+      {
+        id: user.id,
         email: user.email,
         role: user.role,
         clinicId: user.clinicId,
-        ownerId: user.ownerId,
+        ownerId: ownerId,
       },
       JWT_SECRET,
       { expiresIn: '7d' }
@@ -68,15 +79,15 @@ const login = async (req, res) => {
         lastName: user.lastName,
         role: user.role,
         clinicId: user.clinicId,
-        ownerId: user.ownerId,
+        ownerId: ownerId,
         clinic: user.clinic,
       },
     });
   } catch (error) {
     console.error('❌ Erreur login:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Erreur lors de la connexion',
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -162,18 +173,6 @@ const me = async (req, res) => {
       where: { id: req.user.id },
       include: {
         clinic: true,
-
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        clinicId: true,
-        ownerId: true,
-        clinic: true,
-        owner: true,
       },
     });
 
@@ -181,11 +180,35 @@ const me = async (req, res) => {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
-    res.json({ user });
+    // Si OWNER, chercher le Owner associé
+    let ownerId = null;
+    if (user.role === 'OWNER') {
+      const owner = await prisma.owner.findUnique({
+        where: { email: user.email },
+      });
+      if (owner) {
+        ownerId = owner.id;
+      }
+    }
+
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        phone: user.phone,
+        avatar: user.avatar,
+        clinicId: user.clinicId,
+        ownerId: ownerId,
+        clinic: user.clinic,
+      },
+    });
   } catch (error) {
     console.error('Erreur me:', error);
-    res.status(500).json({ 
-      error: 'Erreur lors de la récupération du profil' 
+    res.status(500).json({
+      error: 'Erreur lors de la récupération du profil'
     });
   }
 };

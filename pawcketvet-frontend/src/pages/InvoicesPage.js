@@ -7,6 +7,8 @@ import { CreditCard, Plus, X, Save, DollarSign } from 'lucide-react';
 const InvoicesPage = () => {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('CB');
   const [formData, setFormData] = useState({
     ownerId: '',
     items: [{ name: '', quantity: 1, price: 0 }],
@@ -172,12 +174,9 @@ const InvoicesPage = () => {
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  {invoice.status === 'PENDING' && (
+                  {(invoice.status === 'PENDING' || invoice.status === 'OVERDUE') && (
                     <button
-                      onClick={() => {
-                        const method = prompt('Méthode de paiement (CB/Espèces/Chèque):');
-                        if (method) markAsPaidMutation.mutate({ id: invoice.id, paymentMethod: method });
-                      }}
+                      onClick={() => { setShowPaymentModal(invoice.id); setPaymentMethod('CB'); }}
                       style={{
                         background: '#059669',
                         color: '#fff',
@@ -222,11 +221,13 @@ const InvoicesPage = () => {
                   style={{ width: '100%', padding: '0.875rem 1.25rem', borderRadius: '12px', border: '2px solid #F5E6D3' }}
                 >
                   <option value="">Sélectionner un client</option>
-                  {animalsData?.animals?.map((animal) => (
-                    <option key={animal.owner.id} value={animal.owner.id}>
-                      {animal.owner.firstName} {animal.owner.lastName}
-                    </option>
-                  ))}
+                  {[...new Map((animalsData?.animals || []).map(a => [a.owner?.id, a.owner])).values()]
+                    .filter(Boolean)
+                    .map((owner) => (
+                      <option key={owner.id} value={owner.id}>
+                        {owner.firstName} {owner.lastName}
+                      </option>
+                    ))}
                 </select>
               </div>
 
@@ -331,6 +332,49 @@ const InvoicesPage = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(45, 63, 47, 0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }} onClick={() => setShowPaymentModal(null)}>
+          <div style={{ background: '#fff', borderRadius: '24px', padding: '2rem', maxWidth: '400px', width: '90%' }} onClick={(e) => e.stopPropagation()}>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', color: '#3E2723', marginBottom: '1.5rem' }}>Enregistrer le paiement</h2>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#3E2723', fontSize: '0.9rem' }}>
+                Méthode de paiement
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
+                {[
+                  { value: 'CB', label: 'Carte bancaire' },
+                  { value: 'ESPECES', label: 'Espèces' },
+                  { value: 'CHEQUE', label: 'Chèque' },
+                ].map(m => (
+                  <button key={m.value} type="button" onClick={() => setPaymentMethod(m.value)} style={{
+                    background: paymentMethod === m.value ? 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)' : '#F5E6D3',
+                    color: paymentMethod === m.value ? '#fff' : '#3E2723',
+                    border: 'none', borderRadius: '10px', padding: '0.75rem 0.5rem', cursor: 'pointer',
+                    fontWeight: 600, fontSize: '0.85rem', transition: 'all 0.2s',
+                  }}>{m.label}</button>
+                ))}
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button onClick={() => {
+                markAsPaidMutation.mutate({ id: showPaymentModal, paymentMethod });
+                setShowPaymentModal(null);
+              }} style={{
+                flex: 1, background: '#059669', color: '#fff', border: 'none',
+                borderRadius: '12px', padding: '0.875rem', cursor: 'pointer', fontWeight: 600,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+              }}>
+                <DollarSign size={18} /> Confirmer le paiement
+              </button>
+              <button onClick={() => setShowPaymentModal(null)} style={{
+                background: '#e8ede6', color: '#3E2723', border: 'none',
+                borderRadius: '12px', padding: '0.875rem 1.25rem', cursor: 'pointer', fontWeight: 600,
+              }}>Annuler</button>
+            </div>
           </div>
         </div>
       )}

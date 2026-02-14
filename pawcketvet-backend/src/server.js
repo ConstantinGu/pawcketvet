@@ -25,6 +25,18 @@ app.use('/api/appointments', require('./routes/appointment.routes'));
 app.use('/api/consultations', require('./routes/consultation.routes'));
 app.use('/api/inventory', require('./routes/inventory.routes'));
 app.use('/api/invoices', require('./routes/invoice.routes'));
+app.use('/api/messages', require('./routes/message.routes'));
+app.use('/api/reminders', require('./routes/reminder.routes'));
+app.use('/api/owners', require('./routes/owner.routes'));
+app.use('/api/vaccinations', require('./routes/vaccination.routes'));
+app.use('/api/certificates', require('./routes/certificate.routes'));
+app.use('/api/prescriptions', require('./routes/prescription.routes'));
+app.use('/api/notifications', require('./routes/notification.routes'));
+app.use('/api/users', require('./routes/user.routes'));
+app.use('/api/analytics', require('./routes/analytics.routes'));
+app.use('/api/clinic', require('./routes/clinic.routes'));
+app.use('/api/reviews', require('./routes/review.routes'));
+app.use('/api/share-links', require('./routes/shareLink.routes'));
 
 // Route de test
 app.get('/', (req, res) => {
