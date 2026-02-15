@@ -7,6 +7,7 @@ import {
   Calendar, Clock, ChevronRight, CheckCircle, ArrowLeft, FileText,
   Plus, PawPrint, Info, AlertCircle, X
 } from 'lucide-react';
+import PawcketVetLogo from '../components/PawcketVetLogo';
 
 const speciesEmoji = { DOG: '🐕', CAT: '🐈', RABBIT: '🐇', BIRD: '🐦', RODENT: '🐹', REPTILE: '🦎', OTHER: '🐾' };
 const speciesLabel = { DOG: 'Chien', CAT: 'Chat', RABBIT: 'Lapin', BIRD: 'Oiseau', RODENT: 'Rongeur', REPTILE: 'Reptile', OTHER: 'Autre' };
@@ -296,7 +297,7 @@ const ClientBookAppointment = () => {
 
               {animals.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>🐾</div>
+                  <PawcketVetLogo size={56} style={{ marginBottom: '1rem', opacity: 0.5 }} />
                   <p style={{ fontSize: '1.05rem', marginBottom: '1rem' }}>Aucun animal enregistré</p>
                   <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>Ajoutez un animal ou continuez sans dossier</p>
                   <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>

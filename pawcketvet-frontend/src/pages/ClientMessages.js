@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { messagesAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import { ListItemSkeleton } from '../components/LoadingSkeleton';
 import {
   MessageCircle, Send, Mail, MailOpen, Clock, Plus
 } from 'lucide-react';
@@ -134,14 +135,7 @@ const ClientMessages = () => {
     },
   };
 
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
-        <div style={{ color: '#B8704F', fontSize: '1.1rem' }}>Chargement des messages...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <ListItemSkeleton count={5} />;
 
   return (
     <div>

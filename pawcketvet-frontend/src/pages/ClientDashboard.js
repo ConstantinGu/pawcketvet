@@ -337,8 +337,15 @@ const ClientDashboard = () => {
                     Âge
                   </div>
                   <div style={{ color: '#3E2723', fontSize: '1.2rem', fontWeight: 600 }}>
-                    {animal.birthDate 
-                      ? `${Math.floor((new Date() - new Date(animal.birthDate)) / (365 * 24 * 60 * 60 * 1000))} ans`
+                    {animal.birthDate
+                      ? (() => {
+                          const years = Math.floor((new Date() - new Date(animal.birthDate)) / (365.25 * 24 * 60 * 60 * 1000));
+                          if (years < 1) {
+                            const months = Math.floor((new Date() - new Date(animal.birthDate)) / (30.44 * 24 * 60 * 60 * 1000));
+                            return `${months} mois`;
+                          }
+                          return `${years} an${years > 1 ? 's' : ''}`;
+                        })()
                       : 'N/A'}
                   </div>
                 </div>

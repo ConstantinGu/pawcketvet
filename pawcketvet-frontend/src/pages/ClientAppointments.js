@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Calendar, Clock, Plus, CheckCircle, XCircle, AlertCircle, ChevronRight
 } from 'lucide-react';
+import { ListItemSkeleton } from '../components/LoadingSkeleton';
 
 const ClientAppointments = () => {
   const navigate = useNavigate();
@@ -27,9 +28,9 @@ const ClientAppointments = () => {
 
   const statusConfig = {
     PENDING: { label: 'En attente', color: '#f59e0b', bg: '#fef3c7', icon: Clock },
-    CONFIRMED: { label: 'Confirme', color: '#2563eb', bg: '#dbeafe', icon: CheckCircle },
-    COMPLETED: { label: 'Termine', color: '#16a34a', bg: '#dcfce7', icon: CheckCircle },
-    CANCELLED: { label: 'Annule', color: '#dc2626', bg: '#fef2f2', icon: XCircle },
+    CONFIRMED: { label: 'Confirmé', color: '#2563eb', bg: '#dbeafe', icon: CheckCircle },
+    COMPLETED: { label: 'Terminé', color: '#16a34a', bg: '#dcfce7', icon: CheckCircle },
+    CANCELLED: { label: 'Annulé', color: '#dc2626', bg: '#fef2f2', icon: XCircle },
     NOSHOW: { label: 'Absent', color: '#9333ea', bg: '#f3e8ff', icon: AlertCircle },
   };
 
@@ -117,14 +118,7 @@ const ClientAppointments = () => {
     },
   };
 
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📅</div>
-        <div style={{ color: '#B8704F', fontSize: '1.1rem' }}>Chargement des rendez-vous...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <ListItemSkeleton count={5} />;
 
   return (
     <div>
@@ -150,9 +144,9 @@ const ClientAppointments = () => {
       <div style={styles.filterBar}>
         {[
           { key: 'all', label: 'Tous' },
-          { key: 'upcoming', label: 'A venir' },
-          { key: 'past', label: 'Passes' },
-          { key: 'CANCELLED', label: 'Annules' },
+          { key: 'upcoming', label: 'À venir' },
+          { key: 'past', label: 'Passés' },
+          { key: 'CANCELLED', label: 'Annulés' },
         ].map(f => (
           <button
             key={f.key}
@@ -178,7 +172,7 @@ const ClientAppointments = () => {
           <p style={{ color: '#A1887F' }}>
             {filter === 'all'
               ? 'Vous n\'avez pas encore de rendez-vous'
-              : 'Aucun rendez-vous dans cette categorie'}
+              : 'Aucun rendez-vous dans cette catégorie'}
           </p>
         </div>
       ) : (

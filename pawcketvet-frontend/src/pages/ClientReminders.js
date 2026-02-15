@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Bell, Shield, Calendar, AlertTriangle, CheckCircle, Clock, ChevronRight
 } from 'lucide-react';
+import { PageLoading } from '../components/LoadingSkeleton';
 
 const ClientReminders = () => {
   const navigate = useNavigate();
@@ -101,14 +102,7 @@ const ClientReminders = () => {
     },
   };
 
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔔</div>
-        <div style={{ color: '#B8704F', fontSize: '1.1rem' }}>Chargement des rappels...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <PageLoading message="Chargement des rappels..." />;
 
   const getDaysUntil = (date) => {
     const diff = Math.ceil((new Date(date) - new Date()) / (1000 * 60 * 60 * 24));
@@ -133,13 +127,13 @@ const ClientReminders = () => {
       <div style={styles.section}>
         <h2 style={styles.sectionTitle}>
           <Shield size={24} color="#059669" />
-          Vaccinations a venir
+          Vaccinations à venir
         </h2>
 
         {upcomingVaccinations.length === 0 ? (
           <div style={styles.emptyState}>
             <CheckCircle size={40} color="#059669" style={{ marginBottom: '0.5rem' }} />
-            <p style={{ color: '#059669', fontWeight: 600 }}>Tous les vaccins sont a jour !</p>
+            <p style={{ color: '#059669', fontWeight: 600 }}>Tous les vaccins sont à jour !</p>
           </div>
         ) : (
           upcomingVaccinations.map((vacc, idx) => {
@@ -150,7 +144,10 @@ const ClientReminders = () => {
               <div
                 key={idx}
                 style={isUrgent ? styles.urgentCard : styles.card}
-                onClick={() => navigate('/client/book-appointment')}
+                onClick={() => {
+                  const animal = animals.find(a => a.name === vacc.animalName);
+                  navigate(`/client/book-appointment${animal ? `?animalId=${animal.id}` : ''}`);
+                }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateX(4px)';
                 }}
@@ -207,7 +204,7 @@ const ClientReminders = () => {
         {upcomingAppointments.length === 0 ? (
           <div style={styles.emptyState}>
             <Calendar size={40} color="#A1887F" style={{ marginBottom: '0.5rem' }} />
-            <p style={{ color: '#A1887F' }}>Aucun rendez-vous a venir</p>
+            <p style={{ color: '#A1887F' }}>Aucun rendez-vous à venir</p>
             <button
               onClick={() => navigate('/client/book-appointment')}
               style={{
@@ -253,7 +250,7 @@ const ClientReminders = () => {
                 <div style={{ color: '#A1887F', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <Clock size={14} />
                   {new Date(appt.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
-                  {' a '}
+                  {' à '}
                   {new Date(appt.date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                 </div>
               </div>

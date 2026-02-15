@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ownersAPI } from '../services/api';
+import { ListItemSkeleton } from '../components/LoadingSkeleton';
 import {
   CreditCard, Download, CheckCircle, Clock, AlertCircle, XCircle,
   Euro, TrendingUp, Filter
@@ -100,14 +101,7 @@ const ClientPayments = () => {
     },
   };
 
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💳</div>
-        <div style={{ color: '#B8704F', fontSize: '1.1rem' }}>Chargement des paiements...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <ListItemSkeleton count={4} />;
 
   return (
     <div>
