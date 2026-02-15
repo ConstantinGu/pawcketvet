@@ -34,6 +34,7 @@ import ClientDocuments from './pages/ClientDocuments';
 import ClientReminders from './pages/ClientReminders';
 import ClientPayments from './pages/ClientPayments';
 import SOSTriagePage from './pages/SOSTriagePage';
+import ClientHealthBook from './pages/ClientHealthBook';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -250,6 +251,14 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={['OWNER']}>
               <ClientLayout><ClientBookAppointment /></ClientLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/health-book"
+          element={
+            <ProtectedRoute allowedRoles={['OWNER']}>
+              <ClientLayout><ClientHealthBook /></ClientLayout>
             </ProtectedRoute>
           }
         />
