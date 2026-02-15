@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight, UserPlus, Heart, Shield, Calendar, BookOpen } from 'lucide-react';
+import PawcketVetLogo from '../components/PawcketVetLogo';
 
 const LoginPage = () => {
   const [mode, setMode] = useState('login');
@@ -133,14 +134,7 @@ const LoginPage = () => {
             display: 'flex', alignItems: 'center', gap: '0.75rem',
             marginBottom: '3rem',
           }}>
-            <div style={{
-              width: '44px', height: '44px', borderRadius: '12px',
-              background: 'rgba(255,255,255,0.15)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '1.5rem',
-            }}>
-              🐾
-            </div>
+            <PawcketVetLogo size={36} />
             <span style={{
               fontFamily: "'Fraunces', serif",
               fontSize: '1.5rem',

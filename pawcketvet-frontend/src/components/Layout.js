@@ -9,6 +9,7 @@ import {
   UserPlus, BarChart3, Settings, Check, X,
   ChevronLeft, ChevronRight, Search, Menu
 } from 'lucide-react';
+import PawcketVetLogo from './PawcketVetLogo';
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -150,14 +151,7 @@ const Layout = ({ children }) => {
               letterSpacing: '-0.02em',
             }}
           >
-            <span style={{
-              width: '32px', height: '32px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.95rem',
-            }}>
-              🐾
-            </span>
+            <PawcketVetLogo size={28} />
             {!collapsed && 'PawcketVet'}
           </div>
         </div>

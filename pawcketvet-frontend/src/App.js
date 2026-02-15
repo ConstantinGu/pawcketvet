@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Layout from './components/Layout';
 import ClientLayout from './components/ClientLayout';
+import PawcketVetLogo from './components/PawcketVetLogo';
 
 // Pages login
 import LoginPage from './pages/LoginPage';
@@ -59,7 +60,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🐾</div>
+          <PawcketVetLogo size={56} style={{ marginBottom: '1rem' }} />
           <div style={{ fontSize: '1.2rem', color: '#B8704F' }}>Chargement...</div>
         </div>
       </div>
@@ -308,7 +309,7 @@ function AppContent() {
                 maxWidth: '600px',
                 textAlign: 'center',
               }}>
-                <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🐾</div>
+                <PawcketVetLogo size={80} style={{ marginBottom: '1rem' }} />
                 <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#3E2723' }}>
                   Page non trouvée
                 </h2>

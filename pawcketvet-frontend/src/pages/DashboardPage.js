@@ -179,7 +179,7 @@ const DashboardPage = () => {
       {/* Main content grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
         gap: '1.5rem',
       }}>
         {/* Today's appointments */}
@@ -291,7 +291,7 @@ const DashboardPage = () => {
               <p style={{ fontSize: '0.9rem' }}>Aucune activite recente</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.5rem' }}>
               {activity.slice(0, 10).map((item, i) => {
                 const iconMap = { appointment: Calendar, consultation: FileText, invoice: CreditCard };
                 const colorMap = { appointment: '#B8704F', consultation: '#2563eb', invoice: '#059669' };

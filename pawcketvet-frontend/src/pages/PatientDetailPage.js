@@ -7,6 +7,7 @@ import {
   ArrowLeft, Heart, Syringe, FileText, Pill, Award,
   Calendar, Weight, Activity, AlertTriangle, Plus, X, Save, Trash2, Edit2, Eye
 } from 'lucide-react';
+import PawcketVetLogo from '../components/PawcketVetLogo';
 
 const certTypeLabel = { HEALTH: 'Santé', VACCINATION: 'Vaccination', TRAVEL: 'Voyage', INSURANCE: 'Assurance', BREEDING: 'Élevage', OTHER: 'Autre' };
 
@@ -135,7 +136,7 @@ const PatientDetailPage = () => {
 
   if (isLoading) return (
     <div style={{ textAlign: 'center', padding: '4rem' }}>
-      <div style={{ fontSize: '3rem', marginBottom: '1rem', animation: 'scaleIn 0.5s ease' }}>🐾</div>
+      <PawcketVetLogo size={56} style={{ marginBottom: '1rem', animation: 'scaleIn 0.5s ease' }} />
       <div style={{ color: '#B8704F', fontSize: '1.1rem', fontWeight: 500 }}>Chargement du dossier...</div>
       <div style={{ width: '48px', height: '4px', background: 'linear-gradient(90deg, #F5E6D3 25%, #B8704F 50%, #F5E6D3 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.2s infinite', borderRadius: '2px', margin: '1rem auto 0' }} />
     </div>

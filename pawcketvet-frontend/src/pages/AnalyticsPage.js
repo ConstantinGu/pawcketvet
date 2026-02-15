@@ -128,7 +128,7 @@ const AnalyticsPage = () => {
         })}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
         {/* Revenue Chart */}
         <div style={styles.section}>
           <h3 style={styles.sectionTitle}>
@@ -205,7 +205,7 @@ const AnalyticsPage = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
         {/* Today's Schedule */}
         <div style={styles.section}>
           <h3 style={styles.sectionTitle}>

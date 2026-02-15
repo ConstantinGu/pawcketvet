@@ -6,6 +6,7 @@ import {
   Bell, CreditCard, LogOut, ChevronLeft, ChevronRight,
   Menu, AlertTriangle, BookOpen
 } from 'lucide-react';
+import PawcketVetLogo from './PawcketVetLogo';
 
 const ClientLayout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -79,14 +80,7 @@ const ClientLayout = ({ children }) => {
               letterSpacing: '-0.02em',
             }}
           >
-            <span style={{
-              width: '32px', height: '32px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.95rem',
-            }}>
-              🐾
-            </span>
+            <PawcketVetLogo size={28} />
             {!collapsed && 'PawcketVet'}
           </div>
         </div>
