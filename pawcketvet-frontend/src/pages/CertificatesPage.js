@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { certificatesAPI, animalsAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import { ListItemSkeleton } from '../components/LoadingSkeleton';
 import { Search, Plus, X, Trash2, Save, Shield } from 'lucide-react';
 
 const certTypeLabel = { HEALTH: 'Santé', VACCINATION: 'Vaccination', TRAVEL: 'Voyage', INSURANCE: 'Assurance', BREEDING: 'Élevage', OTHER: 'Autre' };
@@ -101,7 +102,7 @@ const CertificatesPage = () => {
 
       {/* List */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Chargement...</div>
+        <ListItemSkeleton count={4} />
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Aucun certificat trouvé</div>
       ) : (

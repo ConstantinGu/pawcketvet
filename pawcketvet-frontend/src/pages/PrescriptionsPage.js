@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { prescriptionsAPI, animalsAPI, consultationsAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import { ListItemSkeleton } from '../components/LoadingSkeleton';
 import { Search, Plus, X, Trash2, Save, Clock, CheckCircle } from 'lucide-react';
 
 const PrescriptionsPage = () => {
@@ -125,7 +126,7 @@ const PrescriptionsPage = () => {
 
       {/* List */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Chargement...</div>
+        <ListItemSkeleton count={5} />
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Aucune ordonnance trouvée</div>
       ) : (
