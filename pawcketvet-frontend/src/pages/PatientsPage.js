@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { animalsAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import { CardGridSkeleton } from '../components/LoadingSkeleton';
 import {
   Search, Plus, X, Edit2, Trash2, Save, Calendar,
   Phone, Mail, MapPin, Activity, Eye
@@ -290,9 +291,7 @@ const PatientsPage = () => {
 
       {/* Liste des patients */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>
-          Chargement...
-        </div>
+        <CardGridSkeleton count={6} />
       ) : animalsData?.animals?.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>
           Aucun patient trouvé. Créez-en un !

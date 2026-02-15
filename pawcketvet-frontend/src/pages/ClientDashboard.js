@@ -3,23 +3,27 @@ import { useAuth } from '../contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { animalsAPI, appointmentsAPI } from '../services/api';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Calendar, FileText, MessageCircle, Bell, Heart, 
+import { DashboardSkeleton } from '../components/LoadingSkeleton';
+import {
+  Calendar, FileText, MessageCircle, Bell, Heart,
   Activity, AlertCircle, ChevronRight, Clock
 } from 'lucide-react';
+
+const speciesEmoji = {
+  DOG: '🐕', CAT: '🐈', RABBIT: '🐇', BIRD: '🐦',
+  RODENT: '🐹', REPTILE: '🦎', OTHER: '🐾',
+};
 
 const ClientDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Récupérer les animaux du propriétaire
-  const { data: animalsData } = useQuery({
+  const { data: animalsData, isLoading } = useQuery({
     queryKey: ['my-animals'],
     queryFn: () => animalsAPI.getAll().then(res => res.data),
   });
 
-  // Récupérer les prochains RDV
-  const { data: appointmentsData } = useQuery({
+  const { data: appointmentsData, isLoading: apptLoading } = useQuery({
     queryKey: ['my-appointments'],
     queryFn: () => appointmentsAPI.getAll().then(res => res.data),
   });
@@ -179,6 +183,8 @@ const ClientDashboard = () => {
       .map(v => ({ ...v, animalName: animal.name, animalId: animal.id }))
   );
 
+  if (isLoading && apptLoading) return <DashboardSkeleton />;
+
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -261,7 +267,7 @@ const ClientDashboard = () => {
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '1.8rem', marginBottom: '0.25rem' }}>
-                  {nextAppointment.animal.species === 'DOG' ? '🐕' : '🐈'}
+                  {speciesEmoji[nextAppointment.animal?.species] || '🐾'}
                 </div>
                 <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>
                   {nextAppointment.animal.name}
@@ -430,16 +436,6 @@ const ClientDashboard = () => {
         })}
       </div>
 
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideDown {
-          from { transform: translateY(-20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { analyticsAPI } from '../services/api';
+import { DashboardSkeleton } from '../components/LoadingSkeleton';
 import {
   BarChart3, TrendingUp, Users, Calendar, CreditCard,
   Activity, Clock, Star, Package, AlertTriangle
@@ -49,7 +50,7 @@ const AnalyticsPage = () => {
   };
 
   if (isLoading) {
-    return <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Chargement des statistiques...</div>;
+    return <DashboardSkeleton />;
   }
 
   const statCards = [

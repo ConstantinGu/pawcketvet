@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { analyticsAPI } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { DashboardSkeleton } from '../components/LoadingSkeleton';
 import {
   Calendar, MessageCircle, Package, Users, Activity,
   TrendingUp, AlertTriangle, Clock, CheckCircle, FileText,
@@ -13,7 +14,7 @@ const DashboardPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const { data: statsData } = useQuery({
+  const { data: statsData, isLoading: statsLoading } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: () => analyticsAPI.getDashboardStats().then(res => res.data),
     refetchInterval: 60000,
@@ -74,8 +75,10 @@ const DashboardPage = () => {
     },
   };
 
+  if (statsLoading) return <DashboardSkeleton />;
+
   return (
-    <div>
+    <div style={{ animation: 'fadeIn 0.4s ease' }}>
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{

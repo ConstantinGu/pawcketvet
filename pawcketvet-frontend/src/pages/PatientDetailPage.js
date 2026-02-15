@@ -8,6 +8,8 @@ import {
   Calendar, Weight, Activity, AlertTriangle, Plus, X, Save, Trash2, Edit2, Eye
 } from 'lucide-react';
 
+const certTypeLabel = { HEALTH: 'Santé', VACCINATION: 'Vaccination', TRAVEL: 'Voyage', INSURANCE: 'Assurance', BREEDING: 'Élevage', OTHER: 'Autre' };
+
 const PatientDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,8 +17,10 @@ const PatientDetailPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showVaccModal, setShowVaccModal] = useState(false);
   const [showConsultModal, setShowConsultModal] = useState(false);
+  const [showCertModal, setShowCertModal] = useState(false);
   const [vaccForm, setVaccForm] = useState({ name: '', date: '', nextDueDate: '', batchNumber: '', veterinarian: '', notes: '' });
   const [consultForm, setConsultForm] = useState({ reason: '', symptoms: '', diagnosis: '', treatment: '', notes: '', temperature: '', heartRate: '', weight: '' });
+  const [certForm, setCertForm] = useState({ type: 'HEALTH', expiryDate: '', content: { observations: '', conclusions: '' } });
 
   const { data: animal, isLoading } = useQuery({
     queryKey: ['animal', id],
@@ -69,6 +73,17 @@ const PatientDetailPage = () => {
     onError: (err) => toast.error(err.response?.data?.error || 'Erreur'),
   });
 
+  const createCertMutation = useMutation({
+    mutationFn: (data) => certificatesAPI.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['certificates', id]);
+      toast.success('Certificat créé !');
+      setShowCertModal(false);
+      setCertForm({ type: 'HEALTH', expiryDate: '', content: { observations: '', conclusions: '' } });
+    },
+    onError: (err) => toast.error(err.response?.data?.error || 'Erreur lors de la création'),
+  });
+
   const getAge = (birthDate) => {
     if (!birthDate) return 'Inconnu';
     const diff = Date.now() - new Date(birthDate).getTime();
@@ -118,7 +133,13 @@ const PatientDetailPage = () => {
     statLabel: { fontSize: '0.8rem', color: '#A1887F', marginTop: '0.25rem' },
   };
 
-  if (isLoading) return <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Chargement...</div>;
+  if (isLoading) return (
+    <div style={{ textAlign: 'center', padding: '4rem' }}>
+      <div style={{ fontSize: '3rem', marginBottom: '1rem', animation: 'scaleIn 0.5s ease' }}>🐾</div>
+      <div style={{ color: '#B8704F', fontSize: '1.1rem', fontWeight: 500 }}>Chargement du dossier...</div>
+      <div style={{ width: '48px', height: '4px', background: 'linear-gradient(90deg, #F5E6D3 25%, #B8704F 50%, #F5E6D3 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.2s infinite', borderRadius: '2px', margin: '1rem auto 0' }} />
+    </div>
+  );
   if (!animal) return <div style={{ textAlign: 'center', padding: '3rem', color: '#dc2626' }}>Patient non trouvé</div>;
 
   const vaccList = Array.isArray(vaccinations) ? vaccinations : vaccinations?.vaccinations || [];
@@ -357,6 +378,7 @@ const PatientDetailPage = () => {
         <div>
           <div style={s.sectionTitle}>
             <span>Certificats</span>
+            <button onClick={() => setShowCertModal(true)} style={s.addBtn}><Plus size={16} /> Nouveau certificat</button>
           </div>
           {certList.length === 0 ? (
             <p style={s.emptyState}>Aucun certificat</p>
@@ -407,6 +429,43 @@ const PatientDetailPage = () => {
               </div>
               <button type="submit" disabled={createVaccMutation.isPending} style={{ ...s.addBtn, marginTop: '1.5rem', padding: '0.75rem 2rem', fontSize: '0.95rem' }}>
                 <Save size={16} /> Enregistrer
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Certificate Modal */}
+      {showCertModal && (
+        <div style={s.modal} onClick={() => setShowCertModal(false)}>
+          <div style={s.modalContent} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', color: '#3E2723' }}>Nouveau certificat</h2>
+              <button onClick={() => setShowCertModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A1887F' }}><X size={22} /></button>
+            </div>
+            <form onSubmit={(e) => { e.preventDefault(); createCertMutation.mutate({ ...certForm, animalId: id, expiryDate: certForm.expiryDate || undefined }); }}>
+              <div style={s.formGrid}>
+                <div>
+                  <label style={s.label}>Type *</label>
+                  <select value={certForm.type} onChange={e => setCertForm({ ...certForm, type: e.target.value })} style={s.input}>
+                    {Object.entries(certTypeLabel).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={s.label}>Date d'expiration</label>
+                  <input type="date" value={certForm.expiryDate} onChange={e => setCertForm({ ...certForm, expiryDate: e.target.value })} style={s.input} />
+                </div>
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <label style={s.label}>Observations</label>
+                <textarea value={certForm.content.observations} onChange={e => setCertForm({ ...certForm, content: { ...certForm.content, observations: e.target.value } })} rows={3} style={{ ...s.input, resize: 'vertical' }} />
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <label style={s.label}>Conclusions</label>
+                <textarea value={certForm.content.conclusions} onChange={e => setCertForm({ ...certForm, content: { ...certForm.content, conclusions: e.target.value } })} rows={3} style={{ ...s.input, resize: 'vertical' }} />
+              </div>
+              <button type="submit" disabled={createCertMutation.isPending} style={{ ...s.addBtn, marginTop: '1.5rem', padding: '0.75rem 2rem', fontSize: '0.95rem' }}>
+                <Save size={16} /> {createCertMutation.isPending ? 'Création...' : 'Créer le certificat'}
               </button>
             </form>
           </div>

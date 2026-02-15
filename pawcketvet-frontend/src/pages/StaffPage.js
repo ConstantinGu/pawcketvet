@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import { CardGridSkeleton } from '../components/LoadingSkeleton';
 import { Search, Plus, X, UserPlus, Edit2, Trash2, Save, Shield, Key } from 'lucide-react';
 
 const roleLabel = { ADMIN: 'Administrateur', VETERINARIAN: 'Vétérinaire', ASSISTANT: 'Assistant(e)' };
@@ -129,7 +130,7 @@ const StaffPage = () => {
 
       {/* List */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Chargement...</div>
+        <CardGridSkeleton count={4} minWidth="300px" />
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Aucun membre trouvé</div>
       ) : (
