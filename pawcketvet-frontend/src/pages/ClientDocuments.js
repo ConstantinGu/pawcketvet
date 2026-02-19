@@ -27,7 +27,7 @@ const ClientDocuments = () => {
       documents.push({
         id: cert.id,
         type: 'certificate',
-        title: `Certificat ${cert.type === 'HEALTH' ? 'de sante' : cert.type === 'VACCINATION' ? 'vaccinal' : cert.type === 'TRAVEL' ? 'de voyage' : cert.type.toLowerCase()}`,
+        title: `Certificat ${cert.type === 'HEALTH' ? 'de santé' : cert.type === 'VACCINATION' ? 'de vaccination' : cert.type === 'TRAVEL' ? 'de voyage' : cert.type.toLowerCase()}`,
         animal: animal.name,
         date: cert.issueDate,
         icon: Shield,
@@ -197,7 +197,7 @@ const ClientDocuments = () => {
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucun document</h3>
           <p style={{ color: '#A1887F' }}>
-            {searchTerm ? 'Aucun resultat pour cette recherche' : 'Vos documents apparaitront ici'}
+            {searchTerm ? 'Aucun résultat pour cette recherche' : 'Vos documents apparaîtront ici'}
           </p>
         </div>
       ) : (
@@ -237,7 +237,7 @@ const ClientDocuments = () => {
                   {doc.animal && `${doc.animal} | `}
                   {new Date(doc.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   {doc.vet && ` | ${doc.vet}`}
-                  {doc.amount !== undefined && ` | ${doc.amount.toFixed(2)} EUR`}
+                  {doc.amount !== undefined && ` | ${doc.amount.toFixed(2)} \u20AC`}
                 </div>
                 {doc.description && (
                   <div style={{ color: '#6D4C41', fontSize: '0.85rem', marginTop: '0.2rem' }}>

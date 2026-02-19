@@ -23,7 +23,7 @@ const ClientMessages = () => {
   const sendMutation = useMutation({
     mutationFn: (data) => messagesAPI.send(data),
     onSuccess: () => {
-      toast.success('Message envoye !');
+      toast.success('Message envoyé !');
       setShowCompose(false);
       setNewMessage({ subject: '', content: '' });
       queryClient.invalidateQueries({ queryKey: ['my-messages'] });
@@ -38,7 +38,7 @@ const ClientMessages = () => {
 
   const handleSend = () => {
     if (!newMessage.content.trim()) {
-      toast.error('Veuillez ecrire un message');
+      toast.error('Veuillez écrire un message');
       return;
     }
     sendMutation.mutate(newMessage);
@@ -159,7 +159,7 @@ const ClientMessages = () => {
       {showCompose && (
         <div style={styles.composeCard}>
           <h3 style={{ marginBottom: '1rem', color: '#3E2723', fontSize: '1.2rem' }}>
-            Nouveau message a la clinique
+            Nouveau message à la clinique
           </h3>
           <div style={{ marginBottom: '1rem' }}>
             <input
@@ -202,7 +202,7 @@ const ClientMessages = () => {
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💬</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucun message</h3>
           <p style={{ color: '#A1887F' }}>
-            Envoyez votre premier message a la clinique
+            Envoyez votre premier message à la clinique
           </p>
         </div>
       ) : (

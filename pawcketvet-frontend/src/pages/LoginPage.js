@@ -28,7 +28,7 @@ const LoginPage = () => {
     try {
       const result = await login(loginData.email, loginData.password);
       if (result.success) {
-        toast.success('Connexion reussie');
+        toast.success('Connexion réussie');
         if (result.user?.role === 'OWNER') {
           navigate('/client/dashboard');
         } else {
@@ -50,7 +50,7 @@ const LoginPage = () => {
       return;
     }
     if (registerData.password.length < 6) {
-      toast.error('Le mot de passe doit contenir au moins 6 caracteres');
+      toast.error('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
     setLoading(true);
@@ -63,7 +63,7 @@ const LoginPage = () => {
         password: registerData.password,
         role: 'OWNER',
       });
-      toast.success('Compte cree ! Vous pouvez vous connecter.');
+      toast.success('Compte créé ! Vous pouvez vous connecter.');
       setMode('login');
       setLoginData({ email: registerData.email, password: '' });
     } catch (err) {
@@ -92,10 +92,10 @@ const LoginPage = () => {
   };
 
   const features = [
-    { icon: Heart, title: 'Suivi medical complet', desc: 'Carnet de sante numerique pour chaque animal' },
-    { icon: Calendar, title: 'Rendez-vous en ligne', desc: 'Reservez 24h/24 en quelques clics' },
-    { icon: BookOpen, title: 'Carnet de sante', desc: 'Historique medical, vaccinations, traitements' },
-    { icon: Shield, title: 'Donnees securisees', desc: 'Protection RGPD de toutes vos donnees' },
+    { icon: Heart, title: 'Suivi médical complet', desc: 'Carnet de santé numérique pour chaque animal' },
+    { icon: Calendar, title: 'Rendez-vous en ligne', desc: 'Réservez 24h/24 en quelques clics' },
+    { icon: BookOpen, title: 'Carnet de santé', desc: 'Historique médical, vaccinations, traitements' },
+    { icon: Shield, title: 'Données sécurisées', desc: 'Protection RGPD de toutes vos données' },
   ];
 
   return (
@@ -154,7 +154,7 @@ const LoginPage = () => {
             marginBottom: '1.25rem',
             letterSpacing: '-0.03em',
           }}>
-            La sante de vos compagnons, simplifiee.
+            La santé de vos compagnons, simplifiée.
           </h1>
 
           <p style={{
@@ -163,8 +163,8 @@ const LoginPage = () => {
             lineHeight: 1.7,
             marginBottom: '3rem',
           }}>
-            Plateforme veterinaire nouvelle generation. Gerez les dossiers medicaux,
-            les rendez-vous et le carnet de sante de chaque animal en un seul endroit.
+            Plateforme vétérinaire nouvelle génération. Gérez les dossiers médicaux,
+            les rendez-vous et le carnet de santé de chaque animal en un seul endroit.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
@@ -216,10 +216,10 @@ const LoginPage = () => {
               color: '#3E2723',
               marginBottom: '0.5rem',
             }}>
-              {mode === 'login' ? 'Bienvenue' : 'Creer un compte'}
+              {mode === 'login' ? 'Bienvenue' : 'Créer un compte'}
             </h2>
             <p style={{ color: '#78716C', fontSize: '0.92rem' }}>
-              {mode === 'login' ? 'Connectez-vous a votre espace' : 'Inscrivez-vous en tant que proprietaire'}
+              {mode === 'login' ? 'Connectez-vous à votre espace' : 'Inscrivez-vous en tant que propriétaire d\'animal'}
             </p>
           </div>
 
@@ -291,7 +291,7 @@ const LoginPage = () => {
             <form onSubmit={handleRegister}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={labelStyle}>Prenom</label>
+                  <label style={labelStyle}>Prénom</label>
                   <div style={{ position: 'relative' }}>
                     <User size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
                     <input type="text" value={registerData.firstName}
@@ -321,7 +321,7 @@ const LoginPage = () => {
               </div>
 
               <div style={{ marginBottom: '1rem' }}>
-                <label style={labelStyle}>Telephone</label>
+                <label style={labelStyle}>Téléphone</label>
                 <div style={{ position: 'relative' }}>
                   <Phone size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
                   <input type="tel" value={registerData.phone}
@@ -359,13 +359,13 @@ const LoginPage = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)', transition: 'all 0.2s',
               }}>
-                {loading ? 'Inscription en cours...' : <>Creer mon compte <UserPlus size={17} /></>}
+                {loading ? 'Inscription en cours...' : <>Créer mon compte <UserPlus size={17} /></>}
               </button>
             </form>
           )}
 
           <p style={{ textAlign: 'center', color: '#A8A29E', fontSize: '0.78rem', marginTop: '2rem' }}>
-            PawcketVet &copy; 2026 - Plateforme de gestion veterinaire
+            PawcketVet &copy; 2026 - Plateforme de gestion vétérinaire
           </p>
         </div>
       </div>

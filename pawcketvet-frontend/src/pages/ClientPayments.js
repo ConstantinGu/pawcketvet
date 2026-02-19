@@ -24,10 +24,10 @@ const ClientPayments = () => {
   const statusConfig = {
     DRAFT: { label: 'Brouillon', color: '#6b7280', bg: '#f3f4f6', icon: Clock },
     PENDING: { label: 'En attente', color: '#f59e0b', bg: '#fef3c7', icon: Clock },
-    PAID: { label: 'Paye', color: '#16a34a', bg: '#dcfce7', icon: CheckCircle },
+    PAID: { label: 'Payé', color: '#16a34a', bg: '#dcfce7', icon: CheckCircle },
     PARTIAL: { label: 'Partiel', color: '#2563eb', bg: '#dbeafe', icon: AlertCircle },
     OVERDUE: { label: 'En retard', color: '#dc2626', bg: '#fef2f2', icon: AlertCircle },
-    CANCELLED: { label: 'Annule', color: '#9333ea', bg: '#f3e8ff', icon: XCircle },
+    CANCELLED: { label: 'Annulé', color: '#9333ea', bg: '#f3e8ff', icon: XCircle },
   };
 
   // Stats
@@ -107,7 +107,7 @@ const ClientPayments = () => {
     <div>
       <h1 style={styles.title}>Paiements & Factures</h1>
       <p style={styles.subtitle}>
-        Gerez vos factures et suivez vos paiements
+        Gérez vos factures et suivez vos paiements
       </p>
 
       {/* Stats */}
@@ -120,10 +120,10 @@ const ClientPayments = () => {
             }}>
               <CheckCircle size={20} color="#16a34a" />
             </div>
-            <span style={{ color: '#A1887F', fontSize: '0.9rem' }}>Total paye</span>
+            <span style={{ color: '#A1887F', fontSize: '0.9rem' }}>Total payé</span>
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#16a34a' }}>
-            {totalPaid.toFixed(2)} EUR
+            {totalPaid.toFixed(2)} &euro;
           </div>
         </div>
 
@@ -138,7 +138,7 @@ const ClientPayments = () => {
             <span style={{ color: '#A1887F', fontSize: '0.9rem' }}>En attente</span>
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#f59e0b' }}>
-            {totalPending.toFixed(2)} EUR
+            {totalPending.toFixed(2)} &euro;
           </div>
         </div>
 
@@ -164,7 +164,7 @@ const ClientPayments = () => {
         {[
           { key: 'all', label: 'Toutes' },
           { key: 'PENDING', label: 'En attente' },
-          { key: 'PAID', label: 'Payees' },
+          { key: 'PAID', label: 'Payées' },
           { key: 'OVERDUE', label: 'En retard' },
         ].map(f => (
           <button
@@ -189,7 +189,7 @@ const ClientPayments = () => {
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💳</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucune facture</h3>
           <p style={{ color: '#A1887F' }}>
-            {filterStatus === 'all' ? 'Vos factures apparaitront ici' : 'Aucune facture dans cette categorie'}
+            {filterStatus === 'all' ? 'Vos factures apparaîtront ici' : 'Aucune facture dans cette catégorie'}
           </p>
         </div>
       ) : (
@@ -237,17 +237,17 @@ const ClientPayments = () => {
                 </div>
                 <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
                   {new Date(invoice.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  {invoice.dueDate && ` | Echeance: ${new Date(invoice.dueDate).toLocaleDateString('fr-FR')}`}
+                  {invoice.dueDate && ` | Échéance : ${new Date(invoice.dueDate).toLocaleDateString('fr-FR')}`}
                 </div>
               </div>
 
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontWeight: 700, fontSize: '1.2rem', color: '#3E2723' }}>
-                  {invoice.total.toFixed(2)} EUR
+                  {invoice.total.toFixed(2)} &euro;
                 </div>
                 {invoice.paidAmount > 0 && invoice.paidAmount < invoice.total && (
                   <div style={{ color: '#059669', fontSize: '0.8rem' }}>
-                    Paye: {invoice.paidAmount.toFixed(2)} EUR
+                    Payé : {invoice.paidAmount.toFixed(2)} &euro;
                   </div>
                 )}
               </div>

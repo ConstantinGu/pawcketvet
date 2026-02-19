@@ -13,6 +13,8 @@ const ClientLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
   const handleLogout = () => {
     logout();
@@ -22,7 +24,7 @@ const ClientLayout = ({ children }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Accueil', icon: Home, path: '/client/dashboard' },
     { id: 'pets', label: 'Mes animaux', icon: Heart, path: '/client/my-pets' },
-    { id: 'health-book', label: 'Carnet de sante', icon: BookOpen, path: '/client/health-book' },
+    { id: 'health-book', label: 'Carnet de santé', icon: BookOpen, path: '/client/health-book' },
     { id: 'appointments', label: 'Rendez-vous', icon: Calendar, path: '/client/appointments' },
     { id: 'messages', label: 'Messages', icon: MessageCircle, path: '/client/messages' },
     { id: 'documents', label: 'Documents', icon: FileText, path: '/client/documents' },
@@ -54,9 +56,10 @@ const ClientLayout = ({ children }) => {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => isMobile ? setMobileOpen(!mobileOpen) : setCollapsed(!collapsed)}
+            aria-label="Menu de navigation"
             style={{
-              width: '36px', height: '36px', borderRadius: '10px',
+              width: '44px', height: '44px', borderRadius: '10px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: '#78716C', border: 'none', background: 'transparent',
               transition: 'all 0.2s',
@@ -119,17 +122,33 @@ const ClientLayout = ({ children }) => {
             }}
             onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#78716C'; }}
-            title="Deconnexion"
+            title="Déconnexion"
           >
             <LogOut size={18} />
           </button>
         </div>
       </header>
 
+      {/* Mobile backdrop */}
+      {mobileOpen && isMobile && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          style={{
+            position: 'fixed',
+            top: '64px',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.3)',
+            zIndex: 89,
+          }}
+        />
+      )}
+
       {/* Main Layout */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: collapsed ? '72px 1fr' : '240px 1fr',
+        display: isMobile ? 'block' : 'grid',
+        gridTemplateColumns: isMobile ? undefined : (collapsed ? '72px 1fr' : '240px 1fr'),
         transition: 'grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         minHeight: 'calc(100vh - 64px)',
       }}>
@@ -137,15 +156,20 @@ const ClientLayout = ({ children }) => {
         <nav style={{
           background: '#fff',
           borderRight: '1px solid rgba(184, 112, 79, 0.06)',
-          padding: collapsed ? '1rem 0.5rem' : '1.25rem 0.75rem',
-          position: 'sticky',
+          padding: (isMobile || !collapsed) ? '1.25rem 0.75rem' : '1rem 0.5rem',
+          position: isMobile ? 'fixed' : 'sticky',
           top: '64px',
+          left: 0,
+          width: isMobile ? '260px' : undefined,
           height: 'calc(100vh - 64px)',
           overflowY: 'auto',
           overflowX: 'hidden',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           display: 'flex',
           flexDirection: 'column',
+          zIndex: isMobile ? 90 : undefined,
+          transform: isMobile ? (mobileOpen ? 'translateX(0)' : 'translateX(-100%)') : undefined,
+          boxShadow: isMobile && mobileOpen ? '4px 0 20px rgba(0,0,0,0.15)' : undefined,
         }}>
           <div style={{ flex: 1 }}>
             {menuItems.map(item => {
@@ -204,7 +228,7 @@ const ClientLayout = ({ children }) => {
             onMouseEnter={e => e.currentTarget.style.background = '#FAFAF9'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
-            {collapsed ? <ChevronRight size={16} /> : <><ChevronLeft size={16} /> <span>Reduire</span></>}
+            {collapsed ? <ChevronRight size={16} /> : <><ChevronLeft size={16} /> <span>Réduire</span></>}
           </div>
         </nav>
 

@@ -5,9 +5,50 @@ const { PrismaClient } = require('@prisma/client');
 const app = express();
 const prisma = new PrismaClient();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security middleware
+try {
+  const helmet = require('helmet');
+  app.use(helmet({
+    contentSecurityPolicy: false, // Disable for API
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }));
+} catch (e) {
+  console.warn('⚠️  helmet not installed - run npm install helmet');
+}
+
+// Rate limiting
+try {
+  const rateLimit = require('express-rate-limit');
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 200, // limit each IP to 200 requests per window
+    message: { error: 'Trop de requêtes, veuillez réessayer plus tard' },
+  });
+  app.use('/api/', limiter);
+
+  // Stricter limit for auth endpoints
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    message: { error: 'Trop de tentatives de connexion, veuillez réessayer plus tard' },
+  });
+  app.use('/api/auth/login', authLimiter);
+  app.use('/api/auth/register', authLimiter);
+} catch (e) {
+  console.warn('⚠️  express-rate-limit not installed - run npm install express-rate-limit');
+}
+
+// CORS configuration
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',')
+  : ['http://localhost:3000', 'http://localhost:5173'];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
+app.use(express.json({ limit: '10mb' }));
 
 // Test de connexion à la base de données
 prisma.$connect()

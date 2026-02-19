@@ -53,7 +53,7 @@ const DashboardPage = () => {
     { label: 'CA du mois', value: `${(stats.monthRevenue || 0).toFixed(0)} EUR`, icon: TrendingUp, color: '#059669' },
     { label: 'RDV ce mois', value: stats.monthAppointments || 0, icon: Calendar, color: '#7c3aed' },
     { label: 'Factures en attente', value: stats.pendingInvoices || 0, icon: CreditCard, color: '#f59e0b' },
-    { label: 'Vaccins a venir', value: stats.upcomingVaccinations || 0, icon: Syringe, color: '#0ea5e9' },
+    { label: 'Vaccins à venir', value: stats.upcomingVaccinations || 0, icon: Syringe, color: '#0ea5e9' },
   ];
 
   const typeEmoji = {
@@ -210,7 +210,7 @@ const DashboardPage = () => {
               <p style={{ fontSize: '0.9rem' }}>Aucun RDV aujourd'hui</p>
             </div>
           ) : (
-            todayAppointments.slice(0, 5).map(appt => (
+            todayAppointments.map(appt => (
               <div key={appt.id} style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: '0.65rem 0',
@@ -250,7 +250,7 @@ const DashboardPage = () => {
           {months.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F' }}>
               <TrendingUp size={32} style={{ marginBottom: '0.5rem', opacity: 0.4 }} />
-              <p style={{ fontSize: '0.9rem' }}>Pas de donnees</p>
+              <p style={{ fontSize: '0.9rem' }}>Pas de données</p>
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.5rem', height: '160px', paddingTop: '1rem' }}>
@@ -282,13 +282,13 @@ const DashboardPage = () => {
             marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem',
           }}>
             <Activity size={20} color="#7c3aed" />
-            Activite recente
+            Activité récente
           </h2>
 
           {activity.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F' }}>
               <Activity size={32} style={{ marginBottom: '0.5rem', opacity: 0.4 }} />
-              <p style={{ fontSize: '0.9rem' }}>Aucune activite recente</p>
+              <p style={{ fontSize: '0.9rem' }}>Aucune activité récente</p>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.5rem' }}>
