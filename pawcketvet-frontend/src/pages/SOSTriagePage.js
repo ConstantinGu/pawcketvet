@@ -216,7 +216,7 @@ const SOSTriagePage = () => {
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>
           SOS Triage Veterinaire
         </h1>
-        <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+        <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
           Evaluez le niveau d'urgence de la situation de votre animal
         </p>
       </div>
@@ -243,7 +243,7 @@ const SOSTriagePage = () => {
       {currentQ >= 0 && !showResult && (
         <div style={{ marginBottom: '2rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.85rem', color: '#A1887F', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.85rem', color: '#78716C', fontWeight: 600 }}>
               Question {currentQ + 1} sur {triageQuestions.length}
             </span>
             <span style={{ fontSize: '0.85rem', color: '#B8704F', fontWeight: 600 }}>

@@ -103,7 +103,7 @@ const ClientMyPets = () => {
             <Heart size={28} style={{ verticalAlign: 'middle', marginRight: '0.5rem', color: '#B8704F' }} />
             Mes compagnons
           </h1>
-          <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+          <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
             {animals.length} animal{animals.length !== 1 ? 'aux' : ''} enregistré{animals.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -126,7 +126,7 @@ const ClientMyPets = () => {
           <h2 style={{ fontSize: '1.5rem', color: '#3E2723', marginBottom: '0.75rem' }}>
             Aucun animal enregistré
           </h2>
-          <p style={{ color: '#A1887F', marginBottom: '2rem', maxWidth: '400px', margin: '0 auto 2rem' }}>
+          <p style={{ color: '#78716C', marginBottom: '2rem', maxWidth: '400px', margin: '0 auto 2rem' }}>
             Ajoutez votre premier compagnon pour accéder à son carnet de santé et prendre rendez-vous
           </p>
           <button onClick={() => setShowAddModal(true)} style={{ ...styles.actionBtn, width: 'auto', display: 'inline-flex', padding: '1rem 2rem' }}>
@@ -165,7 +165,7 @@ const ClientMyPets = () => {
                       <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.6rem', color: '#3E2723', fontWeight: 700, marginBottom: '0.15rem' }}>
                         {animal.name}
                       </h2>
-                      <p style={{ color: '#A1887F', fontSize: '0.92rem' }}>
+                      <p style={{ color: '#78716C', fontSize: '0.92rem' }}>
                         {speciesLabel[animal.species] || animal.species}
                         {animal.breed ? ` - ${animal.breed}` : ''}
                         {animal.gender ? ` - ${animal.gender === 'MALE' ? 'Mâle' : 'Femelle'}` : ''}
@@ -178,15 +178,15 @@ const ClientMyPets = () => {
                 {/* Stats row */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                   <div style={{ background: '#FFF8F0', borderRadius: '12px', padding: '0.75rem', textAlign: 'center' }}>
-                    <div style={{ color: '#A1887F', fontSize: '0.75rem', marginBottom: '0.15rem' }}>Âge</div>
+                    <div style={{ color: '#78716C', fontSize: '0.75rem', marginBottom: '0.15rem' }}>Âge</div>
                     <div style={{ color: '#3E2723', fontSize: '1rem', fontWeight: 600 }}>{getAge(animal.birthDate)}</div>
                   </div>
                   <div style={{ background: '#FFF8F0', borderRadius: '12px', padding: '0.75rem', textAlign: 'center' }}>
-                    <div style={{ color: '#A1887F', fontSize: '0.75rem', marginBottom: '0.15rem' }}>Poids</div>
+                    <div style={{ color: '#78716C', fontSize: '0.75rem', marginBottom: '0.15rem' }}>Poids</div>
                     <div style={{ color: '#3E2723', fontSize: '1rem', fontWeight: 600 }}>{animal.weight ? `${animal.weight} kg` : 'N/A'}</div>
                   </div>
                   <div style={{ background: '#FFF8F0', borderRadius: '12px', padding: '0.75rem', textAlign: 'center' }}>
-                    <div style={{ color: '#A1887F', fontSize: '0.75rem', marginBottom: '0.15rem' }}>Visites</div>
+                    <div style={{ color: '#78716C', fontSize: '0.75rem', marginBottom: '0.15rem' }}>Visites</div>
                     <div style={{ color: '#3E2723', fontSize: '1rem', fontWeight: 600 }}>{animal.consultations?.length || 0}</div>
                   </div>
                 </div>
@@ -257,7 +257,7 @@ const ClientMyPets = () => {
             <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#3E2723', marginBottom: '0.25rem' }}>
               Ajouter un compagnon
             </div>
-            <div style={{ color: '#A1887F', fontSize: '0.88rem' }}>
+            <div style={{ color: '#78716C', fontSize: '0.88rem' }}>
               Enregistrez un nouvel animal
             </div>
           </div>
@@ -286,7 +286,7 @@ const ClientMyPets = () => {
               <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.6rem', color: '#3E2723', fontWeight: 700 }}>
                 Nouveau compagnon
               </h2>
-              <button onClick={() => setShowAddModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A1887F' }}>
+              <button onClick={() => setShowAddModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#78716C' }}>
                 <X size={24} />
               </button>
             </div>

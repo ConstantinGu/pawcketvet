@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isOwnerOfAnimal, isOwnerOfAppointment, ownerAnimalFilter } = require('../middleware/ownership');
 
 // Récupérer tous les rendez-vous
 exports.getAll = async (req, res) => {
@@ -9,6 +10,7 @@ exports.getAll = async (req, res) => {
 
     const where = {
       clinicId: userClinicId,
+      ...ownerAnimalFilter(req),
     };
 
     if (date) {
@@ -68,6 +70,11 @@ exports.create = async (req, res) => {
       return res.status(400).json({ error: 'Animal, date et type requis' });
     }
 
+    // Vérifier que l'animal appartient au propriétaire connecté
+    if (!(await isOwnerOfAnimal(req, animalId))) {
+      return res.status(403).json({ error: 'Accès non autorisé à cet animal' });
+    }
+
     const appointment = await prisma.appointment.create({
       data: {
         animalId,
@@ -105,6 +112,11 @@ exports.update = async (req, res) => {
     const { id } = req.params;
     const { date, duration, type, reason, notes, status, isUrgent } = req.body;
 
+    // Vérifier ownership
+    if (!(await isOwnerOfAppointment(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à ce rendez-vous' });
+    }
+
     const appointment = await prisma.appointment.update({
       where: { id },
       data: {
@@ -139,6 +151,11 @@ exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Vérifier ownership
+    if (!(await isOwnerOfAppointment(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à ce rendez-vous' });
+    }
+
     await prisma.appointment.update({
       where: { id },
       data: { status: 'CANCELLED' },
@@ -156,6 +173,14 @@ exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
+
+    // Vérifier ownership (OWNER ne peut qu'annuler)
+    if (req.user.role === 'OWNER' && status !== 'CANCELLED') {
+      return res.status(403).json({ error: 'Vous ne pouvez qu\'annuler un rendez-vous' });
+    }
+    if (!(await isOwnerOfAppointment(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à ce rendez-vous' });
+    }
 
     const appointment = await prisma.appointment.update({
       where: { id },

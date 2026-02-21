@@ -156,7 +156,7 @@ const AppointmentsPagePremium = () => {
       fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem',
       color: '#3E2723', fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '0.5rem' },
+    subtitle: { color: '#78716C', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '0.5rem' },
     dateSelector: {
       display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '2rem',
       padding: '1.25rem 1.5rem', background: '#fff', borderRadius: '18px',
@@ -302,7 +302,7 @@ const AppointmentsPagePremium = () => {
           <h3 style={{ color: '#3E2723', fontSize: '1.3rem', marginBottom: '0.5rem' }}>
             Aucun rendez-vous
           </h3>
-          <p style={{ color: '#A1887F', marginBottom: '1.5rem' }}>
+          <p style={{ color: '#78716C', marginBottom: '1.5rem' }}>
             Pas de rendez-vous prévu pour le {new Date(selectedDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
           <button onClick={openModal} style={{ ...styles.button, margin: '0 auto' }}>
@@ -465,7 +465,7 @@ const AppointmentsPagePremium = () => {
                 Nouveau rendez-vous
               </h2>
               <button onClick={closeModal} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
-                <X size={24} color="#A1887F" />
+                <X size={24} color="#78716C" />
               </button>
             </div>
 
@@ -586,7 +586,7 @@ const AppointmentsPagePremium = () => {
                       onChange={(e) => setFormData({ ...formData, isUrgent: e.target.checked })}
                       style={{ width: '18px', height: '18px', accentColor: '#dc2626' }}
                     />
-                    <AlertCircle size={18} color={formData.isUrgent ? '#dc2626' : '#A1887F'} />
+                    <AlertCircle size={18} color={formData.isUrgent ? '#dc2626' : '#78716C'} />
                     <span style={{ fontWeight: 600, color: formData.isUrgent ? '#dc2626' : '#3E2723' }}>
                       Rendez-vous urgent
                     </span>
@@ -624,12 +624,12 @@ const AppointmentsPagePremium = () => {
                 <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.8rem', marginBottom: '0.25rem', color: '#3E2723' }}>
                   Consultation en cours
                 </h2>
-                <p style={{ color: '#A1887F', fontSize: '1rem' }}>
+                <p style={{ color: '#78716C', fontSize: '1rem' }}>
                   {speciesEmoji[selectedAppointment?.animal?.species] || '🐾'} {selectedAppointment?.animal?.name} — {selectedAppointment?.animal?.owner?.firstName} {selectedAppointment?.animal?.owner?.lastName}
                 </p>
               </div>
               <button onClick={() => setShowConsultationModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
-                <X size={24} color="#A1887F" />
+                <X size={24} color="#78716C" />
               </button>
             </div>
 
@@ -647,11 +647,11 @@ const AppointmentsPagePremium = () => {
                     background: consultationStep >= n
                       ? 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)'
                       : '#F5E6D3',
-                    color: consultationStep >= n ? '#fff' : '#A1887F',
+                    color: consultationStep >= n ? '#fff' : '#78716C',
                   }}>
                     {n}
                   </div>
-                  <span style={{ fontSize: '0.7rem', color: consultationStep >= n ? '#B8704F' : '#A1887F', fontWeight: 600 }}>{label}</span>
+                  <span style={{ fontSize: '0.7rem', color: consultationStep >= n ? '#B8704F' : '#78716C', fontWeight: 600 }}>{label}</span>
                 </div>
               ))}
             </div>
@@ -763,7 +763,7 @@ const AppointmentsPagePremium = () => {
                   background: '#fff', borderRadius: '12px', padding: '1.25rem',
                   marginBottom: '1.25rem', border: '1px solid rgba(184, 112, 79, 0.1)',
                 }}>
-                  <h4 style={{ fontSize: '0.9rem', color: '#A1887F', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Résumé</h4>
+                  <h4 style={{ fontSize: '0.9rem', color: '#78716C', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Résumé</h4>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.9rem' }}>
                     {consultationData.temperature && <div><strong style={{ color: '#8D6E63' }}>Temp:</strong> <span style={{ color: '#3E2723' }}>{consultationData.temperature}°C</span></div>}
                     {consultationData.weight && <div><strong style={{ color: '#8D6E63' }}>Poids:</strong> <span style={{ color: '#3E2723' }}>{consultationData.weight} kg</span></div>}

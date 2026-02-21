@@ -319,7 +319,7 @@ const ClientDashboard = () => {
                   <h3 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#3E2723', marginBottom: '0.25rem' }}>
                     {animal.name}
                   </h3>
-                  <div style={{ color: '#A1887F', fontSize: '1rem' }}>
+                  <div style={{ color: '#78716C', fontSize: '1rem' }}>
                     {{ DOG: 'Chien', CAT: 'Chat', RABBIT: 'Lapin', BIRD: 'Oiseau', RODENT: 'Rongeur', REPTILE: 'Reptile' }[animal.species] || 'Autre'} • {animal.breed || 'Race mixte'}
                   </div>
                 </div>
@@ -333,7 +333,7 @@ const ClientDashboard = () => {
                   borderRadius: '12px',
                   textAlign: 'center',
                 }}>
-                  <div style={{ color: '#A1887F', fontSize: '0.85rem', marginBottom: '0.25rem' }}>
+                  <div style={{ color: '#78716C', fontSize: '0.85rem', marginBottom: '0.25rem' }}>
                     Âge
                   </div>
                   <div style={{ color: '#3E2723', fontSize: '1.2rem', fontWeight: 600 }}>
@@ -355,7 +355,7 @@ const ClientDashboard = () => {
                   borderRadius: '12px',
                   textAlign: 'center',
                 }}>
-                  <div style={{ color: '#A1887F', fontSize: '0.85rem', marginBottom: '0.25rem' }}>
+                  <div style={{ color: '#78716C', fontSize: '0.85rem', marginBottom: '0.25rem' }}>
                     Poids
                   </div>
                   <div style={{ color: '#3E2723', fontSize: '1.2rem', fontWeight: 600 }}>
@@ -423,7 +423,7 @@ const ClientDashboard = () => {
               </div>
 
               <h3 style={styles.cardTitle}>{action.title}</h3>
-              <p style={{ color: '#A1887F', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+              <p style={{ color: '#78716C', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
                 {action.description}
               </p>
 

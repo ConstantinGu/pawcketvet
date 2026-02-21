@@ -132,7 +132,7 @@ const ClientAnimalDetail = () => {
             </div>
             <div style={{ flex: 1 }}>
               <h1 style={styles.animalName}>{animal.name}</h1>
-              <div style={{ fontSize: '1.3rem', color: '#A1887F', marginBottom: '1rem' }}>
+              <div style={{ fontSize: '1.3rem', color: '#78716C', marginBottom: '1rem' }}>
                 {animal.species === 'DOG' ? 'Chien' : 'Chat'} • {animal.breed || 'Race mixte'}
               </div>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
@@ -185,7 +185,7 @@ const ClientAnimalDetail = () => {
               <div style={{ fontSize: '2rem', fontWeight: 700, color: '#3E2723', marginBottom: '0.25rem' }}>
                 {animal.weight || 'N/A'} kg
               </div>
-              <div style={{ color: '#A1887F', fontSize: '0.9rem' }}>Poids actuel</div>
+              <div style={{ color: '#78716C', fontSize: '0.9rem' }}>Poids actuel</div>
             </div>
 
             <div style={styles.statCard}>
@@ -193,7 +193,7 @@ const ClientAnimalDetail = () => {
               <div style={{ fontSize: '2rem', fontWeight: 700, color: '#3E2723', marginBottom: '0.25rem' }}>
                 {consultations.length}
               </div>
-              <div style={{ color: '#A1887F', fontSize: '0.9rem' }}>Consultations</div>
+              <div style={{ color: '#78716C', fontSize: '0.9rem' }}>Consultations</div>
             </div>
 
             <div style={styles.statCard}>
@@ -201,7 +201,7 @@ const ClientAnimalDetail = () => {
               <div style={{ fontSize: '2rem', fontWeight: 700, color: '#3E2723', marginBottom: '0.25rem' }}>
                 ✓
               </div>
-              <div style={{ color: '#A1887F', fontSize: '0.9rem' }}>En bonne santé</div>
+              <div style={{ color: '#78716C', fontSize: '0.9rem' }}>En bonne santé</div>
             </div>
           </div>
         </div>
@@ -214,8 +214,8 @@ const ClientAnimalDetail = () => {
           </h2>
 
           {consultations.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>
-              <Activity size={48} color="#A1887F" style={{ marginBottom: '1rem' }} />
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>
+              <Activity size={48} color="#78716C" style={{ marginBottom: '1rem' }} />
               <p style={{ fontSize: '1.1rem' }}>Aucune consultation enregistrée pour le moment</p>
             </div>
           ) : (
@@ -231,7 +231,7 @@ const ClientAnimalDetail = () => {
                         year: 'numeric',
                       })}
                     </div>
-                    <div style={{ color: '#A1887F', fontSize: '1rem' }}>
+                    <div style={{ color: '#78716C', fontSize: '1rem' }}>
                       Dr. {consultation.veterinarian.firstName} {consultation.veterinarian.lastName}
                     </div>
                   </div>

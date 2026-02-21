@@ -92,7 +92,7 @@ const ClientDocuments = () => {
       WebkitTextFillColor: 'transparent',
       fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.1rem', marginBottom: '2rem' },
+    subtitle: { color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' },
     searchBar: {
       display: 'flex',
       gap: '1rem',
@@ -157,7 +157,7 @@ const ClientDocuments = () => {
       {/* Search & Filter */}
       <div style={styles.searchBar}>
         <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
-          <Search size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A1887F' }} />
+          <Search size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
           <input
             type="text"
             placeholder="Rechercher un document..."
@@ -167,7 +167,7 @@ const ClientDocuments = () => {
           />
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <Filter size={16} color="#A1887F" />
+          <Filter size={16} color="#78716C" />
           {[
             { key: 'all', label: 'Tous' },
             { key: 'certificate', label: 'Certificats' },
@@ -196,7 +196,7 @@ const ClientDocuments = () => {
         }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucun document</h3>
-          <p style={{ color: '#A1887F' }}>
+          <p style={{ color: '#78716C' }}>
             {searchTerm ? 'Aucun résultat pour cette recherche' : 'Vos documents apparaîtront ici'}
           </p>
         </div>
@@ -233,7 +233,7 @@ const ClientDocuments = () => {
                 <div style={{ fontWeight: 600, color: '#3E2723', fontSize: '0.95rem', marginBottom: '0.2rem' }}>
                   {doc.title}
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem' }}>
                   {doc.animal && `${doc.animal} | `}
                   {new Date(doc.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   {doc.vet && ` | ${doc.vet}`}

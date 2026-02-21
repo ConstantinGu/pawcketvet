@@ -106,7 +106,7 @@ const ClientLayout = ({ children }) => {
               <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#3E2723', lineHeight: 1.2 }}>
                 {user?.firstName} {user?.lastName}
               </div>
-              <div style={{ fontSize: '0.7rem', color: '#A8A29E', lineHeight: 1.2 }}>
+              <div style={{ fontSize: '0.7rem', color: '#78716C', lineHeight: 1.2 }}>
                 Mon espace
               </div>
             </div>
@@ -222,7 +222,7 @@ const ClientLayout = ({ children }) => {
             style={{
               padding: '0.6rem', borderRadius: '10px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: '0.5rem', color: '#A8A29E', fontSize: '0.82rem',
+              gap: '0.5rem', color: '#78716C', fontSize: '0.82rem',
               transition: 'all 0.15s', marginTop: '0.5rem',
             }}
             onMouseEnter={e => e.currentTarget.style.background = '#FAFAF9'}

@@ -86,7 +86,7 @@ const ClinicSettingsPage = () => {
   };
 
   if (isLoading || !formData) {
-    return <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Chargement...</div>;
+    return <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>Chargement...</div>;
   }
 
   return (
@@ -96,7 +96,7 @@ const ClinicSettingsPage = () => {
           <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>
             Paramètres de la clinique
           </h1>
-          <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+          <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
             Gérez les informations de votre établissement
           </p>
         </div>
@@ -183,7 +183,7 @@ const ClinicSettingsPage = () => {
               return (
                 <div key={day} style={{ display: 'grid', gridTemplateColumns: '120px auto 1fr 20px 1fr', gap: '0.75rem', alignItems: 'center', padding: '0.5rem 0' }}>
                   <span style={{ fontWeight: 600, color: '#3E2723', fontSize: '0.9rem' }}>{day}</span>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: '#A1887F' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: '#78716C' }}>
                     <input type="checkbox" checked={!hours.closed}
                       onChange={e => updateHours(day, 'closed', !e.target.checked)}
                       style={{ width: '16px', height: '16px', accentColor: '#B8704F' }} />
@@ -193,7 +193,7 @@ const ClinicSettingsPage = () => {
                     <>
                       <input type="time" value={hours.open} onChange={e => updateHours(day, 'open', e.target.value)}
                         style={{ ...styles.input, padding: '0.5rem 0.75rem' }} />
-                      <span style={{ textAlign: 'center', color: '#A1887F' }}>-</span>
+                      <span style={{ textAlign: 'center', color: '#78716C' }}>-</span>
                       <input type="time" value={hours.close} onChange={e => updateHours(day, 'close', e.target.value)}
                         style={{ ...styles.input, padding: '0.5rem 0.75rem' }} />
                     </>
@@ -218,7 +218,7 @@ const ClinicSettingsPage = () => {
                   </div>
                   <div>
                     <p style={{ fontWeight: 600, color: '#3E2723', fontSize: '0.9rem' }}>{u.firstName} {u.lastName}</p>
-                    <p style={{ color: '#A1887F', fontSize: '0.8rem' }}>
+                    <p style={{ color: '#78716C', fontSize: '0.8rem' }}>
                       {{ ADMIN: 'Admin', VETERINARIAN: 'Vétérinaire', ASSISTANT: 'Assistant(e)' }[u.role] || u.role}
                     </p>
                   </div>

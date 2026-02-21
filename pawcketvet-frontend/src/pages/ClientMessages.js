@@ -54,7 +54,7 @@ const ClientMessages = () => {
       WebkitTextFillColor: 'transparent',
       fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.1rem', marginBottom: '2rem' },
+    subtitle: { color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' },
     card: {
       background: '#fff',
       borderRadius: '20px',
@@ -201,7 +201,7 @@ const ClientMessages = () => {
         }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💬</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucun message</h3>
-          <p style={{ color: '#A1887F' }}>
+          <p style={{ color: '#78716C' }}>
             Envoyez votre premier message à la clinique
           </p>
         </div>
@@ -252,7 +252,7 @@ const ClientMessages = () => {
                       ? `Dr. ${msg.sender.firstName} ${msg.sender.lastName}`
                       : 'Moi'}
                   </span>
-                  <span style={{ color: '#A1887F', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ color: '#78716C', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                     <Clock size={12} />
                     {new Date(msg.createdAt).toLocaleDateString('fr-FR', {
                       day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'

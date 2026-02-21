@@ -1,10 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isOwnerOfAnimal, ownerAnimalFilter } = require('../middleware/ownership');
 
 // Récupérer toutes les vaccinations d'un animal
 exports.getByAnimal = async (req, res) => {
   try {
     const { animalId } = req.params;
+
+    // Vérifier ownership
+    if (!(await isOwnerOfAnimal(req, animalId))) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
+    }
 
     const vaccinations = await prisma.vaccination.findMany({
       where: { animalId },
@@ -32,6 +38,7 @@ exports.getUpcoming = async (req, res) => {
         animal: {
           isActive: true,
           ...(clinicId ? { clinicId } : {}),
+          ...(req.user.role === 'OWNER' ? { ownerId: req.user.ownerId } : {}),
         },
       },
       include: {
@@ -63,6 +70,11 @@ exports.create = async (req, res) => {
 
     if (!animalId || !name || !date) {
       return res.status(400).json({ error: 'Animal, nom du vaccin et date requis' });
+    }
+
+    // Vérifier ownership
+    if (!(await isOwnerOfAnimal(req, animalId))) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
     }
 
     const vaccination = await prisma.vaccination.create({

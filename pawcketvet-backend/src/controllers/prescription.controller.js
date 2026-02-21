@@ -1,13 +1,21 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isOwnerOfAnimal, ownerAnimalFilter } = require('../middleware/ownership');
 
 // Recuperer toutes les prescriptions
 exports.getAll = async (req, res) => {
   try {
     const { animalId, consultationId } = req.query;
 
-    const where = {};
-    if (animalId) where.animalId = animalId;
+    const where = {
+      ...ownerAnimalFilter(req),
+    };
+    if (animalId) {
+      if (!(await isOwnerOfAnimal(req, animalId))) {
+        return res.status(403).json({ error: 'Accès non autorisé' });
+      }
+      where.animalId = animalId;
+    }
     if (consultationId) where.consultationId = consultationId;
 
     const prescriptions = await prisma.prescription.findMany({
@@ -49,6 +57,11 @@ exports.getById = async (req, res) => {
 
     if (!prescription) {
       return res.status(404).json({ error: 'Prescription non trouvee' });
+    }
+
+    // Vérifier ownership
+    if (req.user.role === 'OWNER' && prescription.animal?.owner?.id !== req.user.ownerId) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
     }
 
     res.json({ prescription });

@@ -124,7 +124,7 @@ const AppointmentsPage = () => {
       CANCELLED: '#dc2626',
       NOSHOW: '#64748b',
     };
-    return colors[status] || '#A1887F';
+    return colors[status] || '#78716C';
   };
 
   const getStatusLabel = (status) => {
@@ -213,7 +213,7 @@ const AppointmentsPage = () => {
       <div style={styles.header}>
         <div>
           <h1 style={styles.title}>Rendez-vous</h1>
-          <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+          <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
             Gérez l'agenda de votre clinique
           </p>
         </div>
@@ -237,11 +237,11 @@ const AppointmentsPage = () => {
       </div>
 
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>
           Chargement...
         </div>
       ) : appointmentsData?.appointments?.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>
           Aucun rendez-vous pour cette date
         </div>
       ) : (
@@ -280,7 +280,7 @@ const AppointmentsPage = () => {
                 </div>
                 <div style={{ marginBottom: '0.5rem' }}>
                   <strong style={{ fontSize: '1.1rem' }}>{apt.animal.name}</strong>
-                  <span style={{ color: '#A1887F', marginLeft: '0.5rem' }}>
+                  <span style={{ color: '#78716C', marginLeft: '0.5rem' }}>
                     • {apt.animal.owner.firstName} {apt.animal.owner.lastName}
                   </span>
                 </div>

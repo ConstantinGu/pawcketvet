@@ -98,7 +98,7 @@ const PrescriptionsPage = () => {
     <>
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>Ordonnances</h1>
-        <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>Gérez les prescriptions médicales</p>
+        <p style={{ color: '#78716C', fontSize: '1.05rem' }}>Gérez les prescriptions médicales</p>
       </div>
 
       {/* Stats */}
@@ -118,7 +118,7 @@ const PrescriptionsPage = () => {
       {/* Toolbar */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
         <div style={{ position: 'relative', flex: 1 }}>
-          <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#A1887F' }} />
+          <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
           <input type="text" placeholder="Rechercher..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={{ ...styles.input, paddingLeft: '3rem' }} />
         </div>
         <button onClick={() => setShowModal(true)} style={styles.button}><Plus size={18} /> Nouvelle ordonnance</button>
@@ -128,7 +128,7 @@ const PrescriptionsPage = () => {
       {isLoading ? (
         <ListItemSkeleton count={5} />
       ) : filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Aucune ordonnance trouvée</div>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>Aucune ordonnance trouvée</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {filtered.map(p => {
@@ -148,11 +148,11 @@ const PrescriptionsPage = () => {
                       <p style={{ color: '#6D4C41', fontSize: '0.9rem' }}>
                         {p.animal?.name} - {p.animal?.owner?.firstName} {p.animal?.owner?.lastName}
                       </p>
-                      <p style={{ color: '#A1887F', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                      <p style={{ color: '#78716C', fontSize: '0.85rem', marginTop: '0.25rem' }}>
                         {p.dosage} | {p.frequency} | {p.duration}
                       </p>
-                      {p.instructions && <p style={{ color: '#A1887F', fontSize: '0.85rem', fontStyle: 'italic', marginTop: '0.25rem' }}>{p.instructions}</p>}
-                      <p style={{ color: '#A1887F', fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                      {p.instructions && <p style={{ color: '#78716C', fontSize: '0.85rem', fontStyle: 'italic', marginTop: '0.25rem' }}>{p.instructions}</p>}
+                      <p style={{ color: '#78716C', fontSize: '0.8rem', marginTop: '0.25rem' }}>
                         Du {new Date(p.startDate).toLocaleDateString('fr-FR')}{p.endDate ? ` au ${new Date(p.endDate).toLocaleDateString('fr-FR')}` : ''}
                       </p>
                     </div>
@@ -173,7 +173,7 @@ const PrescriptionsPage = () => {
           <div style={{ background: '#fff', borderRadius: '24px', padding: '2.5rem', maxWidth: '700px', width: '90%', maxHeight: '90vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
               <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.8rem', color: '#3E2723' }}>Nouvelle ordonnance</h2>
-              <button onClick={() => setShowModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#A1887F' }}><X size={24} /></button>
+              <button onClick={() => setShowModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#78716C' }}><X size={24} /></button>
             </div>
             <form onSubmit={handleSubmit}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>

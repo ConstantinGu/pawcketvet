@@ -117,7 +117,7 @@ const ClientHealthBook = () => {
       color, background: bg,
     }),
     emptyState: {
-      padding: '2rem', textAlign: 'center', color: '#A8A29E',
+      padding: '2rem', textAlign: 'center', color: '#78716C',
       fontSize: '0.88rem',
     },
     sectionIcon: (bg) => ({
@@ -204,7 +204,7 @@ const ClientHealthBook = () => {
                   <div style={{ fontWeight: 600, fontSize: '0.9rem', color: isActive ? '#B8704F' : '#3E2723' }}>
                     {animal.name}
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: '#A8A29E' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#78716C' }}>
                     {speciesLabel[animal.species] || 'Autre'}
                   </div>
                 </div>
@@ -218,7 +218,7 @@ const ClientHealthBook = () => {
         <div style={{ ...s.card, textAlign: 'center', padding: '4rem' }}>
           <PawcketVetLogo size={64} style={{ marginBottom: '1.5rem', opacity: 0.5 }} />
           <h2 style={{ fontSize: '1.3rem', color: '#3E2723', marginBottom: '0.5rem' }}>Aucun animal enregistré</h2>
-          <p style={{ color: '#A8A29E', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+          <p style={{ color: '#78716C', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
             Ajoutez un animal pour accéder à son carnet de santé
           </p>
           <button
@@ -262,7 +262,7 @@ const ClientHealthBook = () => {
                 background: activePrescriptions.length > 0 ? '#F5F3FF' : '#F5F5F4',
                 borderRadius: '12px', textAlign: 'center',
               }}>
-                <Pill size={20} color={activePrescriptions.length > 0 ? '#7C3AED' : '#A8A29E'} style={{ marginBottom: '0.3rem' }} />
+                <Pill size={20} color={activePrescriptions.length > 0 ? '#7C3AED' : '#78716C'} style={{ marginBottom: '0.3rem' }} />
                 <div style={{ fontSize: '1.2rem', fontWeight: 700, color: activePrescriptions.length > 0 ? '#7C3AED' : '#78716C' }}>
                   {activePrescriptions.length}
                 </div>
@@ -322,7 +322,7 @@ const ClientHealthBook = () => {
                   </div>
                   <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#DC2626' }}>Alertes santé</span>
                 </div>
-                {expandedSections.emergency ? <ChevronDown size={18} color="#A8A29E" /> : <ChevronRight size={18} color="#A8A29E" />}
+                {expandedSections.emergency ? <ChevronDown size={18} color="#78716C" /> : <ChevronRight size={18} color="#78716C" />}
               </div>
               {expandedSections.emergency && (
                 <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -378,7 +378,7 @@ const ClientHealthBook = () => {
                 </div>
                 <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#3E2723' }}>Fiche d'identité</span>
               </div>
-              {expandedSections.identity ? <ChevronDown size={18} color="#A8A29E" /> : <ChevronRight size={18} color="#A8A29E" />}
+              {expandedSections.identity ? <ChevronDown size={18} color="#78716C" /> : <ChevronRight size={18} color="#78716C" />}
             </div>
             {expandedSections.identity && (
               <div style={{ padding: '1.25rem' }}>
@@ -425,29 +425,29 @@ const ClientHealthBook = () => {
                     <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3E2723' }}>
                       {activeAnimal.weight ? `${activeAnimal.weight} kg` : 'N/A'}
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#A8A29E' }}>Poids</div>
+                    <div style={{ fontSize: '0.72rem', color: '#78716C' }}>Poids</div>
                   </div>
                   <div style={{ background: '#FAFAF9', borderRadius: '12px', padding: '0.85rem', textAlign: 'center' }}>
                     <Activity size={18} color="#2563EB" style={{ marginBottom: '0.3rem' }} />
                     <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3E2723' }}>
                       {activeAnimal.microchip ? 'Oui' : 'Non'}
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#A8A29E' }}>Pucé</div>
+                    <div style={{ fontSize: '0.72rem', color: '#78716C' }}>Pucé</div>
                   </div>
                   <div style={{ background: '#FAFAF9', borderRadius: '12px', padding: '0.85rem', textAlign: 'center' }}>
                     <Syringe size={18} color="#059669" style={{ marginBottom: '0.3rem' }} />
                     <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3E2723' }}>{vaccinations.length}</div>
-                    <div style={{ fontSize: '0.72rem', color: '#A8A29E' }}>Vaccins</div>
+                    <div style={{ fontSize: '0.72rem', color: '#78716C' }}>Vaccins</div>
                   </div>
                   <div style={{ background: '#FAFAF9', borderRadius: '12px', padding: '0.85rem', textAlign: 'center' }}>
                     <FileText size={18} color="#7C3AED" style={{ marginBottom: '0.3rem' }} />
                     <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3E2723' }}>{consultations.length}</div>
-                    <div style={{ fontSize: '0.72rem', color: '#A8A29E' }}>Visites</div>
+                    <div style={{ fontSize: '0.72rem', color: '#78716C' }}>Visites</div>
                   </div>
                   <div style={{ background: '#FAFAF9', borderRadius: '12px', padding: '0.85rem', textAlign: 'center' }}>
                     <Shield size={18} color="#D97706" style={{ marginBottom: '0.3rem' }} />
                     <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3E2723' }}>{certificates.length}</div>
-                    <div style={{ fontSize: '0.72rem', color: '#A8A29E' }}>Certificats</div>
+                    <div style={{ fontSize: '0.72rem', color: '#78716C' }}>Certificats</div>
                   </div>
                 </div>
 
@@ -488,7 +488,7 @@ const ClientHealthBook = () => {
                   <span style={s.badge('#DC2626', '#FEF2F2')}>{overdueVaccinations.length} échu{overdueVaccinations.length > 1 ? 's' : ''}</span>
                 )}
               </div>
-              {expandedSections.vaccinations ? <ChevronDown size={18} color="#A8A29E" /> : <ChevronRight size={18} color="#A8A29E" />}
+              {expandedSections.vaccinations ? <ChevronDown size={18} color="#78716C" /> : <ChevronRight size={18} color="#78716C" />}
             </div>
             {expandedSections.vaccinations && (
               <div style={{ padding: vaccinations.length === 0 ? '0' : '0.5rem' }}>
@@ -521,7 +521,7 @@ const ClientHealthBook = () => {
                           {status.label}
                         </span>
                         {v.nextDueDate && (
-                          <div style={{ fontSize: '0.72rem', color: '#A8A29E', marginTop: '0.2rem' }}>
+                          <div style={{ fontSize: '0.72rem', color: '#78716C', marginTop: '0.2rem' }}>
                             Rappel : {new Date(v.nextDueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </div>
                         )}
@@ -543,7 +543,7 @@ const ClientHealthBook = () => {
                 <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#3E2723' }}>Historique médical</span>
                 <span style={s.countBadge}>{consultations.length}</span>
               </div>
-              {expandedSections.consultations ? <ChevronDown size={18} color="#A8A29E" /> : <ChevronRight size={18} color="#A8A29E" />}
+              {expandedSections.consultations ? <ChevronDown size={18} color="#78716C" /> : <ChevronRight size={18} color="#78716C" />}
             </div>
             {expandedSections.consultations && (
               <div style={{ padding: consultations.length === 0 ? '0' : '0.75rem 1.25rem' }}>
@@ -631,7 +631,7 @@ const ClientHealthBook = () => {
                   <span style={s.badge('#7C3AED', '#F5F3FF')}>{activePrescriptions.length} actif{activePrescriptions.length > 1 ? 's' : ''}</span>
                 )}
               </div>
-              {expandedSections.prescriptions ? <ChevronDown size={18} color="#A8A29E" /> : <ChevronRight size={18} color="#A8A29E" />}
+              {expandedSections.prescriptions ? <ChevronDown size={18} color="#78716C" /> : <ChevronRight size={18} color="#78716C" />}
             </div>
             {expandedSections.prescriptions && (
               <div style={{ padding: prescriptions.length === 0 ? '0' : '0.5rem 1.25rem' }}>
@@ -650,7 +650,7 @@ const ClientHealthBook = () => {
                         background: isActive ? '#F5F3FF' : '#F5F5F4',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                       }}>
-                        <Pill size={16} color={isActive ? '#7C3AED' : '#A8A29E'} />
+                        <Pill size={16} color={isActive ? '#7C3AED' : '#78716C'} />
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 600, fontSize: '0.88rem', color: '#3E2723' }}>
@@ -660,7 +660,7 @@ const ClientHealthBook = () => {
                           {p.dosage} - {p.frequency} - {p.duration}
                         </div>
                         {p.instructions && (
-                          <div style={{ fontSize: '0.75rem', color: '#A8A29E', marginTop: '0.15rem' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#78716C', marginTop: '0.15rem' }}>
                             {p.instructions}
                           </div>
                         )}
@@ -688,7 +688,7 @@ const ClientHealthBook = () => {
                 <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#3E2723' }}>Certificats</span>
                 <span style={s.countBadge}>{certificates.length}</span>
               </div>
-              {expandedSections.certificates ? <ChevronDown size={18} color="#A8A29E" /> : <ChevronRight size={18} color="#A8A29E" />}
+              {expandedSections.certificates ? <ChevronDown size={18} color="#78716C" /> : <ChevronRight size={18} color="#78716C" />}
             </div>
             {expandedSections.certificates && (
               <div style={{ padding: certificates.length === 0 ? '0' : '0.5rem 1.25rem' }}>
@@ -728,7 +728,7 @@ const ClientHealthBook = () => {
                           <span style={s.badge('#78716C', '#F5F5F4')}>Permanent</span>
                         )}
                         {cert.expiryDate && (
-                          <div style={{ fontSize: '0.72rem', color: '#A8A29E', marginTop: '0.2rem' }}>
+                          <div style={{ fontSize: '0.72rem', color: '#78716C', marginTop: '0.2rem' }}>
                             Exp. {new Date(cert.expiryDate).toLocaleDateString('fr-FR')}
                           </div>
                         )}
@@ -749,7 +749,7 @@ const ClientHealthBook = () => {
                 </div>
                 <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#3E2723' }}>Courbe de poids</span>
               </div>
-              {expandedSections.weight ? <ChevronDown size={18} color="#A8A29E" /> : <ChevronRight size={18} color="#A8A29E" />}
+              {expandedSections.weight ? <ChevronDown size={18} color="#78716C" /> : <ChevronRight size={18} color="#78716C" />}
             </div>
             {expandedSections.weight && (
               <div style={{ padding: '1.25rem' }}>
@@ -787,7 +787,7 @@ const ClientHealthBook = () => {
                             borderRadius: '4px 4px 0 0',
                             transition: 'height 0.5s ease',
                           }} />
-                          <div style={{ fontSize: '0.65rem', color: '#A8A29E' }}>
+                          <div style={{ fontSize: '0.65rem', color: '#78716C' }}>
                             {new Date(w.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                           </div>
                         </div>

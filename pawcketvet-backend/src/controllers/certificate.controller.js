@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isOwnerOfAnimal, ownerAnimalFilter } = require('../middleware/ownership');
 
 // Recuperer tous les certificats
 exports.getAll = async (req, res) => {
@@ -7,11 +8,20 @@ exports.getAll = async (req, res) => {
     const { animalId, type } = req.query;
     const clinicId = req.user.clinicId;
 
-    const where = {};
-    if (animalId) where.animalId = animalId;
+    const where = {
+      ...ownerAnimalFilter(req),
+    };
+    if (animalId) {
+      if (!(await isOwnerOfAnimal(req, animalId))) {
+        return res.status(403).json({ error: 'Accès non autorisé' });
+      }
+      where.animalId = animalId;
+    }
     if (type) where.type = type;
-    if (clinicId) {
+    if (clinicId && !where.animal) {
       where.animal = { clinicId };
+    } else if (clinicId && where.animal) {
+      where.animal.clinicId = clinicId;
     }
 
     const certificates = await prisma.certificate.findMany({
@@ -56,6 +66,11 @@ exports.getById = async (req, res) => {
 
     if (!certificate) {
       return res.status(404).json({ error: 'Certificat non trouve' });
+    }
+
+    // Vérifier ownership
+    if (req.user.role === 'OWNER' && certificate.animal?.owner?.id !== req.user.ownerId) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
     }
 
     res.json({ certificate });

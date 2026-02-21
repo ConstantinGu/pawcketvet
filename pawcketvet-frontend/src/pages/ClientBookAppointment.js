@@ -206,7 +206,7 @@ const ClientBookAppointment = () => {
       <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>
         Prendre rendez-vous
       </h1>
-      <p style={{ fontSize: '1.05rem', color: '#A1887F', marginBottom: '2rem' }}>
+      <p style={{ fontSize: '1.05rem', color: '#78716C', marginBottom: '2rem' }}>
         Réservez facilement une consultation en ligne
       </p>
 
@@ -224,11 +224,11 @@ const ClientBookAppointment = () => {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontWeight: 700, fontSize: '0.95rem', transition: 'all 0.3s',
                   background: isActive ? 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)' : '#F5E6D3',
-                  color: isActive ? '#fff' : '#A1887F',
+                  color: isActive ? '#fff' : '#78716C',
                 }}>
                   {isDone ? <CheckCircle size={20} /> : s}
                 </div>
-                <span style={{ fontSize: '0.75rem', color: isActive ? '#B8704F' : '#A1887F', fontWeight: 600 }}>
+                <span style={{ fontSize: '0.75rem', color: isActive ? '#B8704F' : '#78716C', fontWeight: 600 }}>
                   {label}
                 </span>
               </div>
@@ -258,7 +258,7 @@ const ClientBookAppointment = () => {
                 <div style={{ fontWeight: 700, color: '#3E2723', fontSize: '1rem', marginBottom: '0.25rem' }}>
                   Animal existant
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem' }}>
                   Choisir parmi vos animaux enregistrés
                 </div>
               </div>
@@ -267,7 +267,7 @@ const ClientBookAppointment = () => {
                 <div style={{ fontWeight: 700, color: '#3E2723', fontSize: '1rem', marginBottom: '0.25rem' }}>
                   Nouvel animal
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem' }}>
                   Enregistrer un nouveau compagnon
                 </div>
               </div>
@@ -276,7 +276,7 @@ const ClientBookAppointment = () => {
                 <div style={{ fontWeight: 700, color: '#3E2723', fontSize: '1rem', marginBottom: '0.25rem' }}>
                   Sans dossier
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem' }}>
                   Première visite, pas encore enregistré
                 </div>
               </div>
@@ -296,7 +296,7 @@ const ClientBookAppointment = () => {
               )}
 
               {animals.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F' }}>
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#78716C' }}>
                   <PawcketVetLogo size={56} style={{ marginBottom: '1rem', opacity: 0.5 }} />
                   <p style={{ fontSize: '1.05rem', marginBottom: '1rem' }}>Aucun animal enregistré</p>
                   <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>Ajoutez un animal ou continuez sans dossier</p>
@@ -327,7 +327,7 @@ const ClientBookAppointment = () => {
                         </span>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3E2723' }}>{animal.name}</div>
-                          <div style={{ color: '#A1887F', fontSize: '0.95rem' }}>
+                          <div style={{ color: '#78716C', fontSize: '0.95rem' }}>
                             {speciesLabel[animal.species] || animal.species} {animal.breed ? `- ${animal.breed}` : ''}
                           </div>
                         </div>
@@ -569,7 +569,7 @@ const ClientBookAppointment = () => {
                 <span style={{ fontSize: '1.8rem' }}>{type.icon}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#3E2723' }}>{type.label}</div>
-                  <div style={{ color: '#A1887F', fontSize: '0.9rem' }}>{type.description}</div>
+                  <div style={{ color: '#78716C', fontSize: '0.9rem' }}>{type.description}</div>
                 </div>
                 <span style={{ fontSize: '0.8rem', color: '#B8704F', fontWeight: 600, background: '#FFF8F0', padding: '0.25rem 0.5rem', borderRadius: '6px' }}>
                   {type.duration}
@@ -627,7 +627,7 @@ const ClientBookAppointment = () => {
               </label>
 
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '0.82rem', color: '#A1887F', fontWeight: 600 }}>Matin</span>
+                <span style={{ fontSize: '0.82rem', color: '#78716C', fontWeight: 600 }}>Matin</span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '0.5rem', marginBottom: '1rem' }}>
                 {availableSlots.filter(s => parseInt(s) < 12).map((slot) => (
@@ -647,7 +647,7 @@ const ClientBookAppointment = () => {
               </div>
 
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '0.82rem', color: '#A1887F', fontWeight: 600 }}>Après-midi</span>
+                <span style={{ fontSize: '0.82rem', color: '#78716C', fontWeight: 600 }}>Après-midi</span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '0.5rem', marginBottom: '2rem' }}>
                 {availableSlots.filter(s => parseInt(s) >= 12).map((slot) => (
@@ -704,7 +704,7 @@ const ClientBookAppointment = () => {
           <div style={{ background: '#FFF8F0', borderRadius: '16px', padding: '1.5rem', marginBottom: '1.5rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#A1887F', fontWeight: 600, textTransform: 'uppercase' }}>Animal</span>
+                <span style={{ fontSize: '0.8rem', color: '#78716C', fontWeight: 600, textTransform: 'uppercase' }}>Animal</span>
                 {animalMode === 'unregistered' ? (
                   <>
                     <p style={{ fontWeight: 700, color: '#3E2723', fontSize: '1.1rem', margin: '0.25rem 0 0' }}>
@@ -726,20 +726,20 @@ const ClientBookAppointment = () => {
                 )}
               </div>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#A1887F', fontWeight: 600, textTransform: 'uppercase' }}>Type</span>
+                <span style={{ fontSize: '0.8rem', color: '#78716C', fontWeight: 600, textTransform: 'uppercase' }}>Type</span>
                 <p style={{ fontWeight: 700, color: '#3E2723', fontSize: '1.1rem', margin: '0.25rem 0 0' }}>
                   {selectedType?.icon} {selectedType?.label || '-'}
                 </p>
                 <span style={{ color: '#6D4C41', fontSize: '0.85rem' }}>{selectedType?.duration}</span>
               </div>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#A1887F', fontWeight: 600, textTransform: 'uppercase' }}>Date</span>
+                <span style={{ fontSize: '0.8rem', color: '#78716C', fontWeight: 600, textTransform: 'uppercase' }}>Date</span>
                 <p style={{ fontWeight: 700, color: '#3E2723', fontSize: '1.1rem', margin: '0.25rem 0 0' }}>
                   {formData.date ? new Date(formData.date + 'T00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
                 </p>
               </div>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#A1887F', fontWeight: 600, textTransform: 'uppercase' }}>Heure</span>
+                <span style={{ fontSize: '0.8rem', color: '#78716C', fontWeight: 600, textTransform: 'uppercase' }}>Heure</span>
                 <p style={{ fontWeight: 700, color: '#3E2723', fontSize: '1.1rem', margin: '0.25rem 0 0' }}>
                   {formData.timeSlot || '-'}
                 </p>
@@ -747,7 +747,7 @@ const ClientBookAppointment = () => {
             </div>
             {formData.reason && (
               <div style={{ marginTop: '1rem', borderTop: '1px solid rgba(184,112,79,0.15)', paddingTop: '1rem' }}>
-                <span style={{ fontSize: '0.8rem', color: '#A1887F', fontWeight: 600, textTransform: 'uppercase' }}>Motif</span>
+                <span style={{ fontSize: '0.8rem', color: '#78716C', fontWeight: 600, textTransform: 'uppercase' }}>Motif</span>
                 <p style={{ color: '#3E2723', fontSize: '0.95rem', margin: '0.25rem 0 0' }}>{formData.reason}</p>
               </div>
             )}

@@ -99,14 +99,14 @@ const LoginPage = () => {
   ];
 
   return (
-    <div style={{
+    <div lang="fr" style={{
       minHeight: '100vh',
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
     }}>
       {/* Left - Branding Panel */}
-      <div style={{
+      <div aria-hidden="true" style={{
         background: 'linear-gradient(135deg, #B8704F 0%, #8B4F33 100%)',
         padding: '3rem',
         display: 'flex',
@@ -200,7 +200,7 @@ const LoginPage = () => {
       </div>
 
       {/* Right - Form Panel */}
-      <div style={{
+      <main style={{
         background: '#fff',
         display: 'flex',
         alignItems: 'center',
@@ -218,22 +218,22 @@ const LoginPage = () => {
             }}>
               {mode === 'login' ? 'Bienvenue' : 'Créer un compte'}
             </h2>
-            <p style={{ color: '#78716C', fontSize: '0.92rem' }}>
+            <p style={{ color: '#57534E', fontSize: '0.92rem' }}>
               {mode === 'login' ? 'Connectez-vous à votre espace' : 'Inscrivez-vous en tant que propriétaire d\'animal'}
             </p>
           </div>
 
           {/* Tab toggle */}
-          <div style={{
+          <div role="tablist" aria-label="Type de formulaire" style={{
             display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px',
             background: '#F5F5F4', borderRadius: '10px', padding: '3px', marginBottom: '2rem',
           }}>
             {['login', 'register'].map(m => (
-              <button key={m} onClick={() => setMode(m)} style={{
+              <button key={m} role="tab" aria-selected={mode === m} onClick={() => setMode(m)} style={{
                 background: mode === m ? '#fff' : 'transparent',
                 border: 'none', borderRadius: '8px', padding: '0.6rem', cursor: 'pointer',
                 fontWeight: 600, fontSize: '0.85rem',
-                color: mode === m ? '#3E2723' : '#A8A29E',
+                color: mode === m ? '#3E2723' : '#78716C',
                 boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
                 transition: 'all 0.2s',
               }}>
@@ -244,36 +244,39 @@ const LoginPage = () => {
 
           {/* Login Form */}
           {mode === 'login' && (
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} role="tabpanel" aria-label="Formulaire de connexion">
               <div style={{ marginBottom: '1.25rem' }}>
-                <label style={labelStyle}>Adresse email</label>
+                <label htmlFor="login-email" style={labelStyle}>Adresse email</label>
                 <div style={{ position: 'relative' }}>
-                  <Mail size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type="email" value={loginData.email}
+                  <Mail size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="login-email" type="email" value={loginData.email}
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     placeholder="votre@email.com" required autoComplete="email"
+                    aria-required="true"
                     style={inputStyle}
                   />
                 </div>
               </div>
 
               <div style={{ marginBottom: '1.75rem' }}>
-                <label style={labelStyle}>Mot de passe</label>
+                <label htmlFor="login-password" style={labelStyle}>Mot de passe</label>
                 <div style={{ position: 'relative' }}>
-                  <Lock size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type={showPassword ? 'text' : 'password'} value={loginData.password}
+                  <Lock size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="login-password" type={showPassword ? 'text' : 'password'} value={loginData.password}
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                     placeholder="Votre mot de passe" required autoComplete="current-password"
+                    aria-required="true"
                     style={inputStyle}
                   />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
-                    style={{ position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#A8A29E', padding: 0 }}>
-                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                    aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                    style={{ position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#78716C', padding: '0.5rem', margin: '-0.5rem' }}>
+                    {showPassword ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
                   </button>
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} style={{
+              <button type="submit" disabled={loading} aria-busy={loading} style={{
                 width: '100%',
                 background: loading ? '#D4956C' : 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
                 color: '#fff', border: 'none', borderRadius: '12px', padding: '0.9rem',
@@ -281,77 +284,82 @@ const LoginPage = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)', transition: 'all 0.2s',
               }}>
-                {loading ? 'Connexion en cours...' : <>Se connecter <ArrowRight size={17} /></>}
+                {loading ? 'Connexion en cours...' : <>Se connecter <ArrowRight size={17} aria-hidden="true" /></>}
               </button>
             </form>
           )}
 
           {/* Register Form */}
           {mode === 'register' && (
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleRegister} role="tabpanel" aria-label="Formulaire d'inscription">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={labelStyle}>Prénom</label>
+                  <label htmlFor="register-firstName" style={labelStyle}>Prénom</label>
                   <div style={{ position: 'relative' }}>
-                    <User size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="text" value={registerData.firstName}
+                    <User size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-firstName" type="text" value={registerData.firstName}
                       onChange={(e) => setRegisterData({ ...registerData, firstName: e.target.value })}
-                      placeholder="Jean" required style={inputStyle} />
+                      placeholder="Jean" required autoComplete="given-name" aria-required="true" style={inputStyle} />
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Nom</label>
+                  <label htmlFor="register-lastName" style={labelStyle}>Nom</label>
                   <div style={{ position: 'relative' }}>
-                    <User size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="text" value={registerData.lastName}
+                    <User size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-lastName" type="text" value={registerData.lastName}
                       onChange={(e) => setRegisterData({ ...registerData, lastName: e.target.value })}
-                      placeholder="Dupont" required style={inputStyle} />
+                      placeholder="Dupont" required autoComplete="family-name" aria-required="true" style={inputStyle} />
                   </div>
                 </div>
               </div>
 
               <div style={{ marginBottom: '1rem' }}>
-                <label style={labelStyle}>Email</label>
+                <label htmlFor="register-email" style={labelStyle}>Email</label>
                 <div style={{ position: 'relative' }}>
-                  <Mail size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type="email" value={registerData.email}
+                  <Mail size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="register-email" type="email" value={registerData.email}
                     onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                    placeholder="votre@email.com" required autoComplete="email" style={inputStyle} />
+                    placeholder="votre@email.com" required autoComplete="email" aria-required="true" style={inputStyle} />
                 </div>
               </div>
 
               <div style={{ marginBottom: '1rem' }}>
-                <label style={labelStyle}>Téléphone</label>
+                <label htmlFor="register-phone" style={labelStyle}>Téléphone</label>
                 <div style={{ position: 'relative' }}>
-                  <Phone size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type="tel" value={registerData.phone}
+                  <Phone size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="register-phone" type="tel" value={registerData.phone}
                     onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
-                    placeholder="06 12 34 56 78" required style={inputStyle} />
+                    placeholder="06 12 34 56 78" required autoComplete="tel" aria-required="true" style={inputStyle} />
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.75rem' }}>
                 <div>
-                  <label style={labelStyle}>Mot de passe</label>
+                  <label htmlFor="register-password" style={labelStyle}>Mot de passe</label>
                   <div style={{ position: 'relative' }}>
-                    <Lock size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="password" value={registerData.password}
+                    <Lock size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-password" type="password" value={registerData.password}
                       onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                      placeholder="6 car. min." required minLength={6} style={inputStyle} />
+                      placeholder="6 car. min." required minLength={6} autoComplete="new-password"
+                      aria-required="true" aria-describedby="password-hint" style={inputStyle} />
+                  </div>
+                  <div id="password-hint" style={{ fontSize: '0.72rem', color: '#78716C', marginTop: '0.25rem' }}>
+                    Minimum 6 caractères
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Confirmer</label>
+                  <label htmlFor="register-confirm" style={labelStyle}>Confirmer le mot de passe</label>
                   <div style={{ position: 'relative' }}>
-                    <Lock size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="password" value={registerData.confirmPassword}
+                    <Lock size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-confirm" type="password" value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
-                      placeholder="Confirmer" required minLength={6} style={inputStyle} />
+                      placeholder="Confirmer" required minLength={6} autoComplete="new-password"
+                      aria-required="true" style={inputStyle} />
                   </div>
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} style={{
+              <button type="submit" disabled={loading} aria-busy={loading} style={{
                 width: '100%',
                 background: loading ? '#D4956C' : 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
                 color: '#fff', border: 'none', borderRadius: '12px', padding: '0.9rem',
@@ -359,16 +367,16 @@ const LoginPage = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)', transition: 'all 0.2s',
               }}>
-                {loading ? 'Inscription en cours...' : <>Créer mon compte <UserPlus size={17} /></>}
+                {loading ? 'Inscription en cours...' : <>Créer mon compte <UserPlus size={17} aria-hidden="true" /></>}
               </button>
             </form>
           )}
 
-          <p style={{ textAlign: 'center', color: '#A8A29E', fontSize: '0.78rem', marginTop: '2rem' }}>
+          <p style={{ textAlign: 'center', color: '#78716C', fontSize: '0.78rem', marginTop: '2rem' }}>
             PawcketVet &copy; 2026 - Plateforme de gestion vétérinaire
           </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

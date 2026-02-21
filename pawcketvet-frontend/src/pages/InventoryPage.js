@@ -100,7 +100,7 @@ const InventoryPage = () => {
       low: '#d97706',
       critical: '#dc2626',
     };
-    return colors[status] || '#A1887F';
+    return colors[status] || '#78716C';
   };
 
   const getStatusLabel = (status) => {
@@ -131,7 +131,7 @@ const InventoryPage = () => {
           <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>
             Stock & Inventaire
           </h1>
-          <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+          <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
             Gérez votre inventaire médical
           </p>
         </div>
@@ -171,7 +171,7 @@ const InventoryPage = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                   <div style={{ flex: 1 }}>
                     <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: '#3E2723' }}>{item.name}</h3>
-                    <span style={{ fontSize: '0.85rem', color: '#A1887F', background: '#FFF8F0', padding: '0.25rem 0.75rem', borderRadius: '12px' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#78716C', background: '#FFF8F0', padding: '0.25rem 0.75rem', borderRadius: '12px' }}>
                       {getCategoryLabel(item.category)}
                     </span>
                   </div>
@@ -188,7 +188,7 @@ const InventoryPage = () => {
                   <div style={{ background: '#F5E6D3', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
                     <div style={{ background: getStatusColor(item.status), height: '100%', width: `${Math.min(percentage, 100)}%`, transition: 'width 0.3s' }} />
                   </div>
-                  <span style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#78716C' }}>
                     Min: {item.minStock} {item.unit}
                   </span>
                 </div>

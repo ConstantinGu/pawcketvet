@@ -218,7 +218,7 @@ const Layout = ({ children }) => {
                 </div>
                 <div style={{ maxHeight: '420px', overflow: 'auto' }}>
                   {(!Array.isArray(notifications) || notifications.length === 0) ? (
-                    <div style={{ padding: '3rem 2rem', textAlign: 'center', color: '#A8A29E' }}>
+                    <div style={{ padding: '3rem 2rem', textAlign: 'center', color: '#78716C' }}>
                       <Bell size={32} style={{ marginBottom: '0.75rem', opacity: 0.3 }} />
                       <p style={{ fontSize: '0.9rem' }}>Aucune notification</p>
                     </div>
@@ -254,7 +254,7 @@ const Layout = ({ children }) => {
                           <p style={{ color: '#78716C', fontSize: '0.8rem', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {notif.message}
                           </p>
-                          <p style={{ color: '#A8A29E', fontSize: '0.72rem', margin: 0, marginTop: '0.2rem' }}>
+                          <p style={{ color: '#78716C', fontSize: '0.72rem', margin: 0, marginTop: '0.2rem' }}>
                             {new Date(notif.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
@@ -290,7 +290,7 @@ const Layout = ({ children }) => {
               <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#3E2723', lineHeight: 1.2 }}>
                 {user?.firstName} {user?.lastName}
               </div>
-              <div style={{ fontSize: '0.7rem', color: '#A8A29E', lineHeight: 1.2 }}>
+              <div style={{ fontSize: '0.7rem', color: '#78716C', lineHeight: 1.2 }}>
                 {user?.role === 'ADMIN' ? 'Administrateur' : user?.role === 'VETERINARIAN' ? 'Veterinaire' : 'Assistant'}
               </div>
             </div>
@@ -340,7 +340,7 @@ const Layout = ({ children }) => {
                 {!collapsed && (
                   <div style={{
                     padding: '0 0.75rem', marginBottom: '0.4rem',
-                    color: '#A8A29E', fontSize: '0.68rem', fontWeight: 600,
+                    color: '#78716C', fontSize: '0.68rem', fontWeight: 600,
                     textTransform: 'uppercase', letterSpacing: '0.08em',
                   }}>
                     {section.title}
@@ -389,7 +389,7 @@ const Layout = ({ children }) => {
             style={{
               padding: '0.6rem', borderRadius: '10px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: '0.5rem', color: '#A8A29E', fontSize: '0.82rem',
+              gap: '0.5rem', color: '#78716C', fontSize: '0.82rem',
               transition: 'all 0.15s', marginTop: '0.5rem',
             }}
             onMouseEnter={e => e.currentTarget.style.background = '#FAFAF9'}

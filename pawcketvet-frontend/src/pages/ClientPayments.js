@@ -45,7 +45,7 @@ const ClientPayments = () => {
       WebkitTextFillColor: 'transparent',
       fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.1rem', marginBottom: '2rem' },
+    subtitle: { color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' },
     statsGrid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -120,7 +120,7 @@ const ClientPayments = () => {
             }}>
               <CheckCircle size={20} color="#16a34a" />
             </div>
-            <span style={{ color: '#A1887F', fontSize: '0.9rem' }}>Total payé</span>
+            <span style={{ color: '#78716C', fontSize: '0.9rem' }}>Total payé</span>
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#16a34a' }}>
             {totalPaid.toFixed(2)} &euro;
@@ -135,7 +135,7 @@ const ClientPayments = () => {
             }}>
               <Clock size={20} color="#f59e0b" />
             </div>
-            <span style={{ color: '#A1887F', fontSize: '0.9rem' }}>En attente</span>
+            <span style={{ color: '#78716C', fontSize: '0.9rem' }}>En attente</span>
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#f59e0b' }}>
             {totalPending.toFixed(2)} &euro;
@@ -150,7 +150,7 @@ const ClientPayments = () => {
             }}>
               <TrendingUp size={20} color="#B8704F" />
             </div>
-            <span style={{ color: '#A1887F', fontSize: '0.9rem' }}>Total factures</span>
+            <span style={{ color: '#78716C', fontSize: '0.9rem' }}>Total factures</span>
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#3E2723' }}>
             {totalInvoices}
@@ -160,7 +160,7 @@ const ClientPayments = () => {
 
       {/* Filters */}
       <div style={styles.filterBar}>
-        <Filter size={16} color="#A1887F" />
+        <Filter size={16} color="#78716C" />
         {[
           { key: 'all', label: 'Toutes' },
           { key: 'PENDING', label: 'En attente' },
@@ -188,7 +188,7 @@ const ClientPayments = () => {
         }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💳</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucune facture</h3>
-          <p style={{ color: '#A1887F' }}>
+          <p style={{ color: '#78716C' }}>
             {filterStatus === 'all' ? 'Vos factures apparaîtront ici' : 'Aucune facture dans cette catégorie'}
           </p>
         </div>
@@ -235,7 +235,7 @@ const ClientPayments = () => {
                     {status.label}
                   </span>
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem' }}>
                   {new Date(invoice.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   {invoice.dueDate && ` | Échéance : ${new Date(invoice.dueDate).toLocaleDateString('fr-FR')}`}
                 </div>

@@ -52,7 +52,7 @@ const ClientReminders = () => {
       WebkitTextFillColor: 'transparent',
       fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.1rem', marginBottom: '2rem' },
+    subtitle: { color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' },
     section: { marginBottom: '2.5rem' },
     sectionTitle: {
       fontFamily: "'Fraunces', serif",
@@ -174,7 +174,7 @@ const ClientReminders = () => {
                   <div style={{ fontWeight: 600, color: '#3E2723', marginBottom: '0.2rem' }}>
                     {vacc.vaccineName} - {vacc.animalName}
                   </div>
-                  <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                  <div style={{ color: '#78716C', fontSize: '0.85rem' }}>
                     {new Date(vacc.scheduledFor).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   </div>
                 </div>
@@ -187,7 +187,7 @@ const ClientReminders = () => {
                   {getDaysUntil(vacc.scheduledFor)}
                 </span>
 
-                <ChevronRight size={18} color="#A1887F" />
+                <ChevronRight size={18} color="#78716C" />
               </div>
             );
           })
@@ -203,8 +203,8 @@ const ClientReminders = () => {
 
         {upcomingAppointments.length === 0 ? (
           <div style={styles.emptyState}>
-            <Calendar size={40} color="#A1887F" style={{ marginBottom: '0.5rem' }} />
-            <p style={{ color: '#A1887F' }}>Aucun rendez-vous à venir</p>
+            <Calendar size={40} color="#78716C" style={{ marginBottom: '0.5rem' }} />
+            <p style={{ color: '#78716C' }}>Aucun rendez-vous à venir</p>
             <button
               onClick={() => navigate('/client/book-appointment')}
               style={{
@@ -247,7 +247,7 @@ const ClientReminders = () => {
                 <div style={{ fontWeight: 600, color: '#3E2723', marginBottom: '0.2rem' }}>
                   {appt.animalName} - {appt.type}
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <Clock size={14} />
                   {new Date(appt.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
                   {' à '}
@@ -291,7 +291,7 @@ const ClientReminders = () => {
                 <div style={{ color: '#6D4C41', fontSize: '0.9rem' }}>
                   {reminder.message}
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.8rem', marginTop: '0.25rem' }}>
                   {new Date(reminder.scheduledFor).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </div>
               </div>

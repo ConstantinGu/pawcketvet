@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { appointmentsAPI } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import {
-  Calendar, Clock, Plus, CheckCircle, XCircle, AlertCircle, ChevronRight
+  Calendar, Clock, Plus, CheckCircle, XCircle, AlertCircle, ChevronRight, X, RefreshCw
 } from 'lucide-react';
 import { ListItemSkeleton } from '../components/LoadingSkeleton';
 
 const ClientAppointments = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState('all');
+  const [cancelModal, setCancelModal] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['my-appointments'],
@@ -59,7 +62,7 @@ const ClientAppointments = () => {
       WebkitTextFillColor: 'transparent',
       fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.1rem', marginBottom: '2rem' },
+    subtitle: { color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' },
     filterBar: {
       display: 'flex',
       gap: '0.5rem',
@@ -118,6 +121,18 @@ const ClientAppointments = () => {
     },
   };
 
+  const cancelMutation = useMutation({
+    mutationFn: (id) => appointmentsAPI.updateStatus(id, 'CANCELLED'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-appointments'] });
+      toast.success('Rendez-vous annulé avec succès');
+      setCancelModal(null);
+    },
+    onError: () => toast.error('Erreur lors de l\'annulation'),
+  });
+
+  const canCancel = (status) => ['PENDING', 'CONFIRMED'].includes(status);
+
   if (isLoading) return <ListItemSkeleton count={5} />;
 
   return (
@@ -169,7 +184,7 @@ const ClientAppointments = () => {
         }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📅</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucun rendez-vous</h3>
-          <p style={{ color: '#A1887F' }}>
+          <p style={{ color: '#78716C' }}>
             {filter === 'all'
               ? 'Vous n\'avez pas encore de rendez-vous'
               : 'Aucun rendez-vous dans cette catégorie'}
@@ -206,13 +221,13 @@ const ClientAppointments = () => {
                 textAlign: 'center',
                 minWidth: '80px',
               }}>
-                <div style={{ fontSize: '0.8rem', color: '#A1887F', textTransform: 'uppercase' }}>
+                <div style={{ fontSize: '0.8rem', color: '#78716C', textTransform: 'uppercase' }}>
                   {apptDate.toLocaleDateString('fr-FR', { weekday: 'short' })}
                 </div>
                 <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#B8704F' }}>
                   {apptDate.getDate()}
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
                   {apptDate.toLocaleDateString('fr-FR', { month: 'short' })}
                 </div>
               </div>
@@ -247,7 +262,7 @@ const ClientAppointments = () => {
                   {typeLabels[appointment.type] || appointment.type}
                   {appointment.reason && ` - ${appointment.reason}`}
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <Clock size={14} />
                   {apptDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                   {' - '}
@@ -256,10 +271,163 @@ const ClientAppointments = () => {
                 </div>
               </div>
 
-              <ChevronRight size={20} color="#A1887F" />
+              {/* Actions */}
+              {canCancel(appointment.status) && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginLeft: '0.5rem' }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/client/book-appointment?reschedule=${appointment.id}&animal=${appointment.animalId}&type=${appointment.type}`);
+                    }}
+                    style={{
+                      background: '#EFF6FF',
+                      color: '#2563EB',
+                      border: 'none',
+                      borderRadius: '10px',
+                      padding: '0.5rem 0.75rem',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
+                      transition: 'all 0.2s',
+                    }}
+                    aria-label={`Reprogrammer le rendez-vous de ${appointment.animal?.name || 'votre animal'}`}
+                  >
+                    <RefreshCw size={14} />
+                    Reprogrammer
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCancelModal(appointment);
+                    }}
+                    style={{
+                      background: '#FEF2F2',
+                      color: '#DC2626',
+                      border: 'none',
+                      borderRadius: '10px',
+                      padding: '0.5rem 0.75rem',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
+                      transition: 'all 0.2s',
+                    }}
+                    aria-label={`Annuler le rendez-vous de ${appointment.animal?.name || 'votre animal'}`}
+                  >
+                    <XCircle size={14} />
+                    Annuler
+                  </button>
+                </div>
+              )}
+
+              {!canCancel(appointment.status) && <ChevronRight size={20} color="#78716C" />}
             </div>
           );
         })
+      )}
+
+      {/* Cancel confirmation modal */}
+      {cancelModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem',
+          }}
+          onClick={() => setCancelModal(null)}
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: '24px',
+              padding: '2rem',
+              maxWidth: '420px',
+              width: '100%',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Confirmer l'annulation"
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.3rem', color: '#3E2723', margin: 0 }}>Annuler ce rendez-vous ?</h3>
+              <button onClick={() => setCancelModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#78716C' }}>
+                <X size={22} />
+              </button>
+            </div>
+
+            <div style={{
+              background: '#FEF2F2',
+              borderRadius: '16px',
+              padding: '1.25rem',
+              marginBottom: '1.5rem',
+            }}>
+              <div style={{ fontWeight: 700, color: '#3E2723', marginBottom: '0.5rem' }}>
+                {cancelModal.animal?.name || 'Animal'} - {typeLabels[cancelModal.type] || cancelModal.type}
+              </div>
+              <div style={{ color: '#57534E', fontSize: '0.9rem' }}>
+                {new Date(cancelModal.date).toLocaleDateString('fr-FR', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })} à {new Date(cancelModal.date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+
+            <p style={{ color: '#57534E', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+              Cette action est irréversible. Vous pourrez toujours prendre un nouveau rendez-vous ultérieurement.
+            </p>
+
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button
+                onClick={() => setCancelModal(null)}
+                style={{
+                  flex: 1,
+                  padding: '0.85rem',
+                  borderRadius: '12px',
+                  border: '2px solid #E7E5E4',
+                  background: '#fff',
+                  color: '#3E2723',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Garder le RDV
+              </button>
+              <button
+                onClick={() => cancelMutation.mutate(cancelModal.id)}
+                disabled={cancelMutation.isPending}
+                style={{
+                  flex: 1,
+                  padding: '0.85rem',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: '#DC2626',
+                  color: '#fff',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: cancelMutation.isPending ? 'not-allowed' : 'pointer',
+                  opacity: cancelMutation.isPending ? 0.7 : 1,
+                }}
+              >
+                {cancelMutation.isPending ? 'Annulation...' : 'Confirmer l\'annulation'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

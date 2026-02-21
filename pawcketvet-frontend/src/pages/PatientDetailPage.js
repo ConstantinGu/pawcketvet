@@ -116,12 +116,12 @@ const PatientDetailPage = () => {
     metaBadge: { display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', padding: '0.5rem 1rem', borderRadius: '10px', fontSize: '0.85rem', color: '#6D4C41' },
     alertBanner: { background: '#FFF3CD', borderRadius: '12px', padding: '1rem 1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid #FFE082' },
     tabBar: { display: 'flex', gap: '0.5rem', marginBottom: '2rem', borderBottom: '2px solid #F5E6D3', paddingBottom: '0' },
-    tab: (active) => ({ padding: '0.75rem 1.5rem', background: 'none', border: 'none', borderBottom: active ? '3px solid #B8704F' : '3px solid transparent', color: active ? '#B8704F' : '#A1887F', fontWeight: active ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', marginBottom: '-2px' }),
+    tab: (active) => ({ padding: '0.75rem 1.5rem', background: 'none', border: 'none', borderBottom: active ? '3px solid #B8704F' : '3px solid transparent', color: active ? '#B8704F' : '#78716C', fontWeight: active ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', marginBottom: '-2px' }),
     ownerCard: { background: '#fff', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 2px 15px rgba(184,112,79,0.06)', border: '1px solid rgba(184,112,79,0.08)' },
     sectionTitle: { fontFamily: "'Fraunces', serif", fontSize: '1.3rem', color: '#3E2723', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
     addBtn: { background: 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)', color: '#fff', border: 'none', borderRadius: '10px', padding: '0.5rem 1rem', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem' },
     listCard: { background: '#fff', borderRadius: '14px', padding: '1.25rem', marginBottom: '0.75rem', boxShadow: '0 1px 8px rgba(184,112,79,0.05)', border: '1px solid rgba(184,112,79,0.08)' },
-    emptyState: { textAlign: 'center', padding: '3rem', color: '#A1887F', fontSize: '0.95rem' },
+    emptyState: { textAlign: 'center', padding: '3rem', color: '#78716C', fontSize: '0.95rem' },
     modal: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(45,63,47,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
     modalContent: { background: '#fff', borderRadius: '24px', padding: '2.5rem', maxWidth: '700px', width: '90%', maxHeight: '90vh', overflow: 'auto' },
     formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' },
@@ -131,7 +131,7 @@ const PatientDetailPage = () => {
     statsRow: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' },
     statCard: { background: '#fff', borderRadius: '14px', padding: '1.25rem', textAlign: 'center', boxShadow: '0 2px 10px rgba(184,112,79,0.06)', border: '1px solid rgba(184,112,79,0.08)' },
     statNumber: { fontSize: '1.8rem', fontWeight: 700, color: '#B8704F' },
-    statLabel: { fontSize: '0.8rem', color: '#A1887F', marginTop: '0.25rem' },
+    statLabel: { fontSize: '0.8rem', color: '#78716C', marginTop: '0.25rem' },
   };
 
   if (isLoading) return (
@@ -226,7 +226,7 @@ const PatientDetailPage = () => {
                 {animal.owner.address && <p style={{ color: '#8D6E63' }}>{animal.owner.address}, {animal.owner.city} {animal.owner.postalCode}</p>}
               </>
             ) : (
-              <p style={{ color: '#A1887F' }}>Aucun propriétaire</p>
+              <p style={{ color: '#78716C' }}>Aucun propriétaire</p>
             )}
           </div>
           <div style={s.ownerCard}>
@@ -246,7 +246,7 @@ const PatientDetailPage = () => {
                       <div style={{ fontWeight: 600, color: '#3E2723' }}>
                         {item._type === 'consult' ? item.reason : item.name}
                       </div>
-                      <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                      <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
                         {new Date(item.date || item.createdAt).toLocaleDateString('fr-FR')}
                       </div>
                     </div>
@@ -277,7 +277,7 @@ const PatientDetailPage = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
                 <div>
                   <div style={{ fontWeight: 700, color: '#3E2723', fontSize: '1.05rem' }}>{c.reason}</div>
-                  <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>{new Date(c.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                  <div style={{ fontSize: '0.8rem', color: '#78716C' }}>{new Date(c.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
                 </div>
                 {c.diagnosis && <span style={s.badge('blue')}>Diagnostiqué</span>}
               </div>
@@ -317,7 +317,7 @@ const PatientDetailPage = () => {
                   </div>
                   <div>
                     <div style={{ fontWeight: 700, color: '#3E2723' }}>{v.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
                       {new Date(v.date).toLocaleDateString('fr-FR')}
                       {v.batchNumber && ` • Lot: ${v.batchNumber}`}
                     </div>
@@ -331,7 +331,7 @@ const PatientDetailPage = () => {
                       </span>
                     </div>
                   )}
-                  {v.veterinarian && <div style={{ fontSize: '0.75rem', color: '#A1887F', marginTop: '0.25rem' }}>Dr. {v.veterinarian}</div>}
+                  {v.veterinarian && <div style={{ fontSize: '0.75rem', color: '#78716C', marginTop: '0.25rem' }}>Dr. {v.veterinarian}</div>}
                 </div>
               </div>
             </div>
@@ -357,11 +357,11 @@ const PatientDetailPage = () => {
                   <div>
                     <div style={{ fontWeight: 700, color: '#3E2723' }}>{p.medication?.name || 'Médicament'}</div>
                     <div style={{ fontSize: '0.85rem', color: '#6D4C41' }}>{p.dosage} • {p.frequency} • {p.duration}</div>
-                    {p.instructions && <div style={{ fontSize: '0.8rem', color: '#A1887F', marginTop: '0.25rem' }}>{p.instructions}</div>}
+                    {p.instructions && <div style={{ fontSize: '0.8rem', color: '#78716C', marginTop: '0.25rem' }}>{p.instructions}</div>}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
                     Du {new Date(p.startDate).toLocaleDateString('fr-FR')}
                     {p.endDate && ` au ${new Date(p.endDate).toLocaleDateString('fr-FR')}`}
                   </div>
@@ -394,7 +394,7 @@ const PatientDetailPage = () => {
                     <div style={{ fontWeight: 700, color: '#3E2723' }}>
                       {c.type === 'HEALTH' ? 'Certificat de santé' : c.type === 'VACCINATION' ? 'Certificat de vaccination' : c.type === 'TRAVEL' ? 'Certificat de voyage' : c.type}
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
                       Émis le {new Date(c.issueDate).toLocaleDateString('fr-FR')}
                       {c.expiryDate && ` • Expire: ${new Date(c.expiryDate).toLocaleDateString('fr-FR')}`}
                     </div>
@@ -417,7 +417,7 @@ const PatientDetailPage = () => {
           <div style={s.modalContent} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', color: '#3E2723' }}>Ajouter une vaccination</h2>
-              <button onClick={() => setShowVaccModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A1887F' }}><X size={22} /></button>
+              <button onClick={() => setShowVaccModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#78716C' }}><X size={22} /></button>
             </div>
             <form onSubmit={(e) => { e.preventDefault(); createVaccMutation.mutate({ ...vaccForm, animalId: id }); }}>
               <div style={s.formGrid}>
@@ -442,7 +442,7 @@ const PatientDetailPage = () => {
           <div style={s.modalContent} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', color: '#3E2723' }}>Nouveau certificat</h2>
-              <button onClick={() => setShowCertModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A1887F' }}><X size={22} /></button>
+              <button onClick={() => setShowCertModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#78716C' }}><X size={22} /></button>
             </div>
             <form onSubmit={(e) => { e.preventDefault(); createCertMutation.mutate({ ...certForm, animalId: id, expiryDate: certForm.expiryDate || undefined }); }}>
               <div style={s.formGrid}>
@@ -479,7 +479,7 @@ const PatientDetailPage = () => {
           <div style={s.modalContent} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', color: '#3E2723' }}>Nouvelle consultation</h2>
-              <button onClick={() => setShowConsultModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A1887F' }}><X size={22} /></button>
+              <button onClick={() => setShowConsultModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#78716C' }}><X size={22} /></button>
             </div>
             <form onSubmit={(e) => { e.preventDefault(); createConsultMutation.mutate({ ...consultForm, animalId: id, temperature: consultForm.temperature ? parseFloat(consultForm.temperature) : undefined, heartRate: consultForm.heartRate ? parseInt(consultForm.heartRate) : undefined, weight: consultForm.weight ? parseFloat(consultForm.weight) : undefined }); }}>
               <div style={{ marginBottom: '1rem' }}>

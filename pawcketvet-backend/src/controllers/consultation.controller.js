@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isOwnerOfAnimal, ownerAnimalFilter } = require('../middleware/ownership');
 
 // Créer une consultation
 exports.create = async (req, res) => {
@@ -73,10 +74,15 @@ exports.getAll = async (req, res) => {
     const where = {
       animal: {
         clinicId: userClinicId,
+        ...(req.user.role === 'OWNER' ? { ownerId: req.user.ownerId } : {}),
       },
     };
 
     if (animalId) {
+      // Vérifier ownership si animalId fourni
+      if (!(await isOwnerOfAnimal(req, animalId))) {
+        return res.status(403).json({ error: 'Accès non autorisé' });
+      }
       where.animalId = animalId;
     }
 
@@ -121,6 +127,11 @@ exports.getById = async (req, res) => {
 
     if (!consultation) {
       return res.status(404).json({ error: 'Consultation non trouvée' });
+    }
+
+    // Vérifier ownership
+    if (req.user.role === 'OWNER' && consultation.animal?.owner?.id !== req.user.ownerId) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
     }
 
     res.json({ consultation });
