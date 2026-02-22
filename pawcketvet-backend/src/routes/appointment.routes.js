@@ -10,5 +10,6 @@ router.post('/', appointmentController.create);
 router.put('/:id', appointmentController.update);
 router.delete('/:id', appointmentController.delete);
 router.patch('/:id/status', appointmentController.updateStatus);
+router.post('/:id/complete', appointmentController.completeWithConsultation);
 
 module.exports = router;

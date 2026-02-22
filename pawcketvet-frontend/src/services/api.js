@@ -93,8 +93,11 @@ export const appointmentsAPI = {
   delete: (id) => 
     api.delete(`/appointments/${id}`),
   
-  updateStatus: (id, status) => 
+  updateStatus: (id, status) =>
     api.patch(`/appointments/${id}/status`, { status }),
+
+  completeWithConsultation: (id, data) =>
+    api.post(`/appointments/${id}/complete`, data),
 };
 
 // ============================================
