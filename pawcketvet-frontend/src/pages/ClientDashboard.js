@@ -1,12 +1,12 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
-import { animalsAPI, appointmentsAPI } from '../services/api';
+import { animalsAPI, appointmentsAPI, ownersAPI } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { DashboardSkeleton } from '../components/LoadingSkeleton';
 import {
   Calendar, FileText, MessageCircle, Bell, Heart,
-  Activity, AlertCircle, ChevronRight, Clock
+  Activity, AlertCircle, ChevronRight, Clock, AlertTriangle, Phone, PlusCircle
 } from 'lucide-react';
 
 const speciesEmoji = {
@@ -27,6 +27,16 @@ const ClientDashboard = () => {
     queryKey: ['my-appointments'],
     queryFn: () => appointmentsAPI.getAll().then(res => res.data),
   });
+
+  const { data: profileData } = useQuery({
+    queryKey: ['my-profile'],
+    queryFn: () => ownersAPI.getMyProfile().then(res => res.data),
+  });
+
+  const overdueInvoices = (profileData?.owner?.invoices || []).filter(i => i.status === 'OVERDUE');
+  const pendingTotal = (profileData?.owner?.invoices || [])
+    .filter(i => ['PENDING', 'PARTIAL', 'OVERDUE'].includes(i.status))
+    .reduce((sum, i) => sum + (i.total - (i.paidAmount || 0)), 0);
 
   const styles = {
     container: {
@@ -66,7 +76,7 @@ const ClientDashboard = () => {
       maxWidth: '1200px',
       margin: '0 auto',
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
       gap: '2rem',
     },
     card: {
@@ -228,6 +238,98 @@ const ClientDashboard = () => {
         </div>
       )}
 
+      {/* Overdue invoices alert */}
+      {overdueInvoices.length > 0 && (
+        <div style={{ maxWidth: '1200px', margin: '0 auto 2rem' }}>
+          <div
+            onClick={() => navigate('/client/payments')}
+            style={{
+              background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+              color: '#fff',
+              padding: '1.25rem 2rem',
+              borderRadius: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              cursor: 'pointer',
+              boxShadow: '0 4px 20px rgba(245, 158, 11, 0.25)',
+            }}
+          >
+            <AlertCircle size={24} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, fontSize: '1rem' }}>
+                {overdueInvoices.length} facture{overdueInvoices.length > 1 ? 's' : ''} en retard
+              </div>
+              <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                Montant total dû : {pendingTotal.toFixed(2)} € — Cliquez pour voir vos factures
+              </div>
+            </div>
+            <ChevronRight size={20} />
+          </div>
+        </div>
+      )}
+
+      {/* SOS Urgence - always visible */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto 2rem' }}>
+        <div
+          onClick={() => navigate('/client/sos')}
+          style={{
+            background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
+            color: '#fff',
+            padding: '1.25rem 2rem',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            cursor: 'pointer',
+            boxShadow: '0 4px 20px rgba(220, 38, 38, 0.25)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(220, 38, 38, 0.35)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(220, 38, 38, 0.25)'; }}
+        >
+          <div style={{
+            width: '50px', height: '50px', borderRadius: '50%',
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <AlertTriangle size={26} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: '1.15rem', marginBottom: '0.15rem' }}>
+              SOS Urgence Vétérinaire
+            </div>
+            <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+              Évaluez le niveau d'urgence ou appelez les urgences vétérinaires
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <a
+              href="tel:3115"
+              onClick={e => e.stopPropagation()}
+              style={{
+                background: '#fff',
+                color: '#dc2626',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '0.6rem 1.25rem',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <Phone size={16} /> 3115
+            </a>
+            <ChevronRight size={22} />
+          </div>
+        </div>
+      </div>
+
       {/* Prochain RDV */}
       {nextAppointment && (
         <div style={{ maxWidth: '1200px', margin: '0 auto 2rem' }}>
@@ -296,6 +398,60 @@ const ClientDashboard = () => {
           Mes compagnons
         </h2>
         
+        {animals.length === 0 && (
+          <div
+            onClick={() => navigate('/client/my-pets')}
+            style={{
+              background: 'linear-gradient(135deg, #fff 0%, #FFF8F0 100%)',
+              borderRadius: '24px',
+              padding: '3rem 2rem',
+              textAlign: 'center',
+              border: '3px dashed rgba(184, 112, 79, 0.25)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              marginBottom: '1.5rem',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = '#B8704F';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 30px rgba(184, 112, 79, 0.15)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'rgba(184, 112, 79, 0.25)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🐾</div>
+            <h3 style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: '1.5rem',
+              color: '#3E2723',
+              marginBottom: '0.75rem',
+            }}>
+              Ajoutez votre premier compagnon !
+            </h3>
+            <p style={{ color: '#78716C', fontSize: '1rem', marginBottom: '1.5rem', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
+              Commencez par enregistrer vos animaux pour accéder au carnet de santé, prendre des rendez-vous et bien plus.
+            </p>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
+              color: '#fff',
+              padding: '0.85rem 2rem',
+              borderRadius: '14px',
+              fontWeight: 600,
+              fontSize: '1rem',
+              boxShadow: '0 4px 15px rgba(184, 112, 79, 0.25)',
+            }}>
+              <PlusCircle size={20} />
+              Ajouter un animal
+            </div>
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
           {animalsData?.animals?.map((animal) => (
             <div

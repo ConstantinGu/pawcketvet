@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { messagesAPI } from '../services/api';
+import { messagesAPI, animalsAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { ListItemSkeleton } from '../components/LoadingSkeleton';
 import {
-  MessageCircle, Send, Mail, MailOpen, Clock, Plus
+  MessageCircle, Send, Mail, MailOpen, Clock, Plus, Paperclip, Info
 } from 'lucide-react';
 
 const ClientMessages = () => {
   const queryClient = useQueryClient();
   const [showCompose, setShowCompose] = useState(false);
-  const [newMessage, setNewMessage] = useState({ subject: '', content: '' });
+  const [newMessage, setNewMessage] = useState({ subject: '', content: '', animalId: '' });
 
   const { data, isLoading } = useQuery({
     queryKey: ['my-messages'],
     queryFn: () => messagesAPI.getConversations().then(res => res.data),
   });
+
+  const { data: animalsData } = useQuery({
+    queryKey: ['my-animals'],
+    queryFn: () => animalsAPI.getAll().then(res => res.data),
+  });
+
+  const animals = animalsData?.animals || [];
+
+  const speciesEmoji = {
+    DOG: '🐕', CAT: '🐈', RABBIT: '🐇', BIRD: '🐦',
+    RODENT: '🐹', REPTILE: '🦎', OTHER: '🐾',
+  };
 
   const messages = data?.messages || [];
   const unreadCount = data?.unreadCount || 0;
@@ -25,7 +37,7 @@ const ClientMessages = () => {
     onSuccess: () => {
       toast.success('Message envoyé !');
       setShowCompose(false);
-      setNewMessage({ subject: '', content: '' });
+      setNewMessage({ subject: '', content: '', animalId: '' });
       queryClient.invalidateQueries({ queryKey: ['my-messages'] });
     },
     onError: () => toast.error('Erreur lors de l\'envoi'),
@@ -41,7 +53,9 @@ const ClientMessages = () => {
       toast.error('Veuillez écrire un message');
       return;
     }
-    sendMutation.mutate(newMessage);
+    const payload = { ...newMessage };
+    if (!payload.animalId) delete payload.animalId;
+    sendMutation.mutate(payload);
   };
 
   const styles = {
@@ -158,21 +172,70 @@ const ClientMessages = () => {
       {/* Compose */}
       {showCompose && (
         <div style={styles.composeCard}>
-          <h3 style={{ marginBottom: '1rem', color: '#3E2723', fontSize: '1.2rem' }}>
+          <h3 style={{ marginBottom: '1.25rem', color: '#3E2723', fontSize: '1.2rem' }}>
             Nouveau message à la clinique
           </h3>
+
+          {/* Response time estimate */}
+          <div style={{
+            background: '#EFF6FF',
+            borderRadius: '12px',
+            padding: '0.75rem 1rem',
+            marginBottom: '1.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            fontSize: '0.85rem',
+            color: '#2563EB',
+          }}>
+            <Info size={16} />
+            <span>Temps de réponse estimé : <strong>sous 24h en jours ouvrés</strong>. Pour une urgence, utilisez le SOS Triage.</span>
+          </div>
+
+          {/* Animal selector */}
+          {animals.length > 0 && (
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#44403C', fontSize: '0.85rem' }}>
+                Animal concerné
+              </label>
+              <select
+                value={newMessage.animalId}
+                onChange={(e) => setNewMessage({ ...newMessage, animalId: e.target.value })}
+                style={{
+                  ...styles.input,
+                  appearance: 'auto',
+                  cursor: 'pointer',
+                  color: newMessage.animalId ? '#3E2723' : '#78716C',
+                }}
+              >
+                <option value="">— Sélectionnez un animal (optionnel) —</option>
+                {animals.map(a => (
+                  <option key={a.id} value={a.id}>
+                    {speciesEmoji[a.species] || '🐾'} {a.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#44403C', fontSize: '0.85rem' }}>
+              Sujet
+            </label>
             <input
               type="text"
-              placeholder="Sujet (optionnel)"
+              placeholder="Ex: Question sur un médicament, Suivi post-opératoire..."
               value={newMessage.subject}
               onChange={(e) => setNewMessage({ ...newMessage, subject: e.target.value })}
               style={styles.input}
             />
           </div>
           <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#44403C', fontSize: '0.85rem' }}>
+              Votre message
+            </label>
             <textarea
-              placeholder="Votre message..."
+              placeholder="Décrivez votre question ou votre demande..."
               value={newMessage.content}
               onChange={(e) => setNewMessage({ ...newMessage, content: e.target.value })}
               style={styles.textarea}

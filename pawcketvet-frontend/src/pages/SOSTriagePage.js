@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowLeft, ArrowRight, Phone, Calendar, Home, CheckCircle, XCircle } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ArrowRight, Phone, Calendar, Home, CheckCircle, XCircle, MapPin, Clock } from 'lucide-react';
 
 const speciesQuestions = {
   DOG: 'Chien',
@@ -382,13 +382,56 @@ const SOSTriagePage = () => {
               ))}
             </div>
 
+            {/* Emergency contacts */}
+            <div style={{
+              background: '#FEF2F2',
+              borderRadius: '16px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              border: '1px solid #FECACA',
+            }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#dc2626', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Phone size={18} /> Numéros d'urgence vétérinaire
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <a href="tel:3115" style={{
+                  display: 'flex', alignItems: 'center', gap: '0.75rem',
+                  padding: '0.75rem 1rem', background: '#fff', borderRadius: '12px',
+                  textDecoration: 'none', color: '#3E2723', fontWeight: 600,
+                  border: '1px solid #E7E5E4',
+                }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Phone size={16} color="#fff" />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '1rem', fontWeight: 700 }}>3115</div>
+                    <div style={{ fontSize: '0.8rem', color: '#78716C' }}>Urgences vétérinaires 24h/24</div>
+                  </div>
+                </a>
+                <a href="tel:0140471700" style={{
+                  display: 'flex', alignItems: 'center', gap: '0.75rem',
+                  padding: '0.75rem 1rem', background: '#fff', borderRadius: '12px',
+                  textDecoration: 'none', color: '#3E2723', fontWeight: 600,
+                  border: '1px solid #E7E5E4',
+                }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <MapPin size={16} color="#fff" />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>Centre antipoison animal</div>
+                    <div style={{ fontSize: '0.8rem', color: '#78716C' }}>01 40 47 17 00 — Capae-Ouest</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               {result.level === 'URGENCE' ? (
                 <a
-                  href="tel:+33000000000"
+                  href="tel:3115"
                   style={{ ...styles.button, background: '#dc2626', textDecoration: 'none' }}
                 >
-                  <Phone size={18} /> Appeler les urgences
+                  <Phone size={18} /> Appeler le 3115
                 </a>
               ) : (
                 <button

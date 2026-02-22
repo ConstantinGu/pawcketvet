@@ -10,7 +10,7 @@ const LoginPage = () => {
   const [mode, setMode] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({ email: '', password: '' });
@@ -55,7 +55,7 @@ const LoginPage = () => {
     }
     setLoading(true);
     try {
-      await authAPI.register({
+      const result = await register({
         firstName: registerData.firstName,
         lastName: registerData.lastName,
         email: registerData.email,
@@ -63,9 +63,12 @@ const LoginPage = () => {
         password: registerData.password,
         role: 'OWNER',
       });
-      toast.success('Compte créé ! Vous pouvez vous connecter.');
-      setMode('login');
-      setLoginData({ email: registerData.email, password: '' });
+      if (result.success) {
+        toast.success('Bienvenue sur PawcketVet ! Ajoutez vos compagnons pour commencer.');
+        navigate('/client/my-pets?onboarding=true');
+      } else {
+        toast.error(result.error || 'Erreur lors de l\'inscription');
+      }
     } catch (err) {
       toast.error(err.response?.data?.error || 'Erreur lors de l\'inscription');
     }
@@ -98,18 +101,21 @@ const LoginPage = () => {
     { icon: Shield, title: 'Données sécurisées', desc: 'Protection RGPD de toutes vos données' },
   ];
 
+  const isMobileView = typeof window !== 'undefined' && window.innerWidth <= 768;
+
   return (
     <div lang="fr" style={{
       minHeight: '100vh',
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
+      display: isMobileView ? 'flex' : 'grid',
+      flexDirection: isMobileView ? 'column' : undefined,
+      gridTemplateColumns: isMobileView ? undefined : '1fr 1fr',
       fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
     }}>
       {/* Left - Branding Panel */}
       <div aria-hidden="true" style={{
         background: 'linear-gradient(135deg, #B8704F 0%, #8B4F33 100%)',
-        padding: '3rem',
-        display: 'flex',
+        padding: isMobileView ? '2rem 1.5rem' : '3rem',
+        display: isMobileView ? 'none' : 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         position: 'relative',
@@ -276,6 +282,13 @@ const LoginPage = () => {
                 </div>
               </div>
 
+              <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+                <button type="button" onClick={() => toast('Contactez la clinique pour réinitialiser votre mot de passe.', { icon: 'ℹ️' })}
+                  style={{ background: 'none', border: 'none', color: '#B8704F', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', textDecoration: 'underline' }}>
+                  Mot de passe oublié ?
+                </button>
+              </div>
+
               <button type="submit" disabled={loading} aria-busy={loading} style={{
                 width: '100%',
                 background: loading ? '#D4956C' : 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
@@ -343,7 +356,7 @@ const LoginPage = () => {
                       placeholder="6 car. min." required minLength={6} autoComplete="new-password"
                       aria-required="true" aria-describedby="password-hint" style={inputStyle} />
                   </div>
-                  <div id="password-hint" style={{ fontSize: '0.72rem', color: '#78716C', marginTop: '0.25rem' }}>
+                  <div id="password-hint" style={{ fontSize: '0.8rem', color: '#78716C', marginTop: '0.25rem' }}>
                     Minimum 6 caractères
                   </div>
                 </div>

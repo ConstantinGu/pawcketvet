@@ -284,18 +284,20 @@ const ClientAppointments = () => {
                       color: '#2563EB',
                       border: 'none',
                       borderRadius: '10px',
-                      padding: '0.5rem 0.75rem',
-                      fontSize: '0.8rem',
+                      padding: '0.65rem 1rem',
+                      fontSize: '0.85rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.3rem',
+                      gap: '0.4rem',
                       transition: 'all 0.2s',
+                      minHeight: '44px',
+                      minWidth: '44px',
                     }}
                     aria-label={`Reprogrammer le rendez-vous de ${appointment.animal?.name || 'votre animal'}`}
                   >
-                    <RefreshCw size={14} />
+                    <RefreshCw size={16} />
                     Reprogrammer
                   </button>
                   <button
@@ -308,18 +310,20 @@ const ClientAppointments = () => {
                       color: '#DC2626',
                       border: 'none',
                       borderRadius: '10px',
-                      padding: '0.5rem 0.75rem',
-                      fontSize: '0.8rem',
+                      padding: '0.65rem 1rem',
+                      fontSize: '0.85rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.3rem',
+                      gap: '0.4rem',
                       transition: 'all 0.2s',
+                      minHeight: '44px',
+                      minWidth: '44px',
                     }}
                     aria-label={`Annuler le rendez-vous de ${appointment.animal?.name || 'votre animal'}`}
                   >
-                    <XCircle size={14} />
+                    <XCircle size={16} />
                     Annuler
                   </button>
                 </div>

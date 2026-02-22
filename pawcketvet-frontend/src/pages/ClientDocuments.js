@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ownersAPI } from '../services/api';
 import { ListItemSkeleton } from '../components/LoadingSkeleton';
+import toast from 'react-hot-toast';
 import {
   FileText, Download, Search, Shield, Stethoscope, Receipt, Filter
 } from 'lucide-react';
@@ -249,8 +250,26 @@ const ClientDocuments = () => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Future: download functionality
+                  toast.success(`Téléchargement de "${doc.title}"...`);
+                  const lines = [
+                    doc.title.toUpperCase(),
+                    '='.repeat(40),
+                    doc.animal ? `Animal : ${doc.animal}` : '',
+                    `Date : ${new Date(doc.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`,
+                    doc.vet ? `Vétérinaire : ${doc.vet}` : '',
+                    doc.description ? `\nDescription : ${doc.description}` : '',
+                    doc.amount !== undefined ? `\nMontant : ${doc.amount.toFixed(2)} €` : '',
+                    '\n---\nPawcketVet - Document généré automatiquement',
+                  ].filter(Boolean).join('\n');
+                  const blob = new Blob([lines], { type: 'text/plain' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `${doc.type}-${doc.id}.txt`;
+                  a.click();
+                  URL.revokeObjectURL(url);
                 }}
+                title="Télécharger le document"
                 style={{
                   background: 'rgba(184, 112, 79, 0.08)',
                   border: 'none',
