@@ -92,7 +92,7 @@ const AnalyticsPage = () => {
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>
           Statistiques
         </h1>
-        <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+        <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
           Vue d'ensemble de l'activite de votre clinique
         </p>
       </div>
@@ -109,7 +109,7 @@ const AnalyticsPage = () => {
               gap: '0.5rem',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: '#A1887F', fontSize: '0.85rem', fontWeight: 600 }}>{card.label}</span>
+                <span style={{ color: '#78716C', fontSize: '0.85rem', fontWeight: 600 }}>{card.label}</span>
                 <div style={{
                   width: '36px', height: '36px', borderRadius: '10px',
                   background: `${card.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -128,7 +128,7 @@ const AnalyticsPage = () => {
         })}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
         {/* Revenue Chart */}
         <div style={styles.section}>
           <h3 style={styles.sectionTitle}>
@@ -151,7 +151,7 @@ const AnalyticsPage = () => {
                       borderRadius: '6px 6px 2px 2px',
                       transition: 'height 0.3s ease',
                     }} />
-                    <span style={{ fontSize: '0.7rem', color: '#A1887F', fontWeight: 500 }}>
+                    <span style={{ fontSize: '0.7rem', color: '#78716C', fontWeight: 500 }}>
                       {monthNames[monthIndex] || ''}
                     </span>
                   </div>
@@ -159,7 +159,7 @@ const AnalyticsPage = () => {
               })}
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>
               Pas encore de donnees de revenus
             </div>
           )}
@@ -182,7 +182,7 @@ const AnalyticsPage = () => {
                       <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#3E2723' }}>
                         {typeLabels[item.type] || item.type}
                       </span>
-                      <span style={{ fontSize: '0.85rem', color: '#A1887F' }}>{count}</span>
+                      <span style={{ fontSize: '0.85rem', color: '#78716C' }}>{count}</span>
                     </div>
                     <div style={{ background: '#F5E6D3', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
                       <div style={{
@@ -198,14 +198,14 @@ const AnalyticsPage = () => {
               })}
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F', fontSize: '0.9rem' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#78716C', fontSize: '0.9rem' }}>
               Pas encore de donnees
             </div>
           )}
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
         {/* Today's Schedule */}
         <div style={styles.section}>
           <h3 style={styles.sectionTitle}>
@@ -234,7 +234,7 @@ const AnalyticsPage = () => {
                     <span style={{ fontWeight: 600, color: '#3E2723', fontSize: '0.9rem' }}>
                       {apt.animal?.name || 'Patient'}
                     </span>
-                    <span style={{ color: '#A1887F', fontSize: '0.8rem', marginLeft: '0.5rem' }}>
+                    <span style={{ color: '#78716C', fontSize: '0.8rem', marginLeft: '0.5rem' }}>
                       {apt.type || 'Consultation'}
                     </span>
                   </div>
@@ -252,7 +252,7 @@ const AnalyticsPage = () => {
               ))}
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F', fontSize: '0.9rem' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#78716C', fontSize: '0.9rem' }}>
               Aucun rendez-vous aujourd'hui
             </div>
           )}
@@ -281,7 +281,7 @@ const AnalyticsPage = () => {
                     <p style={{ fontSize: '0.9rem', color: '#3E2723', margin: 0, fontWeight: 500 }}>
                       {act.description || act.title || act.message || 'Activite'}
                     </p>
-                    <p style={{ fontSize: '0.75rem', color: '#A1887F', margin: 0, marginTop: '0.15rem' }}>
+                    <p style={{ fontSize: '0.75rem', color: '#78716C', margin: 0, marginTop: '0.15rem' }}>
                       {act.createdAt ? new Date(act.createdAt).toLocaleDateString('fr-FR', {
                         day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
                       }) : ''}
@@ -291,7 +291,7 @@ const AnalyticsPage = () => {
               ))}
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F', fontSize: '0.9rem' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#78716C', fontSize: '0.9rem' }}>
               Pas d'activite recente
             </div>
           )}

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ownersAPI } from '../services/api';
+import { ListItemSkeleton } from '../components/LoadingSkeleton';
+import toast from 'react-hot-toast';
 import {
   FileText, Download, Search, Shield, Stethoscope, Receipt, Filter
 } from 'lucide-react';
@@ -26,7 +28,7 @@ const ClientDocuments = () => {
       documents.push({
         id: cert.id,
         type: 'certificate',
-        title: `Certificat ${cert.type === 'HEALTH' ? 'de sante' : cert.type === 'VACCINATION' ? 'vaccinal' : cert.type === 'TRAVEL' ? 'de voyage' : cert.type.toLowerCase()}`,
+        title: `Certificat ${cert.type === 'HEALTH' ? 'de santé' : cert.type === 'VACCINATION' ? 'de vaccination' : cert.type === 'TRAVEL' ? 'de voyage' : cert.type.toLowerCase()}`,
         animal: animal.name,
         date: cert.issueDate,
         icon: Shield,
@@ -91,7 +93,7 @@ const ClientDocuments = () => {
       WebkitTextFillColor: 'transparent',
       fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.1rem', marginBottom: '2rem' },
+    subtitle: { color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' },
     searchBar: {
       display: 'flex',
       gap: '1rem',
@@ -144,14 +146,7 @@ const ClientDocuments = () => {
     },
   };
 
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📄</div>
-        <div style={{ color: '#B8704F', fontSize: '1.1rem' }}>Chargement des documents...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <ListItemSkeleton count={4} />;
 
   return (
     <div>
@@ -163,7 +158,7 @@ const ClientDocuments = () => {
       {/* Search & Filter */}
       <div style={styles.searchBar}>
         <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
-          <Search size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A1887F' }} />
+          <Search size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
           <input
             type="text"
             placeholder="Rechercher un document..."
@@ -173,7 +168,7 @@ const ClientDocuments = () => {
           />
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <Filter size={16} color="#A1887F" />
+          <Filter size={16} color="#78716C" />
           {[
             { key: 'all', label: 'Tous' },
             { key: 'certificate', label: 'Certificats' },
@@ -202,8 +197,8 @@ const ClientDocuments = () => {
         }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
           <h3 style={{ color: '#3E2723', marginBottom: '0.5rem' }}>Aucun document</h3>
-          <p style={{ color: '#A1887F' }}>
-            {searchTerm ? 'Aucun resultat pour cette recherche' : 'Vos documents apparaitront ici'}
+          <p style={{ color: '#78716C' }}>
+            {searchTerm ? 'Aucun résultat pour cette recherche' : 'Vos documents apparaîtront ici'}
           </p>
         </div>
       ) : (
@@ -239,11 +234,11 @@ const ClientDocuments = () => {
                 <div style={{ fontWeight: 600, color: '#3E2723', fontSize: '0.95rem', marginBottom: '0.2rem' }}>
                   {doc.title}
                 </div>
-                <div style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                <div style={{ color: '#78716C', fontSize: '0.85rem' }}>
                   {doc.animal && `${doc.animal} | `}
                   {new Date(doc.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   {doc.vet && ` | ${doc.vet}`}
-                  {doc.amount !== undefined && ` | ${doc.amount.toFixed(2)} EUR`}
+                  {doc.amount !== undefined && ` | ${doc.amount.toFixed(2)} \u20AC`}
                 </div>
                 {doc.description && (
                   <div style={{ color: '#6D4C41', fontSize: '0.85rem', marginTop: '0.2rem' }}>
@@ -255,8 +250,26 @@ const ClientDocuments = () => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Future: download functionality
+                  toast.success(`Téléchargement de "${doc.title}"...`);
+                  const lines = [
+                    doc.title.toUpperCase(),
+                    '='.repeat(40),
+                    doc.animal ? `Animal : ${doc.animal}` : '',
+                    `Date : ${new Date(doc.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`,
+                    doc.vet ? `Vétérinaire : ${doc.vet}` : '',
+                    doc.description ? `\nDescription : ${doc.description}` : '',
+                    doc.amount !== undefined ? `\nMontant : ${doc.amount.toFixed(2)} €` : '',
+                    '\n---\nPawcketVet - Document généré automatiquement',
+                  ].filter(Boolean).join('\n');
+                  const blob = new Blob([lines], { type: 'text/plain' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `${doc.type}-${doc.id}.txt`;
+                  a.click();
+                  URL.revokeObjectURL(url);
                 }}
+                title="Télécharger le document"
                 style={{
                   background: 'rgba(184, 112, 79, 0.08)',
                   border: 'none',

@@ -4,6 +4,11 @@ const prisma = new PrismaClient();
 // Récupérer tous les propriétaires
 exports.getAll = async (req, res) => {
   try {
+    // Les OWNER ne peuvent pas lister tous les propriétaires
+    if (req.user.role === 'OWNER') {
+      return res.status(403).json({ error: 'Accès non autorisé' });
+    }
+
     const { search } = req.query;
 
     const where = {};
@@ -58,6 +63,11 @@ exports.getById = async (req, res) => {
 
     if (!owner) {
       return res.status(404).json({ error: 'Propriétaire non trouvé' });
+    }
+
+    // Les OWNER ne peuvent voir que leur propre profil
+    if (req.user.role === 'OWNER' && id !== req.user.ownerId) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
     }
 
     res.json({ owner });
@@ -124,6 +134,12 @@ exports.getMyProfile = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Les OWNER ne peuvent modifier que leur propre profil
+    if (req.user.role === 'OWNER' && id !== req.user.ownerId) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
+    }
+
     const { firstName, lastName, phone, address, city, postalCode } = req.body;
 
     const owner = await prisma.owner.update({

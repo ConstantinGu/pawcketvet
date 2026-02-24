@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isOwnerOfAnimal, isOwnerOfAppointment, ownerAnimalFilter } = require('../middleware/ownership');
 
 // Récupérer tous les rendez-vous
 exports.getAll = async (req, res) => {
@@ -9,6 +10,7 @@ exports.getAll = async (req, res) => {
 
     const where = {
       clinicId: userClinicId,
+      ...ownerAnimalFilter(req),
     };
 
     if (date) {
@@ -68,6 +70,11 @@ exports.create = async (req, res) => {
       return res.status(400).json({ error: 'Animal, date et type requis' });
     }
 
+    // Vérifier que l'animal appartient au propriétaire connecté
+    if (!(await isOwnerOfAnimal(req, animalId))) {
+      return res.status(403).json({ error: 'Accès non autorisé à cet animal' });
+    }
+
     const appointment = await prisma.appointment.create({
       data: {
         animalId,
@@ -105,6 +112,11 @@ exports.update = async (req, res) => {
     const { id } = req.params;
     const { date, duration, type, reason, notes, status, isUrgent } = req.body;
 
+    // Vérifier ownership
+    if (!(await isOwnerOfAppointment(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à ce rendez-vous' });
+    }
+
     const appointment = await prisma.appointment.update({
       where: { id },
       data: {
@@ -139,6 +151,11 @@ exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Vérifier ownership
+    if (!(await isOwnerOfAppointment(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à ce rendez-vous' });
+    }
+
     await prisma.appointment.update({
       where: { id },
       data: { status: 'CANCELLED' },
@@ -157,6 +174,14 @@ exports.updateStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
+    // Vérifier ownership (OWNER ne peut qu'annuler)
+    if (req.user.role === 'OWNER' && status !== 'CANCELLED') {
+      return res.status(403).json({ error: 'Vous ne pouvez qu\'annuler un rendez-vous' });
+    }
+    if (!(await isOwnerOfAppointment(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à ce rendez-vous' });
+    }
+
     const appointment = await prisma.appointment.update({
       where: { id },
       data: { status },
@@ -167,12 +192,145 @@ exports.updateStatus = async (req, res) => {
       },
     });
 
-    res.json({ 
+    res.json({
       message: 'Statut mis à jour avec succès',
-      appointment 
+      appointment
     });
   } catch (error) {
     console.error('Erreur mise à jour statut:', error);
     res.status(500).json({ error: 'Erreur lors de la mise à jour du statut' });
+  }
+};
+
+// ============================================
+// SMART COMPLETE — Tout-en-un pour le carnet de santé
+// Crée consultation + vaccinations + poids + statut COMPLETED en un seul appel
+// ============================================
+exports.completeWithConsultation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const {
+      // Consultation data
+      symptoms,
+      temperature,
+      weight,
+      heartRate,
+      diagnosis,
+      treatment,
+      notes,
+      nextAppointment,
+      // Vaccinations array
+      vaccinations,
+    } = req.body;
+
+    // Vérifier que le RDV existe et récupérer l'animal
+    const appointment = await prisma.appointment.findUnique({
+      where: { id },
+      include: {
+        animal: { include: { owner: true } },
+        veterinarian: { select: { id: true, firstName: true, lastName: true } },
+        consultation: true,
+      },
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ error: 'Rendez-vous non trouvé' });
+    }
+
+    if (appointment.consultation) {
+      return res.status(400).json({ error: 'Ce rendez-vous a déjà une consultation enregistrée' });
+    }
+
+    if (appointment.status === 'CANCELLED') {
+      return res.status(400).json({ error: 'Impossible de compléter un rendez-vous annulé' });
+    }
+
+    const animalId = appointment.animalId;
+    const vetName = `Dr. ${appointment.veterinarian.lastName}`;
+
+    // Transaction atomique — tout réussit ou tout échoue
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Créer la consultation
+      const consultation = await tx.consultation.create({
+        data: {
+          appointmentId: id,
+          animalId,
+          veterinarianId: userId,
+          reason: appointment.reason || appointment.type,
+          symptoms: symptoms || null,
+          temperature: temperature ? parseFloat(temperature) : null,
+          weight: weight ? parseFloat(weight) : null,
+          heartRate: heartRate ? parseInt(heartRate) : null,
+          diagnosis: diagnosis || null,
+          treatment: treatment || null,
+          notes: notes || null,
+          nextAppointmentDate: nextAppointment ? new Date(nextAppointment) : null,
+          date: new Date(),
+        },
+      });
+
+      // 2. Mettre à jour le poids de l'animal + historique
+      if (weight) {
+        const parsedWeight = parseFloat(weight);
+        await tx.animal.update({
+          where: { id: animalId },
+          data: { weight: parsedWeight },
+        });
+        await tx.weightHistory.create({
+          data: {
+            animalId,
+            weight: parsedWeight,
+            notes: `Consultation du ${new Date().toLocaleDateString('fr-FR')}`,
+          },
+        });
+      }
+
+      // 3. Créer les vaccinations
+      const createdVaccinations = [];
+      if (vaccinations && Array.isArray(vaccinations) && vaccinations.length > 0) {
+        for (const vacc of vaccinations) {
+          if (!vacc.name) continue;
+          const vaccination = await tx.vaccination.create({
+            data: {
+              animalId,
+              name: vacc.name,
+              date: new Date(),
+              nextDueDate: vacc.nextDueDate ? new Date(vacc.nextDueDate) : null,
+              batchNumber: vacc.batchNumber || null,
+              veterinarian: vetName,
+              notes: vacc.notes || null,
+            },
+          });
+          createdVaccinations.push(vaccination);
+        }
+      }
+
+      // 4. Marquer le RDV comme terminé
+      const updatedAppointment = await tx.appointment.update({
+        where: { id },
+        data: { status: 'COMPLETED' },
+        include: {
+          animal: { include: { owner: true } },
+          veterinarian: { select: { id: true, firstName: true, lastName: true } },
+          consultation: true,
+        },
+      });
+
+      return {
+        appointment: updatedAppointment,
+        consultation,
+        vaccinations: createdVaccinations,
+        weightUpdated: !!weight,
+      };
+    });
+
+    res.json({
+      message: 'Consultation enregistrée et carnet de santé mis à jour',
+      ...result,
+    });
+  } catch (error) {
+    console.error('Erreur completion smart:', error);
+    res.status(500).json({ error: 'Erreur lors de l\'enregistrement de la consultation' });
   }
 };

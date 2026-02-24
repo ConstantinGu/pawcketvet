@@ -254,7 +254,7 @@ const PatientsPage = () => {
     <>
       <div style={styles.header}>
         <h1 style={styles.title}>Patients</h1>
-        <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+        <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
           Gérez les dossiers de vos patients
         </p>
       </div>
@@ -269,7 +269,7 @@ const PatientsPage = () => {
               left: '1rem', 
               top: '50%', 
               transform: 'translateY(-50%)', 
-              color: '#A1887F' 
+              color: '#78716C' 
             }} 
           />
           <input
@@ -293,7 +293,7 @@ const PatientsPage = () => {
       {isLoading ? (
         <CardGridSkeleton count={6} />
       ) : animalsData?.animals?.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>
           Aucun patient trouvé. Créez-en un !
         </div>
       ) : (
@@ -316,7 +316,7 @@ const PatientsPage = () => {
                   <h3 style={{ fontSize: '1.3rem', marginBottom: '0.25rem', color: '#3E2723' }}>
                     {animal.name}
                   </h3>
-                  <p style={{ color: '#A1887F', fontSize: '0.9rem' }}>
+                  <p style={{ color: '#78716C', fontSize: '0.9rem' }}>
                     {{ DOG: 'Chien', CAT: 'Chat', RABBIT: 'Lapin', BIRD: 'Oiseau', RODENT: 'Rongeur', REPTILE: 'Reptile' }[animal.species] || 'Autre'} • {animal.breed || 'Race non spécifiée'}
                   </p>
                 </div>
@@ -405,7 +405,7 @@ const PatientsPage = () => {
                   background: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
-                  color: '#A1887F',
+                  color: '#78716C',
                 }}
               >
                 <X size={24} />

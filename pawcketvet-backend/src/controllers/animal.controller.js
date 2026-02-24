@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isOwnerOfAnimal, ownerFilter } = require('../middleware/ownership');
 
 // Récupérer tous les animaux
 exports.getAll = async (req, res) => {
@@ -11,6 +12,7 @@ exports.getAll = async (req, res) => {
     const where = {
       clinicId: clinicId || userClinicId,
       isActive: true,
+      ...ownerFilter(req),
     };
 
     if (search) {
@@ -77,6 +79,11 @@ exports.getById = async (req, res) => {
 
     if (!animal) {
       return res.status(404).json({ error: 'Animal non trouvé' });
+    }
+
+    // Vérifier ownership
+    if (req.user.role === 'OWNER' && animal.ownerId !== req.user.ownerId) {
+      return res.status(403).json({ error: 'Accès non autorisé à cet animal' });
     }
 
     res.json({ animal });
@@ -188,6 +195,12 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Vérifier ownership
+    if (!(await isOwnerOfAnimal(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à cet animal' });
+    }
+
     const {
       name,
       species,
@@ -237,6 +250,11 @@ exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Vérifier ownership
+    if (!(await isOwnerOfAnimal(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à cet animal' });
+    }
+
     await prisma.animal.update({
       where: { id },
       data: { isActive: false },
@@ -254,6 +272,11 @@ exports.addWeight = async (req, res) => {
   try {
     const { id } = req.params;
     const { weight, notes } = req.body;
+
+    // Vérifier ownership
+    if (!(await isOwnerOfAnimal(req, id))) {
+      return res.status(403).json({ error: 'Accès non autorisé à cet animal' });
+    }
 
     const weightEntry = await prisma.weightHistory.create({
       data: {

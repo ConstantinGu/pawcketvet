@@ -2,10 +2,11 @@ import axios from 'axios';
 
 // Configuration de base axios
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30 second timeout
 });
 
 // Intercepteur pour ajouter le token à chaque requête
@@ -92,8 +93,11 @@ export const appointmentsAPI = {
   delete: (id) => 
     api.delete(`/appointments/${id}`),
   
-  updateStatus: (id, status) => 
+  updateStatus: (id, status) =>
     api.patch(`/appointments/${id}/status`, { status }),
+
+  completeWithConsultation: (id, data) =>
+    api.post(`/appointments/${id}/complete`, data),
 };
 
 // ============================================

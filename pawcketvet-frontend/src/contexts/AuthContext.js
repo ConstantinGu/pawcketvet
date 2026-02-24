@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
@@ -42,56 +42,56 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       const response = await authAPI.login(email, password);
-      const { token, user } = response.data;
+      const { token: newToken, user: newUser } = response.data;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      setToken(token);
-      setUser(user);
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(newUser));
 
-      return { success: true, user };
+      setToken(newToken);
+      setUser(newUser);
+
+      return { success: true, user: newUser };
     } catch (error) {
       console.error('Erreur de connexion:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Erreur de connexion' 
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Erreur de connexion'
       };
     }
-  };
+  }, []);
 
-  const register = async (data) => {
+  const register = useCallback(async (data) => {
     try {
       const response = await authAPI.register(data);
-      const { token, user } = response.data;
+      const { token: newToken, user: newUser } = response.data;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      setToken(token);
-      setUser(user);
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(newUser));
 
-      return { success: true, user };
+      setToken(newToken);
+      setUser(newUser);
+
+      return { success: true, user: newUser };
     } catch (error) {
       console.error('Erreur d\'inscription:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Erreur d\'inscription' 
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Erreur d\'inscription'
       };
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setToken(null);
     setUser(null);
-  };
+  }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     token,
     loading,
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-  };
+  }), [user, token, loading, login, register, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

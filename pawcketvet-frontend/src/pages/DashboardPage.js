@@ -53,7 +53,7 @@ const DashboardPage = () => {
     { label: 'CA du mois', value: `${(stats.monthRevenue || 0).toFixed(0)} EUR`, icon: TrendingUp, color: '#059669' },
     { label: 'RDV ce mois', value: stats.monthAppointments || 0, icon: Calendar, color: '#7c3aed' },
     { label: 'Factures en attente', value: stats.pendingInvoices || 0, icon: CreditCard, color: '#f59e0b' },
-    { label: 'Vaccins a venir', value: stats.upcomingVaccinations || 0, icon: Syringe, color: '#0ea5e9' },
+    { label: 'Vaccins à venir', value: stats.upcomingVaccinations || 0, icon: Syringe, color: '#0ea5e9' },
   ];
 
   const typeEmoji = {
@@ -90,7 +90,7 @@ const DashboardPage = () => {
         }}>
           Bonjour, {user?.firstName} !
         </h1>
-        <p style={{ color: '#A1887F', fontSize: '1rem' }}>
+        <p style={{ color: '#78716C', fontSize: '1rem' }}>
           {new Date().toLocaleDateString('fr-FR', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
           })}
@@ -122,7 +122,7 @@ const DashboardPage = () => {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={{ color: '#A1887F', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
+                  <div style={{ color: '#78716C', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
                     {stat.label}
                   </div>
                   <div style={{ fontSize: '2rem', fontWeight: 700, color: stat.color }}>
@@ -169,7 +169,7 @@ const DashboardPage = () => {
               </div>
               <div>
                 <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#3E2723' }}>{stat.value}</div>
-                <div style={{ fontSize: '0.75rem', color: '#A1887F' }}>{stat.label}</div>
+                <div style={{ fontSize: '0.75rem', color: '#78716C' }}>{stat.label}</div>
               </div>
             </div>
           );
@@ -179,7 +179,7 @@ const DashboardPage = () => {
       {/* Main content grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
         gap: '1.5rem',
       }}>
         {/* Today's appointments */}
@@ -205,12 +205,12 @@ const DashboardPage = () => {
           </div>
 
           {todayAppointments.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#78716C' }}>
               <Calendar size={32} style={{ marginBottom: '0.5rem', opacity: 0.4 }} />
               <p style={{ fontSize: '0.9rem' }}>Aucun RDV aujourd'hui</p>
             </div>
           ) : (
-            todayAppointments.slice(0, 5).map(appt => (
+            todayAppointments.map(appt => (
               <div key={appt.id} style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: '0.65rem 0',
@@ -223,7 +223,7 @@ const DashboardPage = () => {
                   <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#3E2723' }}>
                     {appt.animal?.name} - {appt.type}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
                     {new Date(appt.date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                     {appt.veterinarian && ` | Dr. ${appt.veterinarian.lastName}`}
                   </div>
@@ -248,9 +248,9 @@ const DashboardPage = () => {
           </h2>
 
           {months.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#78716C' }}>
               <TrendingUp size={32} style={{ marginBottom: '0.5rem', opacity: 0.4 }} />
-              <p style={{ fontSize: '0.9rem' }}>Pas de donnees</p>
+              <p style={{ fontSize: '0.9rem' }}>Pas de données</p>
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.5rem', height: '160px', paddingTop: '1rem' }}>
@@ -268,7 +268,7 @@ const DashboardPage = () => {
                     borderRadius: '6px 6px 0 0',
                     transition: 'height 0.5s ease',
                   }} />
-                  <div style={{ fontSize: '0.65rem', color: '#A1887F' }}>{m.month}</div>
+                  <div style={{ fontSize: '0.65rem', color: '#78716C' }}>{m.month}</div>
                 </div>
               ))}
             </div>
@@ -282,16 +282,16 @@ const DashboardPage = () => {
             marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem',
           }}>
             <Activity size={20} color="#7c3aed" />
-            Activite recente
+            Activité récente
           </h2>
 
           {activity.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem', color: '#A1887F' }}>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#78716C' }}>
               <Activity size={32} style={{ marginBottom: '0.5rem', opacity: 0.4 }} />
-              <p style={{ fontSize: '0.9rem' }}>Aucune activite recente</p>
+              <p style={{ fontSize: '0.9rem' }}>Aucune activité récente</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.5rem' }}>
               {activity.slice(0, 10).map((item, i) => {
                 const iconMap = { appointment: Calendar, consultation: FileText, invoice: CreditCard };
                 const colorMap = { appointment: '#B8704F', consultation: '#2563eb', invoice: '#059669' };
@@ -321,7 +321,7 @@ const DashboardPage = () => {
                       }}>
                         {item.description}
                       </div>
-                      <div style={{ fontSize: '0.7rem', color: '#A1887F' }}>
+                      <div style={{ fontSize: '0.7rem', color: '#78716C' }}>
                         {new Date(item.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>

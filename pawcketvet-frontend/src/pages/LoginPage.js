@@ -4,12 +4,13 @@ import { useAuth } from '../contexts/AuthContext';
 import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight, UserPlus, Heart, Shield, Calendar, BookOpen } from 'lucide-react';
+import PawcketVetLogo from '../components/PawcketVetLogo';
 
 const LoginPage = () => {
   const [mode, setMode] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({ email: '', password: '' });
@@ -27,7 +28,7 @@ const LoginPage = () => {
     try {
       const result = await login(loginData.email, loginData.password);
       if (result.success) {
-        toast.success('Connexion reussie');
+        toast.success('Connexion réussie');
         if (result.user?.role === 'OWNER') {
           navigate('/client/dashboard');
         } else {
@@ -49,12 +50,12 @@ const LoginPage = () => {
       return;
     }
     if (registerData.password.length < 6) {
-      toast.error('Le mot de passe doit contenir au moins 6 caracteres');
+      toast.error('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
     setLoading(true);
     try {
-      await authAPI.register({
+      const result = await register({
         firstName: registerData.firstName,
         lastName: registerData.lastName,
         email: registerData.email,
@@ -62,9 +63,12 @@ const LoginPage = () => {
         password: registerData.password,
         role: 'OWNER',
       });
-      toast.success('Compte cree ! Vous pouvez vous connecter.');
-      setMode('login');
-      setLoginData({ email: registerData.email, password: '' });
+      if (result.success) {
+        toast.success('Bienvenue sur PawcketVet ! Ajoutez vos compagnons pour commencer.');
+        navigate('/client/my-pets?onboarding=true');
+      } else {
+        toast.error(result.error || 'Erreur lors de l\'inscription');
+      }
     } catch (err) {
       toast.error(err.response?.data?.error || 'Erreur lors de l\'inscription');
     }
@@ -91,24 +95,27 @@ const LoginPage = () => {
   };
 
   const features = [
-    { icon: Heart, title: 'Suivi medical complet', desc: 'Carnet de sante numerique pour chaque animal' },
-    { icon: Calendar, title: 'Rendez-vous en ligne', desc: 'Reservez 24h/24 en quelques clics' },
-    { icon: BookOpen, title: 'Carnet de sante', desc: 'Historique medical, vaccinations, traitements' },
-    { icon: Shield, title: 'Donnees securisees', desc: 'Protection RGPD de toutes vos donnees' },
+    { icon: Heart, title: 'Suivi médical complet', desc: 'Carnet de santé numérique pour chaque animal' },
+    { icon: Calendar, title: 'Rendez-vous en ligne', desc: 'Réservez 24h/24 en quelques clics' },
+    { icon: BookOpen, title: 'Carnet de santé', desc: 'Historique médical, vaccinations, traitements' },
+    { icon: Shield, title: 'Données sécurisées', desc: 'Protection RGPD de toutes vos données' },
   ];
 
+  const isMobileView = typeof window !== 'undefined' && window.innerWidth <= 768;
+
   return (
-    <div style={{
+    <div lang="fr" style={{
       minHeight: '100vh',
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
+      display: isMobileView ? 'flex' : 'grid',
+      flexDirection: isMobileView ? 'column' : undefined,
+      gridTemplateColumns: isMobileView ? undefined : '1fr 1fr',
       fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
     }}>
       {/* Left - Branding Panel */}
-      <div style={{
+      <div aria-hidden="true" style={{
         background: 'linear-gradient(135deg, #B8704F 0%, #8B4F33 100%)',
-        padding: '3rem',
-        display: 'flex',
+        padding: isMobileView ? '2rem 1.5rem' : '3rem',
+        display: isMobileView ? 'none' : 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         position: 'relative',
@@ -133,14 +140,7 @@ const LoginPage = () => {
             display: 'flex', alignItems: 'center', gap: '0.75rem',
             marginBottom: '3rem',
           }}>
-            <div style={{
-              width: '44px', height: '44px', borderRadius: '12px',
-              background: 'rgba(255,255,255,0.15)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '1.5rem',
-            }}>
-              🐾
-            </div>
+            <PawcketVetLogo size={36} />
             <span style={{
               fontFamily: "'Fraunces', serif",
               fontSize: '1.5rem',
@@ -160,7 +160,7 @@ const LoginPage = () => {
             marginBottom: '1.25rem',
             letterSpacing: '-0.03em',
           }}>
-            La sante de vos compagnons, simplifiee.
+            La santé de vos compagnons, simplifiée.
           </h1>
 
           <p style={{
@@ -169,8 +169,8 @@ const LoginPage = () => {
             lineHeight: 1.7,
             marginBottom: '3rem',
           }}>
-            Plateforme veterinaire nouvelle generation. Gerez les dossiers medicaux,
-            les rendez-vous et le carnet de sante de chaque animal en un seul endroit.
+            Plateforme vétérinaire nouvelle génération. Gérez les dossiers médicaux,
+            les rendez-vous et le carnet de santé de chaque animal en un seul endroit.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
@@ -206,7 +206,7 @@ const LoginPage = () => {
       </div>
 
       {/* Right - Form Panel */}
-      <div style={{
+      <main style={{
         background: '#fff',
         display: 'flex',
         alignItems: 'center',
@@ -222,24 +222,24 @@ const LoginPage = () => {
               color: '#3E2723',
               marginBottom: '0.5rem',
             }}>
-              {mode === 'login' ? 'Bienvenue' : 'Creer un compte'}
+              {mode === 'login' ? 'Bienvenue' : 'Créer un compte'}
             </h2>
-            <p style={{ color: '#78716C', fontSize: '0.92rem' }}>
-              {mode === 'login' ? 'Connectez-vous a votre espace' : 'Inscrivez-vous en tant que proprietaire'}
+            <p style={{ color: '#57534E', fontSize: '0.92rem' }}>
+              {mode === 'login' ? 'Connectez-vous à votre espace' : 'Inscrivez-vous en tant que propriétaire d\'animal'}
             </p>
           </div>
 
           {/* Tab toggle */}
-          <div style={{
+          <div role="tablist" aria-label="Type de formulaire" style={{
             display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px',
             background: '#F5F5F4', borderRadius: '10px', padding: '3px', marginBottom: '2rem',
           }}>
             {['login', 'register'].map(m => (
-              <button key={m} onClick={() => setMode(m)} style={{
+              <button key={m} role="tab" aria-selected={mode === m} onClick={() => setMode(m)} style={{
                 background: mode === m ? '#fff' : 'transparent',
                 border: 'none', borderRadius: '8px', padding: '0.6rem', cursor: 'pointer',
                 fontWeight: 600, fontSize: '0.85rem',
-                color: mode === m ? '#3E2723' : '#A8A29E',
+                color: mode === m ? '#3E2723' : '#78716C',
                 boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
                 transition: 'all 0.2s',
               }}>
@@ -250,36 +250,46 @@ const LoginPage = () => {
 
           {/* Login Form */}
           {mode === 'login' && (
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} role="tabpanel" aria-label="Formulaire de connexion">
               <div style={{ marginBottom: '1.25rem' }}>
-                <label style={labelStyle}>Adresse email</label>
+                <label htmlFor="login-email" style={labelStyle}>Adresse email</label>
                 <div style={{ position: 'relative' }}>
-                  <Mail size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type="email" value={loginData.email}
+                  <Mail size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="login-email" type="email" value={loginData.email}
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     placeholder="votre@email.com" required autoComplete="email"
+                    aria-required="true"
                     style={inputStyle}
                   />
                 </div>
               </div>
 
               <div style={{ marginBottom: '1.75rem' }}>
-                <label style={labelStyle}>Mot de passe</label>
+                <label htmlFor="login-password" style={labelStyle}>Mot de passe</label>
                 <div style={{ position: 'relative' }}>
-                  <Lock size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type={showPassword ? 'text' : 'password'} value={loginData.password}
+                  <Lock size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="login-password" type={showPassword ? 'text' : 'password'} value={loginData.password}
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                     placeholder="Votre mot de passe" required autoComplete="current-password"
+                    aria-required="true"
                     style={inputStyle}
                   />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
-                    style={{ position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#A8A29E', padding: 0 }}>
-                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                    aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                    style={{ position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#78716C', padding: '0.5rem', margin: '-0.5rem' }}>
+                    {showPassword ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
                   </button>
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} style={{
+              <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+                <button type="button" onClick={() => toast('Contactez la clinique pour réinitialiser votre mot de passe.', { icon: 'ℹ️' })}
+                  style={{ background: 'none', border: 'none', color: '#B8704F', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', textDecoration: 'underline' }}>
+                  Mot de passe oublié ?
+                </button>
+              </div>
+
+              <button type="submit" disabled={loading} aria-busy={loading} style={{
                 width: '100%',
                 background: loading ? '#D4956C' : 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
                 color: '#fff', border: 'none', borderRadius: '12px', padding: '0.9rem',
@@ -287,77 +297,82 @@ const LoginPage = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)', transition: 'all 0.2s',
               }}>
-                {loading ? 'Connexion en cours...' : <>Se connecter <ArrowRight size={17} /></>}
+                {loading ? 'Connexion en cours...' : <>Se connecter <ArrowRight size={17} aria-hidden="true" /></>}
               </button>
             </form>
           )}
 
           {/* Register Form */}
           {mode === 'register' && (
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleRegister} role="tabpanel" aria-label="Formulaire d'inscription">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={labelStyle}>Prenom</label>
+                  <label htmlFor="register-firstName" style={labelStyle}>Prénom</label>
                   <div style={{ position: 'relative' }}>
-                    <User size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="text" value={registerData.firstName}
+                    <User size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-firstName" type="text" value={registerData.firstName}
                       onChange={(e) => setRegisterData({ ...registerData, firstName: e.target.value })}
-                      placeholder="Jean" required style={inputStyle} />
+                      placeholder="Jean" required autoComplete="given-name" aria-required="true" style={inputStyle} />
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Nom</label>
+                  <label htmlFor="register-lastName" style={labelStyle}>Nom</label>
                   <div style={{ position: 'relative' }}>
-                    <User size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="text" value={registerData.lastName}
+                    <User size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-lastName" type="text" value={registerData.lastName}
                       onChange={(e) => setRegisterData({ ...registerData, lastName: e.target.value })}
-                      placeholder="Dupont" required style={inputStyle} />
+                      placeholder="Dupont" required autoComplete="family-name" aria-required="true" style={inputStyle} />
                   </div>
                 </div>
               </div>
 
               <div style={{ marginBottom: '1rem' }}>
-                <label style={labelStyle}>Email</label>
+                <label htmlFor="register-email" style={labelStyle}>Email</label>
                 <div style={{ position: 'relative' }}>
-                  <Mail size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type="email" value={registerData.email}
+                  <Mail size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="register-email" type="email" value={registerData.email}
                     onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                    placeholder="votre@email.com" required autoComplete="email" style={inputStyle} />
+                    placeholder="votre@email.com" required autoComplete="email" aria-required="true" style={inputStyle} />
                 </div>
               </div>
 
               <div style={{ marginBottom: '1rem' }}>
-                <label style={labelStyle}>Telephone</label>
+                <label htmlFor="register-phone" style={labelStyle}>Téléphone</label>
                 <div style={{ position: 'relative' }}>
-                  <Phone size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                  <input type="tel" value={registerData.phone}
+                  <Phone size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                  <input id="register-phone" type="tel" value={registerData.phone}
                     onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
-                    placeholder="06 12 34 56 78" required style={inputStyle} />
+                    placeholder="06 12 34 56 78" required autoComplete="tel" aria-required="true" style={inputStyle} />
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.75rem' }}>
                 <div>
-                  <label style={labelStyle}>Mot de passe</label>
+                  <label htmlFor="register-password" style={labelStyle}>Mot de passe</label>
                   <div style={{ position: 'relative' }}>
-                    <Lock size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="password" value={registerData.password}
+                    <Lock size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-password" type="password" value={registerData.password}
                       onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                      placeholder="6 car. min." required minLength={6} style={inputStyle} />
+                      placeholder="6 car. min." required minLength={6} autoComplete="new-password"
+                      aria-required="true" aria-describedby="password-hint" style={inputStyle} />
+                  </div>
+                  <div id="password-hint" style={{ fontSize: '0.8rem', color: '#78716C', marginTop: '0.25rem' }}>
+                    Minimum 6 caractères
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Confirmer</label>
+                  <label htmlFor="register-confirm" style={labelStyle}>Confirmer le mot de passe</label>
                   <div style={{ position: 'relative' }}>
-                    <Lock size={17} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#A8A29E' }} />
-                    <input type="password" value={registerData.confirmPassword}
+                    <Lock size={17} aria-hidden="true" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
+                    <input id="register-confirm" type="password" value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
-                      placeholder="Confirmer" required minLength={6} style={inputStyle} />
+                      placeholder="Confirmer" required minLength={6} autoComplete="new-password"
+                      aria-required="true" style={inputStyle} />
                   </div>
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} style={{
+              <button type="submit" disabled={loading} aria-busy={loading} style={{
                 width: '100%',
                 background: loading ? '#D4956C' : 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
                 color: '#fff', border: 'none', borderRadius: '12px', padding: '0.9rem',
@@ -365,16 +380,16 @@ const LoginPage = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                 boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)', transition: 'all 0.2s',
               }}>
-                {loading ? 'Inscription en cours...' : <>Creer mon compte <UserPlus size={17} /></>}
+                {loading ? 'Inscription en cours...' : <>Créer mon compte <UserPlus size={17} aria-hidden="true" /></>}
               </button>
             </form>
           )}
 
-          <p style={{ textAlign: 'center', color: '#A8A29E', fontSize: '0.78rem', marginTop: '2rem' }}>
-            PawcketVet &copy; 2026 - Plateforme de gestion veterinaire
+          <p style={{ textAlign: 'center', color: '#78716C', fontSize: '0.78rem', marginTop: '2rem' }}>
+            PawcketVet &copy; 2026 - Plateforme de gestion vétérinaire
           </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

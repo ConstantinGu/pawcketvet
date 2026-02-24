@@ -162,7 +162,7 @@ const MessagesPage = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <div>
           <h1 style={styles.title}>Messagerie</h1>
-          <p style={{ color: '#A1887F', fontSize: '0.95rem' }}>
+          <p style={{ color: '#78716C', fontSize: '0.95rem' }}>
             {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -193,7 +193,7 @@ const MessagesPage = () => {
         <div style={styles.sidebar}>
           <div style={{ padding: '1rem', borderBottom: '1px solid rgba(184, 112, 79, 0.1)' }}>
             <div style={{ position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#A1887F' }} />
+              <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
               <input
                 type="text"
                 placeholder="Rechercher..."
@@ -213,7 +213,7 @@ const MessagesPage = () => {
           </div>
           <div style={{ flex: 1, overflowY: 'auto' }}>
             {filteredConversations.length === 0 ? (
-              <div style={{ padding: '2rem', textAlign: 'center', color: '#A1887F', fontSize: '0.9rem' }}>
+              <div style={{ padding: '2rem', textAlign: 'center', color: '#78716C', fontSize: '0.9rem' }}>
                 Aucune conversation
               </div>
             ) : (
@@ -253,7 +253,7 @@ const MessagesPage = () => {
                       )}
                     </div>
                     <div style={{
-                      fontSize: '0.8rem', color: '#A1887F', marginTop: '0.15rem',
+                      fontSize: '0.8rem', color: '#78716C', marginTop: '0.15rem',
                       whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     }}>
                       {conv.lastMessage?.content?.substring(0, 50) || 'Pas de message'}
@@ -357,7 +357,7 @@ const MessagesPage = () => {
                   <div style={{ fontWeight: 600, color: '#3E2723', fontSize: '0.95rem' }}>
                     {selectedConversation.owner?.firstName} {selectedConversation.owner?.lastName}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#A1887F' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
                     {selectedConversation.owner?.email}
                   </div>
                 </div>
@@ -436,7 +436,7 @@ const MessagesPage = () => {
             /* No conversation selected */
             <div style={{
               flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexDirection: 'column', color: '#A1887F',
+              flexDirection: 'column', color: '#78716C',
             }}>
               <MessageCircle size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
               <p style={{ fontSize: '1.1rem' }}>Selectionnez une conversation</p>

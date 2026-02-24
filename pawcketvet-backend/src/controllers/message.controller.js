@@ -56,6 +56,11 @@ exports.getById = async (req, res) => {
       return res.status(404).json({ error: 'Message non trouvé' });
     }
 
+    // Les OWNER ne peuvent voir que leurs propres messages
+    if (req.user.role === 'OWNER' && message.ownerId !== req.user.ownerId) {
+      return res.status(403).json({ error: 'Accès non autorisé' });
+    }
+
     res.json({ message });
   } catch (error) {
     console.error('Erreur récupération message:', error);
@@ -120,6 +125,14 @@ exports.send = async (req, res) => {
 exports.markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Vérifier ownership avant de modifier
+    if (req.user.role === 'OWNER') {
+      const existing = await prisma.message.findUnique({ where: { id }, select: { ownerId: true } });
+      if (!existing || existing.ownerId !== req.user.ownerId) {
+        return res.status(403).json({ error: 'Accès non autorisé' });
+      }
+    }
 
     const message = await prisma.message.update({
       where: { id },

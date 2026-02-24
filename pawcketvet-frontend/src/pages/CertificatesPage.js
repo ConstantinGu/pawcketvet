@@ -69,13 +69,13 @@ const CertificatesPage = () => {
     <>
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>Certificats</h1>
-        <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>Gérez les certificats vétérinaires</p>
+        <p style={{ color: '#78716C', fontSize: '1.05rem' }}>Gérez les certificats vétérinaires</p>
       </div>
 
       {/* Toolbar */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
-          <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#A1887F' }} />
+          <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#78716C' }} />
           <input type="text" placeholder="Rechercher..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={{ ...styles.input, paddingLeft: '3rem' }} />
         </div>
         <select value={filterType} onChange={e => setFilterType(e.target.value)} style={{ ...styles.input, width: 'auto', minWidth: '150px' }}>
@@ -104,7 +104,7 @@ const CertificatesPage = () => {
       {isLoading ? (
         <ListItemSkeleton count={4} />
       ) : filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#A1887F' }}>Aucun certificat trouvé</div>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#78716C' }}>Aucun certificat trouvé</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {filtered.map(cert => {
@@ -120,10 +120,10 @@ const CertificatesPage = () => {
                       <span style={{ fontWeight: 600, color: '#3E2723', fontSize: '1.05rem' }}>Certificat {certTypeLabel[cert.type]}</span>
                       {expired && <span style={{ background: '#FFEBEE', color: '#E53935', borderRadius: '6px', padding: '0.1rem 0.5rem', fontSize: '0.75rem', fontWeight: 600 }}>EXPIRÉ</span>}
                     </div>
-                    <p style={{ color: '#A1887F', fontSize: '0.9rem' }}>
+                    <p style={{ color: '#78716C', fontSize: '0.9rem' }}>
                       {cert.animal?.name} - {cert.animal?.owner?.firstName} {cert.animal?.owner?.lastName}
                     </p>
-                    <p style={{ color: '#A1887F', fontSize: '0.85rem' }}>
+                    <p style={{ color: '#78716C', fontSize: '0.85rem' }}>
                       Émis le {new Date(cert.issueDate).toLocaleDateString('fr-FR')}
                       {cert.veterinarian && ` par Dr. ${cert.veterinarian.lastName}`}
                       {cert.expiryDate && ` | Expire le ${new Date(cert.expiryDate).toLocaleDateString('fr-FR')}`}
@@ -145,7 +145,7 @@ const CertificatesPage = () => {
           <div style={{ background: '#fff', borderRadius: '24px', padding: '2.5rem', maxWidth: '600px', width: '90%', maxHeight: '90vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
               <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.8rem', color: '#3E2723' }}>Nouveau certificat</h2>
-              <button onClick={() => setShowModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#A1887F' }}><X size={24} /></button>
+              <button onClick={() => setShowModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#78716C' }}><X size={24} /></button>
             </div>
             <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: '1.5rem' }}>

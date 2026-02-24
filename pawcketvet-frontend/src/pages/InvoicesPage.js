@@ -97,7 +97,7 @@ const InvoicesPage = () => {
       OVERDUE: '#dc2626',
       CANCELLED: '#64748b',
     };
-    return colors[status] || '#A1887F';
+    return colors[status] || '#78716C';
   };
 
   const getStatusLabel = (status) => {
@@ -118,7 +118,7 @@ const InvoicesPage = () => {
           <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem', color: '#3E2723', fontWeight: 700 }}>
             Facturation
           </h1>
-          <p style={{ color: '#A1887F', fontSize: '1.05rem' }}>
+          <p style={{ color: '#78716C', fontSize: '1.05rem' }}>
             Gérez vos factures et paiements
           </p>
         </div>

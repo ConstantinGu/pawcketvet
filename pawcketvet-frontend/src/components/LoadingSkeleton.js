@@ -1,4 +1,5 @@
 import React from 'react';
+import PawcketVetLogo from './PawcketVetLogo';
 
 // Shimmer animation is defined in index.css (@keyframes shimmer)
 
@@ -179,18 +180,18 @@ export const DashboardSkeleton = () => (
 );
 
 // Page-level loading wrapper
-export const PageLoading = ({ icon = '🐾', message = 'Chargement...' }) => (
+export const PageLoading = ({ message = 'Chargement...' }) => (
   <div style={{
     textAlign: 'center',
     padding: '4rem 2rem',
     animation: 'fadeIn 0.3s ease',
   }}>
     <div style={{
-      fontSize: '3rem',
       marginBottom: '1rem',
       animation: 'scaleIn 0.5s ease',
+      display: 'flex', justifyContent: 'center',
     }}>
-      {icon}
+      <PawcketVetLogo size={56} />
     </div>
     <div style={{
       color: '#B8704F',

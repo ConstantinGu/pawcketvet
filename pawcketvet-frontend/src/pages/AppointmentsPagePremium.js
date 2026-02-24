@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { appointmentsAPI, animalsAPI, consultationsAPI } from '../services/api';
+import { appointmentsAPI, animalsAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { AppointmentSkeleton } from '../components/LoadingSkeleton';
 import {
   Calendar, Clock, Plus, X, Save, CheckCircle,
   PlayCircle, FileText, Stethoscope, Pill, AlertCircle,
-  XCircle, ChevronLeft, ChevronRight, Ban
+  XCircle, ChevronLeft, ChevronRight, Ban, Syringe,
+  Weight, Heart, Thermometer, TrendingUp, TrendingDown,
+  Minus, Shield, Trash2, AlertTriangle
 } from 'lucide-react';
 
 const speciesEmoji = {
@@ -27,6 +29,48 @@ const statusConfig = {
   NOSHOW: { label: 'Absent', color: '#9333ea', bg: '#f3e8ff' },
 };
 
+// ========================================
+// SUGGESTIONS VACCINS PAR ESPÈCE
+// ========================================
+const VACCINE_SUGGESTIONS = {
+  DOG: [
+    { name: 'CHPPiL (Pentavalent)', intervalMonths: 12, description: 'Carré, Hépatite, Parvo, Parainfluenza, Lepto' },
+    { name: 'Rage', intervalMonths: 12, description: 'Obligatoire pour voyager' },
+    { name: 'Leptospirose', intervalMonths: 12, description: 'Rappel annuel recommandé' },
+    { name: 'Toux du chenil (Bordetella)', intervalMonths: 12, description: 'Recommandé si collectivité' },
+    { name: 'Piroplasmose', intervalMonths: 6, description: 'Zones à risque tiques' },
+    { name: 'Leishmaniose', intervalMonths: 12, description: 'Zones méditerranéennes' },
+  ],
+  CAT: [
+    { name: 'Typhus (Panleucopénie)', intervalMonths: 12, description: 'Vaccin de base' },
+    { name: 'Coryza (RCP)', intervalMonths: 12, description: 'Herpesvirus + Calicivirus + Panleucopénie' },
+    { name: 'Leucose féline (FeLV)', intervalMonths: 12, description: 'Chat d\'extérieur' },
+    { name: 'Rage', intervalMonths: 12, description: 'Obligatoire pour voyager' },
+    { name: 'Chlamydiose', intervalMonths: 12, description: 'Si collectivité' },
+  ],
+  RABBIT: [
+    { name: 'Myxomatose', intervalMonths: 6, description: 'Rappel tous les 6 mois' },
+    { name: 'VHD (Maladie hémorragique)', intervalMonths: 12, description: 'VHD1 et VHD2' },
+    { name: 'Myxo-VHD combiné', intervalMonths: 12, description: 'Vaccin combiné' },
+  ],
+  BIRD: [
+    { name: 'Paramyxovirose', intervalMonths: 12, description: 'PMV - Newcastle' },
+  ],
+  RODENT: [],
+  REPTILE: [],
+  OTHER: [],
+};
+
+// Normes de température par espèce
+const TEMP_NORMS = {
+  DOG: { min: 38.0, max: 39.0, label: '38.0–39.0°C' },
+  CAT: { min: 38.0, max: 39.2, label: '38.0–39.2°C' },
+  RABBIT: { min: 38.5, max: 40.0, label: '38.5–40.0°C' },
+  BIRD: { min: 40.0, max: 42.0, label: '40.0–42.0°C' },
+  RODENT: { min: 37.5, max: 39.5, label: '37.5–39.5°C' },
+  REPTILE: { min: 25.0, max: 35.0, label: '25.0–35.0°C (variable)' },
+};
+
 const AppointmentsPagePremium = () => {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
@@ -34,10 +78,13 @@ const AppointmentsPagePremium = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [consultationStep, setConsultationStep] = useState(1);
+  const [isSaving, setIsSaving] = useState(false);
   const [consultationData, setConsultationData] = useState({
     symptoms: '', temperature: '', weight: '', heartRate: '',
     diagnosis: '', treatment: '', notes: '', nextAppointment: '',
   });
+  // Vaccinations ajoutées pendant la consultation
+  const [consultationVaccinations, setConsultationVaccinations] = useState([]);
 
   const [formData, setFormData] = useState({
     animalId: '', date: '', time: '09:00', duration: 30,
@@ -111,26 +158,84 @@ const AppointmentsPagePremium = () => {
   const startConsultation = (appointment) => {
     setSelectedAppointment(appointment);
     setConsultationData({
-      symptoms: '', temperature: '', weight: appointment.animal.weight || '',
-      heartRate: '', diagnosis: '', treatment: '', notes: '', nextAppointment: '',
+      symptoms: '', temperature: '',
+      weight: appointment.animal?.weight || '',
+      heartRate: '', diagnosis: '', treatment: '', notes: '',
+      nextAppointment: '',
     });
+    setConsultationVaccinations([]);
     setConsultationStep(1);
+    setIsSaving(false);
     setShowConsultationModal(true);
   };
 
+  // Ajouter un vaccin au formulaire
+  const addVaccination = (suggestion = null) => {
+    const today = new Date();
+    let nextDue = '';
+    if (suggestion?.intervalMonths) {
+      const d = new Date(today);
+      d.setMonth(d.getMonth() + suggestion.intervalMonths);
+      nextDue = d.toISOString().split('T')[0];
+    }
+    setConsultationVaccinations(prev => [...prev, {
+      id: Date.now(),
+      name: suggestion?.name || '',
+      batchNumber: '',
+      nextDueDate: nextDue,
+      notes: '',
+    }]);
+  };
+
+  const updateVaccination = (id, field, value) => {
+    setConsultationVaccinations(prev =>
+      prev.map(v => v.id === id ? { ...v, [field]: value } : v)
+    );
+  };
+
+  const removeVaccination = (id) => {
+    setConsultationVaccinations(prev => prev.filter(v => v.id !== id));
+  };
+
+  // Poids précédent et delta
+  const previousWeight = selectedAppointment?.animal?.weight;
+  const currentWeight = consultationData.weight ? parseFloat(consultationData.weight) : null;
+  const weightDelta = (previousWeight && currentWeight) ? (currentWeight - previousWeight).toFixed(1) : null;
+
+  // Température dans les normes ?
+  const species = selectedAppointment?.animal?.species;
+  const tempNorm = species ? TEMP_NORMS[species] : null;
+  const currentTemp = consultationData.temperature ? parseFloat(consultationData.temperature) : null;
+  const tempOutOfRange = tempNorm && currentTemp && (currentTemp < tempNorm.min || currentTemp > tempNorm.max);
+
+  // Suggestions de vaccins pour cette espèce
+  const vaccineSuggestions = useMemo(() => {
+    if (!species) return [];
+    return VACCINE_SUGGESTIONS[species] || [];
+  }, [species]);
+
+  // SMART SAVE — un seul appel backend
   const saveConsultation = async () => {
+    setIsSaving(true);
     try {
-      await consultationsAPI.create({
-        appointmentId: selectedAppointment.id,
-        animalId: selectedAppointment.animal.id,
+      await appointmentsAPI.completeWithConsultation(selectedAppointment.id, {
         ...consultationData,
+        vaccinations: consultationVaccinations.filter(v => v.name.trim()),
       });
-      await appointmentsAPI.updateStatus(selectedAppointment.id, 'COMPLETED');
       queryClient.invalidateQueries(['appointments']);
-      toast.success('Consultation enregistrée !');
+      queryClient.invalidateQueries(['my-animals']);
+      queryClient.invalidateQueries(['vacc-book']);
+      queryClient.invalidateQueries(['consult-book']);
+      toast.success(
+        consultationVaccinations.length > 0
+          ? `Consultation + ${consultationVaccinations.length} vaccin(s) enregistrés ! Carnet de santé mis à jour.`
+          : 'Consultation enregistrée ! Carnet de santé mis à jour.'
+      );
       setShowConsultationModal(false);
     } catch (error) {
-      toast.error('Erreur lors de l\'enregistrement');
+      toast.error(error.response?.data?.error || 'Erreur lors de l\'enregistrement');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -156,7 +261,7 @@ const AppointmentsPagePremium = () => {
       fontFamily: "'Fraunces', serif", fontSize: '2.5rem', marginBottom: '0.5rem',
       color: '#3E2723', fontWeight: 700,
     },
-    subtitle: { color: '#A1887F', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '0.5rem' },
+    subtitle: { color: '#78716C', fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '0.5rem' },
     dateSelector: {
       display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '2rem',
       padding: '1.25rem 1.5rem', background: '#fff', borderRadius: '18px',
@@ -302,7 +407,7 @@ const AppointmentsPagePremium = () => {
           <h3 style={{ color: '#3E2723', fontSize: '1.3rem', marginBottom: '0.5rem' }}>
             Aucun rendez-vous
           </h3>
-          <p style={{ color: '#A1887F', marginBottom: '1.5rem' }}>
+          <p style={{ color: '#78716C', marginBottom: '1.5rem' }}>
             Pas de rendez-vous prévu pour le {new Date(selectedDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
           <button onClick={openModal} style={{ ...styles.button, margin: '0 auto' }}>
@@ -465,7 +570,7 @@ const AppointmentsPagePremium = () => {
                 Nouveau rendez-vous
               </h2>
               <button onClick={closeModal} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
-                <X size={24} color="#A1887F" />
+                <X size={24} color="#78716C" />
               </button>
             </div>
 
@@ -586,7 +691,7 @@ const AppointmentsPagePremium = () => {
                       onChange={(e) => setFormData({ ...formData, isUrgent: e.target.checked })}
                       style={{ width: '18px', height: '18px', accentColor: '#dc2626' }}
                     />
-                    <AlertCircle size={18} color={formData.isUrgent ? '#dc2626' : '#A1887F'} />
+                    <AlertCircle size={18} color={formData.isUrgent ? '#dc2626' : '#78716C'} />
                     <span style={{ fontWeight: 600, color: formData.isUrgent ? '#dc2626' : '#3E2723' }}>
                       Rendez-vous urgent
                     </span>
@@ -615,74 +720,145 @@ const AppointmentsPagePremium = () => {
         </div>
       )}
 
-      {/* ====== CONSULTATION MODAL ====== */}
-      {showConsultationModal && (
-        <div style={styles.modal} onClick={() => setShowConsultationModal(false)}>
+      {/* ====== SMART CONSULTATION MODAL ====== */}
+      {showConsultationModal && selectedAppointment && (
+        <div style={styles.modal} onClick={() => !isSaving && setShowConsultationModal(false)}>
           <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
+            {/* Header avec infos animal */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
               <div>
                 <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.8rem', marginBottom: '0.25rem', color: '#3E2723' }}>
                   Consultation en cours
                 </h2>
-                <p style={{ color: '#A1887F', fontSize: '1rem' }}>
+                <p style={{ color: '#78716C', fontSize: '1rem' }}>
                   {speciesEmoji[selectedAppointment?.animal?.species] || '🐾'} {selectedAppointment?.animal?.name} — {selectedAppointment?.animal?.owner?.firstName} {selectedAppointment?.animal?.owner?.lastName}
+                  {selectedAppointment?.reason && <span style={{ color: '#B8704F' }}> — {selectedAppointment.reason}</span>}
                 </p>
               </div>
-              <button onClick={() => setShowConsultationModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
-                <X size={24} color="#A1887F" />
+              <button onClick={() => !isSaving && setShowConsultationModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
+                <X size={24} color="#78716C" />
               </button>
             </div>
+
+            {/* Alertes santé — allergies, conditions chroniques */}
+            {(selectedAppointment?.animal?.allergies || selectedAppointment?.animal?.chronicConditions) && (
+              <div style={{
+                background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '12px',
+                padding: '0.85rem 1rem', marginBottom: '1.25rem',
+                display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
+              }}>
+                <AlertTriangle size={18} color="#DC2626" style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+                <div style={{ fontSize: '0.88rem' }}>
+                  {selectedAppointment.animal.allergies && (
+                    <div style={{ color: '#991B1B', marginBottom: '0.2rem' }}>
+                      <strong>ALLERGIES :</strong> {selectedAppointment.animal.allergies}
+                    </div>
+                  )}
+                  {selectedAppointment.animal.chronicConditions && (
+                    <div style={{ color: '#92400E' }}>
+                      <strong>CONDITIONS :</strong> {selectedAppointment.animal.chronicConditions}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Step indicator */}
             <div style={styles.stepIndicator}>
               {[
-                { n: 1, label: 'Examen' },
-                { n: 2, label: 'Diagnostic' },
-                { n: 3, label: 'Traitement' },
-                { n: 4, label: 'Finaliser' },
-              ].map(({ n, label }) => (
-                <div key={n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem' }}>
+                { n: 1, icon: Stethoscope, label: 'Examen' },
+                { n: 2, icon: FileText, label: 'Diagnostic' },
+                { n: 3, icon: Syringe, label: 'Vaccins' },
+                { n: 4, icon: CheckCircle, label: 'Finaliser' },
+              ].map(({ n, icon: Icon, label }) => (
+                <div key={n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}
+                  onClick={() => setConsultationStep(n)}
+                >
                   <div style={{
                     ...styles.step,
                     background: consultationStep >= n
                       ? 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)'
                       : '#F5E6D3',
-                    color: consultationStep >= n ? '#fff' : '#A1887F',
+                    color: consultationStep >= n ? '#fff' : '#78716C',
                   }}>
-                    {n}
+                    <Icon size={18} />
                   </div>
-                  <span style={{ fontSize: '0.7rem', color: consultationStep >= n ? '#B8704F' : '#A1887F', fontWeight: 600 }}>{label}</span>
+                  <span style={{ fontSize: '0.7rem', color: consultationStep >= n ? '#B8704F' : '#78716C', fontWeight: 600 }}>{label}</span>
                 </div>
               ))}
             </div>
 
-            {/* Step 1: Examen physique */}
+            {/* ===== Step 1: Examen physique — enrichi ===== */}
             {consultationStep === 1 && (
               <div style={styles.sectionCard}>
                 <h3 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#3E2723' }}>
                   <Stethoscope size={22} color="#B8704F" />
                   Examen physique
                 </h3>
+
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.25rem' }}>
+                  {/* Température avec norme */}
                   <div>
-                    <label style={styles.labelStyle}>Température (°C)</label>
+                    <label style={styles.labelStyle}>
+                      <Thermometer size={14} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} />
+                      Température (°C)
+                    </label>
                     <input type="number" step="0.1" value={consultationData.temperature}
                       onChange={(e) => setConsultationData({ ...consultationData, temperature: e.target.value })}
-                      placeholder="38.5" style={styles.inputStyle} />
+                      placeholder={tempNorm ? tempNorm.label : '38.5'}
+                      style={{
+                        ...styles.inputStyle,
+                        borderColor: tempOutOfRange ? '#DC2626' : undefined,
+                        background: tempOutOfRange ? '#FEF2F2' : undefined,
+                      }} />
+                    {tempNorm && (
+                      <div style={{ fontSize: '0.72rem', color: tempOutOfRange ? '#DC2626' : '#78716C', marginTop: '0.25rem', fontWeight: tempOutOfRange ? 600 : 400 }}>
+                        {tempOutOfRange ? `Hors norme ! (${tempNorm.label})` : `Norme : ${tempNorm.label}`}
+                      </div>
+                    )}
                   </div>
+
+                  {/* Poids avec delta */}
                   <div>
-                    <label style={styles.labelStyle}>Poids (kg)</label>
+                    <label style={styles.labelStyle}>
+                      <Weight size={14} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} />
+                      Poids (kg)
+                    </label>
                     <input type="number" step="0.1" value={consultationData.weight}
                       onChange={(e) => setConsultationData({ ...consultationData, weight: e.target.value })}
-                      placeholder="25.5" style={styles.inputStyle} />
+                      placeholder={previousWeight ? `Dernier : ${previousWeight} kg` : ''}
+                      style={styles.inputStyle} />
+                    {weightDelta !== null && parseFloat(weightDelta) !== 0 && (
+                      <div style={{
+                        fontSize: '0.78rem', marginTop: '0.25rem', fontWeight: 600,
+                        display: 'flex', alignItems: 'center', gap: '0.25rem',
+                        color: parseFloat(weightDelta) > 0 ? '#059669' : '#DC2626',
+                      }}>
+                        {parseFloat(weightDelta) > 0
+                          ? <><TrendingUp size={13} /> +{weightDelta} kg depuis la dernière visite</>
+                          : <><TrendingDown size={13} /> {weightDelta} kg depuis la dernière visite</>
+                        }
+                      </div>
+                    )}
+                    {weightDelta !== null && parseFloat(weightDelta) === 0 && (
+                      <div style={{ fontSize: '0.72rem', color: '#78716C', marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <Minus size={13} /> Poids stable
+                      </div>
+                    )}
                   </div>
+
+                  {/* Fréquence cardiaque */}
                   <div>
-                    <label style={styles.labelStyle}>Fréq. cardiaque (bpm)</label>
+                    <label style={styles.labelStyle}>
+                      <Heart size={14} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} />
+                      Fréq. cardiaque (bpm)
+                    </label>
                     <input type="number" value={consultationData.heartRate}
                       onChange={(e) => setConsultationData({ ...consultationData, heartRate: e.target.value })}
                       placeholder="80" style={styles.inputStyle} />
                   </div>
                 </div>
+
                 <div style={{ marginTop: '1.25rem' }}>
                   <label style={styles.labelStyle}>Symptômes observés</label>
                   <textarea value={consultationData.symptoms}
@@ -690,6 +866,7 @@ const AppointmentsPagePremium = () => {
                     placeholder="Décrire les symptômes observés lors de l'examen..."
                     rows={4} style={{ ...styles.inputStyle, resize: 'vertical' }} />
                 </div>
+
                 <button onClick={() => setConsultationStep(2)} style={{
                   ...styles.button, width: '100%', justifyContent: 'center', marginTop: '1.5rem',
                 }}>
@@ -698,19 +875,29 @@ const AppointmentsPagePremium = () => {
               </div>
             )}
 
-            {/* Step 2: Diagnostic */}
+            {/* ===== Step 2: Diagnostic + Traitement (combinés) ===== */}
             {consultationStep === 2 && (
               <div style={styles.sectionCard}>
                 <h3 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#3E2723' }}>
                   <FileText size={22} color="#B8704F" />
-                  Diagnostic
+                  Diagnostic & Traitement
                 </h3>
-                <div>
-                  <label style={styles.labelStyle}>Diagnostic principal</label>
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={styles.labelStyle}>Diagnostic</label>
                   <textarea value={consultationData.diagnosis}
                     onChange={(e) => setConsultationData({ ...consultationData, diagnosis: e.target.value })}
                     placeholder="Diagnostic détaillé..."
-                    rows={5} style={{ ...styles.inputStyle, resize: 'vertical' }} />
+                    rows={4} style={{ ...styles.inputStyle, resize: 'vertical' }} />
+                </div>
+                <div>
+                  <label style={styles.labelStyle}>
+                    <Pill size={14} style={{ verticalAlign: 'middle', marginRight: '0.3rem' }} />
+                    Plan de traitement
+                  </label>
+                  <textarea value={consultationData.treatment}
+                    onChange={(e) => setConsultationData({ ...consultationData, treatment: e.target.value })}
+                    placeholder="Décrire le traitement recommandé, posologie..."
+                    rows={4} style={{ ...styles.inputStyle, resize: 'vertical' }} />
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                   <button onClick={() => setConsultationStep(1)} style={{
@@ -719,25 +906,134 @@ const AppointmentsPagePremium = () => {
                   }}>Retour</button>
                   <button onClick={() => setConsultationStep(3)} style={{
                     ...styles.button, flex: 1, justifyContent: 'center',
-                  }}>Suivant : Traitement</button>
+                  }}>Suivant : Vaccins</button>
                 </div>
               </div>
             )}
 
-            {/* Step 3: Traitement */}
+            {/* ===== Step 3: VACCINATIONS — Nouveau ! ===== */}
             {consultationStep === 3 && (
               <div style={styles.sectionCard}>
-                <h3 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#3E2723' }}>
-                  <Pill size={22} color="#B8704F" />
-                  Traitement & Prescriptions
+                <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#3E2723' }}>
+                  <Syringe size={22} color="#B8704F" />
+                  Vaccinations
                 </h3>
-                <div>
-                  <label style={styles.labelStyle}>Plan de traitement</label>
-                  <textarea value={consultationData.treatment}
-                    onChange={(e) => setConsultationData({ ...consultationData, treatment: e.target.value })}
-                    placeholder="Décrire le traitement recommandé..."
-                    rows={4} style={{ ...styles.inputStyle, resize: 'vertical' }} />
-                </div>
+                <p style={{ color: '#78716C', fontSize: '0.88rem', marginBottom: '1.25rem' }}>
+                  Ajoutez les vaccins administrés pendant cette consultation. Ils seront automatiquement inscrits dans le carnet de santé.
+                </p>
+
+                {/* Suggestions rapides par espèce */}
+                {vaccineSuggestions.length > 0 && (
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    <label style={{ ...styles.labelStyle, fontSize: '0.82rem', color: '#78716C' }}>
+                      Vaccins courants ({speciesEmoji[species]} {species === 'DOG' ? 'Chien' : species === 'CAT' ? 'Chat' : species === 'RABBIT' ? 'Lapin' : 'Animal'}) :
+                    </label>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                      {vaccineSuggestions.map((sugg, i) => {
+                        const alreadyAdded = consultationVaccinations.some(v => v.name === sugg.name);
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => !alreadyAdded && addVaccination(sugg)}
+                            disabled={alreadyAdded}
+                            style={{
+                              background: alreadyAdded ? '#ECFDF5' : '#fff',
+                              border: alreadyAdded ? '1.5px solid #059669' : '1.5px solid #E7E5E4',
+                              borderRadius: '8px', padding: '0.4rem 0.75rem',
+                              fontSize: '0.82rem', cursor: alreadyAdded ? 'default' : 'pointer',
+                              color: alreadyAdded ? '#059669' : '#3E2723',
+                              fontWeight: 500, transition: 'all 0.15s',
+                              display: 'flex', alignItems: 'center', gap: '0.3rem',
+                            }}
+                            title={sugg.description}
+                          >
+                            {alreadyAdded ? <CheckCircle size={13} /> : <Plus size={13} />}
+                            {sugg.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Vaccinations ajoutées */}
+                {consultationVaccinations.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                    {consultationVaccinations.map((vacc) => (
+                      <div key={vacc.id} style={{
+                        background: '#fff', borderRadius: '12px', padding: '1rem',
+                        border: '1px solid rgba(184, 112, 79, 0.1)',
+                        position: 'relative',
+                      }}>
+                        <button
+                          onClick={() => removeVaccination(vacc.id)}
+                          style={{
+                            position: 'absolute', top: '0.5rem', right: '0.5rem',
+                            background: '#FEF2F2', border: 'none', borderRadius: '6px',
+                            padding: '0.3rem', cursor: 'pointer',
+                          }}
+                        >
+                          <Trash2 size={14} color="#DC2626" />
+                        </button>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                          <div>
+                            <label style={{ ...styles.labelStyle, fontSize: '0.82rem' }}>Nom du vaccin *</label>
+                            <input type="text" value={vacc.name}
+                              onChange={(e) => updateVaccination(vacc.id, 'name', e.target.value)}
+                              placeholder="Nom du vaccin"
+                              style={{ ...styles.inputStyle, padding: '0.65rem 0.85rem', fontSize: '0.88rem' }} />
+                          </div>
+                          <div>
+                            <label style={{ ...styles.labelStyle, fontSize: '0.82rem' }}>N° de lot</label>
+                            <input type="text" value={vacc.batchNumber}
+                              onChange={(e) => updateVaccination(vacc.id, 'batchNumber', e.target.value)}
+                              placeholder="N° lot"
+                              style={{ ...styles.inputStyle, padding: '0.65rem 0.85rem', fontSize: '0.88rem' }} />
+                          </div>
+                          <div>
+                            <label style={{ ...styles.labelStyle, fontSize: '0.82rem' }}>
+                              <Shield size={12} style={{ verticalAlign: 'middle', marginRight: '0.2rem' }} />
+                              Prochain rappel
+                            </label>
+                            <input type="date" value={vacc.nextDueDate}
+                              onChange={(e) => updateVaccination(vacc.id, 'nextDueDate', e.target.value)}
+                              style={{ ...styles.inputStyle, padding: '0.65rem 0.85rem', fontSize: '0.88rem' }} />
+                            {vacc.nextDueDate && (
+                              <div style={{ fontSize: '0.72rem', color: '#059669', marginTop: '0.2rem' }}>
+                                Rappel le {new Date(vacc.nextDueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <label style={{ ...styles.labelStyle, fontSize: '0.82rem' }}>Notes</label>
+                            <input type="text" value={vacc.notes}
+                              onChange={(e) => updateVaccination(vacc.id, 'notes', e.target.value)}
+                              placeholder="Notes (optionnel)"
+                              style={{ ...styles.inputStyle, padding: '0.65rem 0.85rem', fontSize: '0.88rem' }} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Bouton ajouter manuellement */}
+                <button onClick={() => addVaccination()} style={{
+                  background: '#fff', border: '2px dashed #E7E5E4', borderRadius: '12px',
+                  padding: '0.85rem', width: '100%', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  fontSize: '0.88rem', color: '#78716C', fontWeight: 600, transition: 'all 0.15s',
+                }}>
+                  <Plus size={16} /> Ajouter un vaccin manuellement
+                </button>
+
+                {consultationVaccinations.length === 0 && (
+                  <p style={{ fontSize: '0.82rem', color: '#A8A29E', textAlign: 'center', marginTop: '0.75rem' }}>
+                    Aucun vaccin ? Pas de souci, passez directement à la finalisation.
+                  </p>
+                )}
+
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                   <button onClick={() => setConsultationStep(2)} style={{
                     ...styles.button, flex: 1, justifyContent: 'center',
@@ -750,55 +1046,136 @@ const AppointmentsPagePremium = () => {
               </div>
             )}
 
-            {/* Step 4: Finalisation */}
+            {/* ===== Step 4: Finalisation — résumé complet ===== */}
             {consultationStep === 4 && (
               <div style={styles.sectionCard}>
                 <h3 style={{ fontSize: '1.3rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#3E2723' }}>
                   <CheckCircle size={22} color="#B8704F" />
-                  Finalisation & Suivi
+                  Résumé & Enregistrement
                 </h3>
 
-                {/* Summary */}
+                {/* Résumé complet */}
                 <div style={{
                   background: '#fff', borderRadius: '12px', padding: '1.25rem',
                   marginBottom: '1.25rem', border: '1px solid rgba(184, 112, 79, 0.1)',
                 }}>
-                  <h4 style={{ fontSize: '0.9rem', color: '#A1887F', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Résumé</h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.9rem' }}>
-                    {consultationData.temperature && <div><strong style={{ color: '#8D6E63' }}>Temp:</strong> <span style={{ color: '#3E2723' }}>{consultationData.temperature}°C</span></div>}
-                    {consultationData.weight && <div><strong style={{ color: '#8D6E63' }}>Poids:</strong> <span style={{ color: '#3E2723' }}>{consultationData.weight} kg</span></div>}
-                    {consultationData.heartRate && <div><strong style={{ color: '#8D6E63' }}>FC:</strong> <span style={{ color: '#3E2723' }}>{consultationData.heartRate} bpm</span></div>}
-                    {consultationData.symptoms && <div style={{ gridColumn: '1 / -1' }}><strong style={{ color: '#8D6E63' }}>Symptômes:</strong> <span style={{ color: '#3E2723' }}>{consultationData.symptoms}</span></div>}
-                    {consultationData.diagnosis && <div style={{ gridColumn: '1 / -1' }}><strong style={{ color: '#8D6E63' }}>Diagnostic:</strong> <span style={{ color: '#3E2723' }}>{consultationData.diagnosis}</span></div>}
-                    {consultationData.treatment && <div style={{ gridColumn: '1 / -1' }}><strong style={{ color: '#8D6E63' }}>Traitement:</strong> <span style={{ color: '#3E2723' }}>{consultationData.treatment}</span></div>}
+                  <h4 style={{ fontSize: '0.85rem', color: '#78716C', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Examen & Constantes
+                  </h4>
+                  <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+                    {consultationData.temperature && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.9rem' }}>
+                        <Thermometer size={15} color={tempOutOfRange ? '#DC2626' : '#059669'} />
+                        <strong>{consultationData.temperature}°C</strong>
+                        {tempOutOfRange && <span style={{ color: '#DC2626', fontSize: '0.75rem', fontWeight: 600 }}>(!)</span>}
+                      </div>
+                    )}
+                    {consultationData.weight && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.9rem' }}>
+                        <Weight size={15} color="#B8704F" />
+                        <strong>{consultationData.weight} kg</strong>
+                        {weightDelta && parseFloat(weightDelta) !== 0 && (
+                          <span style={{
+                            fontSize: '0.78rem', fontWeight: 600,
+                            color: parseFloat(weightDelta) > 0 ? '#059669' : '#DC2626',
+                          }}>
+                            ({parseFloat(weightDelta) > 0 ? '+' : ''}{weightDelta})
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {consultationData.heartRate && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.9rem' }}>
+                        <Heart size={15} color="#DC2626" />
+                        <strong>{consultationData.heartRate} bpm</strong>
+                      </div>
+                    )}
                   </div>
+
+                  {consultationData.symptoms && (
+                    <div style={{ padding: '0.5rem 0.75rem', background: '#FFF8F0', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '0.5rem' }}>
+                      <strong style={{ color: '#B8704F' }}>Symptômes :</strong> {consultationData.symptoms}
+                    </div>
+                  )}
+                  {consultationData.diagnosis && (
+                    <div style={{ padding: '0.5rem 0.75rem', background: '#EFF6FF', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '0.5rem' }}>
+                      <strong style={{ color: '#2563EB' }}>Diagnostic :</strong> {consultationData.diagnosis}
+                    </div>
+                  )}
+                  {consultationData.treatment && (
+                    <div style={{ padding: '0.5rem 0.75rem', background: '#ECFDF5', borderRadius: '8px', fontSize: '0.88rem' }}>
+                      <strong style={{ color: '#059669' }}>Traitement :</strong> {consultationData.treatment}
+                    </div>
+                  )}
                 </div>
 
+                {/* Vaccinations résumé */}
+                {consultationVaccinations.length > 0 && (
+                  <div style={{
+                    background: '#fff', borderRadius: '12px', padding: '1rem',
+                    marginBottom: '1.25rem', border: '1px solid rgba(5, 150, 105, 0.15)',
+                  }}>
+                    <h4 style={{ fontSize: '0.85rem', color: '#059669', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Syringe size={14} />
+                      {consultationVaccinations.length} vaccination{consultationVaccinations.length > 1 ? 's' : ''} à enregistrer
+                    </h4>
+                    {consultationVaccinations.filter(v => v.name.trim()).map(v => (
+                      <div key={v.id} style={{ fontSize: '0.88rem', padding: '0.3rem 0', color: '#3E2723', display: 'flex', justifyContent: 'space-between' }}>
+                        <span><strong>{v.name}</strong>{v.batchNumber && ` — Lot ${v.batchNumber}`}</span>
+                        {v.nextDueDate && <span style={{ color: '#78716C', fontSize: '0.82rem' }}>Rappel : {new Date(v.nextDueDate).toLocaleDateString('fr-FR')}</span>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Notes + prochain RDV */}
                 <div style={{ marginBottom: '1.25rem' }}>
                   <label style={styles.labelStyle}>Notes complémentaires</label>
                   <textarea value={consultationData.notes}
                     onChange={(e) => setConsultationData({ ...consultationData, notes: e.target.value })}
-                    placeholder="Notes additionnelles..."
+                    placeholder="Notes additionnelles pour le carnet de santé..."
                     rows={3} style={{ ...styles.inputStyle, resize: 'vertical' }} />
                 </div>
-                <div>
+                <div style={{ marginBottom: '0.5rem' }}>
                   <label style={styles.labelStyle}>Prochain rendez-vous (optionnel)</label>
                   <input type="date" value={consultationData.nextAppointment}
                     onChange={(e) => setConsultationData({ ...consultationData, nextAppointment: e.target.value })}
                     style={styles.inputStyle} />
                 </div>
+
+                {/* Ce qui sera mis à jour */}
+                <div style={{
+                  background: '#F0FDF4', borderRadius: '10px', padding: '0.75rem 1rem',
+                  marginTop: '1rem', marginBottom: '0.5rem',
+                  fontSize: '0.82rem', color: '#166534',
+                }}>
+                  <strong>Carnet de santé mis à jour automatiquement :</strong>
+                  <ul style={{ margin: '0.35rem 0 0 1rem', lineHeight: 1.8 }}>
+                    <li>Consultation ajoutée à l'historique médical</li>
+                    {consultationData.weight && <li>Poids mis à jour ({consultationData.weight} kg) + courbe de poids</li>}
+                    {consultationVaccinations.length > 0 && <li>{consultationVaccinations.length} vaccination(s) ajoutée(s) avec rappels</li>}
+                    <li>Rendez-vous marqué comme terminé</li>
+                  </ul>
+                </div>
+
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                  <button onClick={() => setConsultationStep(3)} style={{
+                  <button onClick={() => setConsultationStep(3)} disabled={isSaving} style={{
                     ...styles.button, flex: 1, justifyContent: 'center',
                     background: '#F5E6D3', color: '#3E2723', boxShadow: 'none',
                   }}>Retour</button>
-                  <button onClick={saveConsultation} style={{
+                  <button onClick={saveConsultation} disabled={isSaving} style={{
                     ...styles.button, flex: 2, justifyContent: 'center',
-                    background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                    background: isSaving
+                      ? '#9CA3AF'
+                      : 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
                     boxShadow: '0 4px 15px rgba(5, 150, 105, 0.25)',
+                    opacity: isSaving ? 0.7 : 1,
                   }}>
-                    <CheckCircle size={18} />
-                    Enregistrer la consultation
+                    {isSaving ? (
+                      <><Clock size={18} /> Enregistrement...</>
+                    ) : (
+                      <><CheckCircle size={18} /> Enregistrer la consultation</>
+                    )}
                   </button>
                 </div>
               </div>

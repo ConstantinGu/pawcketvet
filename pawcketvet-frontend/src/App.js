@@ -1,46 +1,49 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Layout from './components/Layout';
 import ClientLayout from './components/ClientLayout';
+import PawcketVetLogo from './components/PawcketVetLogo';
 
-// Pages login
+// Pages login (eager load - première page visible)
 import LoginPage from './pages/LoginPage';
 
-// Pages vétérinaire
-import DashboardPage from './pages/DashboardPage';
-import PatientsPage from './pages/PatientsPage';
-import PatientDetailPage from './pages/PatientDetailPage';
-import AppointmentsPagePremium from './pages/AppointmentsPagePremium';
-import InventoryPage from './pages/InventoryPage';
-import InvoicesPage from './pages/InvoicesPage';
-import MessagesPage from './pages/MessagesPage';
-import PrescriptionsPage from './pages/PrescriptionsPage';
-import CertificatesPage from './pages/CertificatesPage';
-import StaffPage from './pages/StaffPage';
-import ClinicSettingsPage from './pages/ClinicSettingsPage';
-import AnalyticsPage from './pages/AnalyticsPage';
+// Pages vétérinaire (lazy loaded)
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const PatientsPage = lazy(() => import('./pages/PatientsPage'));
+const PatientDetailPage = lazy(() => import('./pages/PatientDetailPage'));
+const AppointmentsPagePremium = lazy(() => import('./pages/AppointmentsPagePremium'));
+const InventoryPage = lazy(() => import('./pages/InventoryPage'));
+const InvoicesPage = lazy(() => import('./pages/InvoicesPage'));
+const MessagesPage = lazy(() => import('./pages/MessagesPage'));
+const PrescriptionsPage = lazy(() => import('./pages/PrescriptionsPage'));
+const CertificatesPage = lazy(() => import('./pages/CertificatesPage'));
+const StaffPage = lazy(() => import('./pages/StaffPage'));
+const ClinicSettingsPage = lazy(() => import('./pages/ClinicSettingsPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 
-// Pages client/propriétaire
-import ClientDashboard from './pages/ClientDashboard';
-import ClientBookAppointment from './pages/ClientBookAppointment';
-import ClientAnimalDetail from './pages/ClientAnimalDetail';
-import ClientMyPets from './pages/ClientMyPets';
-import ClientAppointments from './pages/ClientAppointments';
-import ClientMessages from './pages/ClientMessages';
-import ClientDocuments from './pages/ClientDocuments';
-import ClientReminders from './pages/ClientReminders';
-import ClientPayments from './pages/ClientPayments';
-import SOSTriagePage from './pages/SOSTriagePage';
-import ClientHealthBook from './pages/ClientHealthBook';
+// Pages client/propriétaire (lazy loaded)
+const ClientDashboard = lazy(() => import('./pages/ClientDashboard'));
+const ClientBookAppointment = lazy(() => import('./pages/ClientBookAppointment'));
+const ClientAnimalDetail = lazy(() => import('./pages/ClientAnimalDetail'));
+const ClientMyPets = lazy(() => import('./pages/ClientMyPets'));
+const ClientAppointments = lazy(() => import('./pages/ClientAppointments'));
+const ClientMessages = lazy(() => import('./pages/ClientMessages'));
+const ClientDocuments = lazy(() => import('./pages/ClientDocuments'));
+const ClientReminders = lazy(() => import('./pages/ClientReminders'));
+const ClientPayments = lazy(() => import('./pages/ClientPayments'));
+const SOSTriagePage = lazy(() => import('./pages/SOSTriagePage'));
+const ClientHealthBook = lazy(() => import('./pages/ClientHealthBook'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
+      staleTime: 1000 * 60 * 5,    // 5 minutes avant re-fetch
+      gcTime: 1000 * 60 * 30,       // 30 minutes en cache
     },
   },
 });
@@ -59,7 +62,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         background: 'linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%)',
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🐾</div>
+          <PawcketVetLogo size={56} style={{ marginBottom: '1rem' }} />
           <div style={{ fontSize: '1.2rem', color: '#B8704F' }}>Chargement...</div>
         </div>
       </div>
@@ -85,8 +88,23 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 function AppContent() {
   const { user } = useAuth();
 
+  const PageLoader = (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '60vh',
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <PawcketVetLogo size={40} style={{ marginBottom: '0.5rem' }} />
+        <div style={{ fontSize: '1rem', color: '#B8704F' }}>Chargement...</div>
+      </div>
+    </div>
+  );
+
   return (
     <Router>
+      <Suspense fallback={PageLoader}>
       <Routes>
         {/* Route de login */}
         <Route path="/login" element={<LoginPage />} />
@@ -308,11 +326,11 @@ function AppContent() {
                 maxWidth: '600px',
                 textAlign: 'center',
               }}>
-                <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🐾</div>
+                <PawcketVetLogo size={80} style={{ marginBottom: '1rem' }} />
                 <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#3E2723' }}>
                   Page non trouvée
                 </h2>
-                <p style={{ color: '#A1887F', fontSize: '1.1rem', marginBottom: '2rem' }}>
+                <p style={{ color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' }}>
                   Oups ! Cette page n'existe pas.
                 </p>
                 <button
@@ -335,6 +353,7 @@ function AppContent() {
           }
         />
       </Routes>
+      </Suspense>
       <Toaster position="top-right" />
     </Router>
   );

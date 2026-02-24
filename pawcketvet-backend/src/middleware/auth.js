@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('FATAL: JWT_SECRET must be set in production');
+  }
+  console.warn('⚠️  Using default JWT_SECRET - set JWT_SECRET env var for production');
+  return 'dev-secret-key-do-not-use-in-production';
+})();
 
 const authMiddleware = (req, res, next) => {
   try {
