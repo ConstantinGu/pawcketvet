@@ -171,20 +171,40 @@ exports.create = async (req, res) => {
     const bcrypt = require('bcryptjs');
     const tempPassword = await bcrypt.hash('TempPassword123!', 10);
 
-    const owner = await prisma.owner.create({
-      data: {
-        email,
-        password: tempPassword,
-        firstName,
-        lastName,
-        phone,
-        address,
-        city,
-        postalCode,
-      },
+    // Créer Owner + User (pour l'authentification) en transaction
+    const result = await prisma.$transaction(async (tx) => {
+      const owner = await tx.owner.create({
+        data: {
+          email,
+          password: tempPassword,
+          firstName,
+          lastName,
+          phone,
+          address,
+          city,
+          postalCode,
+        },
+      });
+
+      // Créer aussi un User avec role OWNER pour permettre la connexion
+      const existingUser = await tx.user.findUnique({ where: { email } });
+      if (!existingUser) {
+        await tx.user.create({
+          data: {
+            email,
+            password: tempPassword,
+            firstName,
+            lastName,
+            role: 'OWNER',
+            phone,
+          },
+        });
+      }
+
+      return owner;
     });
 
-    res.status(201).json({ message: 'Propriétaire créé avec succès', owner });
+    res.status(201).json({ message: 'Propriétaire créé avec succès', owner: result });
   } catch (error) {
     console.error('Erreur création propriétaire:', error);
     res.status(500).json({ error: 'Erreur lors de la création du propriétaire' });

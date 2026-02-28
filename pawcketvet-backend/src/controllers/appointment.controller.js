@@ -265,7 +265,6 @@ exports.completeWithConsultation = async (req, res) => {
           diagnosis: diagnosis || null,
           treatment: treatment || null,
           notes: notes || null,
-          nextAppointmentDate: nextAppointment ? new Date(nextAppointment) : null,
           date: new Date(),
         },
       });

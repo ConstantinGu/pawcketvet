@@ -133,13 +133,33 @@ const register = async (req, res) => {
       },
     });
 
+    // Si OWNER, chercher ou créer le Owner associé par email
+    let ownerId = null;
+    if (user.role === 'OWNER') {
+      let owner = await prisma.owner.findUnique({
+        where: { email: user.email },
+      });
+      if (!owner) {
+        owner = await prisma.owner.create({
+          data: {
+            email: user.email,
+            password: hashedPassword,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          },
+        });
+      }
+      ownerId = owner.id;
+    }
+
     // Générer le token
     const token = jwt.sign(
-      { 
-        id: user.id, 
+      {
+        id: user.id,
         email: user.email,
         role: user.role,
         clinicId: user.clinicId,
+        ownerId: ownerId,
       },
       JWT_SECRET,
       { expiresIn: '7d' }
@@ -154,6 +174,7 @@ const register = async (req, res) => {
         lastName: user.lastName,
         role: user.role,
         clinicId: user.clinicId,
+        ownerId: ownerId,
         clinic: user.clinic,
       },
     });

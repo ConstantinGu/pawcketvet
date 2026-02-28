@@ -148,6 +148,21 @@ exports.create = async (req, res) => {
             postalCode,
           },
         });
+
+        // Créer aussi un User avec role OWNER pour permettre la connexion
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        if (!existingUser) {
+          await prisma.user.create({
+            data: {
+              email,
+              password: tempPassword,
+              firstName,
+              lastName,
+              role: 'OWNER',
+              phone,
+            },
+          });
+        }
       }
 
       finalOwnerId = owner.id;

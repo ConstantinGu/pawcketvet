@@ -4,18 +4,15 @@ const prisma = new PrismaClient();
 // Get all reviews for the clinic
 exports.getAll = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.userId },
-      select: { clinicId: true },
-    });
+    const clinicId = req.user.clinicId;
 
-    if (!user?.clinicId) {
+    if (!clinicId) {
       return res.status(404).json({ error: 'Aucune clinique associée' });
     }
 
     const { published, rating } = req.query;
 
-    const where = { clinicId: user.clinicId };
+    const where = { clinicId };
     if (published !== undefined) where.isPublished = published === 'true';
     if (rating) where.rating = parseInt(rating);
 

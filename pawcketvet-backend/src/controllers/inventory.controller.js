@@ -54,16 +54,13 @@ exports.getAlerts = async (req, res) => {
   try {
     const userClinicId = req.user.clinicId;
 
-    const items = await prisma.inventoryItem.findMany({
-      where: {
-        clinicId: userClinicId,
-        OR: [
-          { quantity: { lte: prisma.inventoryItem.fields.minStock } },
-          { quantity: 0 },
-        ],
-      },
+    // Prisma doesn't support comparing two columns directly, so fetch all and filter
+    const allItems = await prisma.inventoryItem.findMany({
+      where: { clinicId: userClinicId },
       orderBy: { quantity: 'asc' },
     });
+
+    const items = allItems.filter(item => item.quantity <= item.minStock);
 
     res.json({ alerts: items, count: items.length });
   } catch (error) {
