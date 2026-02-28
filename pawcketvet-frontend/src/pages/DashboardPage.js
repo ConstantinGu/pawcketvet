@@ -72,6 +72,15 @@ const DashboardPage = () => {
       padding: '1.5rem',
       boxShadow: '0 2px 15px rgba(184, 112, 79, 0.06)',
       border: '1px solid rgba(184, 112, 79, 0.08)',
+      transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
+    },
+    cardHover: (e) => {
+      e.currentTarget.style.boxShadow = '0 8px 32px rgba(62, 39, 35, 0.1)';
+      e.currentTarget.style.transform = 'translateY(-2px)';
+    },
+    cardLeave: (e) => {
+      e.currentTarget.style.boxShadow = '0 2px 15px rgba(184, 112, 79, 0.06)';
+      e.currentTarget.style.transform = 'translateY(0)';
     },
   };
 
@@ -114,26 +123,35 @@ const DashboardPage = () => {
                 ...styles.card,
                 borderLeft: `4px solid ${stat.color}`,
                 cursor: 'pointer',
-                transition: 'all 0.3s',
+                animation: `slideUp 0.5s cubic-bezier(0.4,0,0.2,1) ${index * 0.08}s both`,
               }}
               onClick={() => navigate(stat.path)}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.boxShadow = `0 12px 32px ${stat.color}20`;
+                e.currentTarget.style.borderLeftWidth = '5px';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 15px rgba(184, 112, 79, 0.06)';
+                e.currentTarget.style.borderLeftWidth = '4px';
+              }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={{ color: '#78716C', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
+                  <div style={{ color: '#78716C', fontSize: '0.8rem', marginBottom: '0.4rem', fontWeight: 500 }}>
                     {stat.label}
                   </div>
-                  <div style={{ fontSize: '2rem', fontWeight: 700, color: stat.color }}>
+                  <div style={{ fontSize: '2rem', fontWeight: 700, color: stat.color, letterSpacing: '-0.02em' }}>
                     {stat.value}
                   </div>
                 </div>
                 <div style={{
-                  background: `${stat.color}15`,
-                  padding: '0.85rem',
+                  background: `${stat.color}12`,
+                  padding: '0.9rem',
                   borderRadius: '14px',
                   color: stat.color,
+                  transition: 'transform 0.3s ease',
                 }}>
                   <Icon size={22} />
                 </div>
@@ -159,17 +177,22 @@ const DashboardPage = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '0.75rem',
-            }}>
+              animation: `fadeIn 0.4s cubic-bezier(0.4,0,0.2,1) ${0.4 + i * 0.06}s both`,
+            }}
+              onMouseEnter={styles.cardHover}
+              onMouseLeave={styles.cardLeave}
+            >
               <div style={{
-                width: '36px', height: '36px', borderRadius: '10px',
-                background: `${stat.color}15`, display: 'flex',
+                width: '40px', height: '40px', borderRadius: '12px',
+                background: `${stat.color}12`, display: 'flex',
                 alignItems: 'center', justifyContent: 'center',
+                transition: 'transform 0.3s ease',
               }}>
                 <Icon size={18} color={stat.color} />
               </div>
               <div>
-                <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#3E2723' }}>{stat.value}</div>
-                <div style={{ fontSize: '0.75rem', color: '#78716C' }}>{stat.label}</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 700, color: '#3E2723', letterSpacing: '-0.02em' }}>{stat.value}</div>
+                <div style={{ fontSize: '0.75rem', color: '#78716C', fontWeight: 500 }}>{stat.label}</div>
               </div>
             </div>
           );
@@ -210,20 +233,32 @@ const DashboardPage = () => {
               <p style={{ fontSize: '0.9rem' }}>Aucun RDV aujourd'hui</p>
             </div>
           ) : (
-            todayAppointments.map(appt => (
+            todayAppointments.map((appt, idx) => (
               <div key={appt.id} style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
-                padding: '0.65rem 0',
+                padding: '0.7rem 0.5rem',
                 borderBottom: '1px solid rgba(184, 112, 79, 0.06)',
-              }}>
-                <div style={{ fontSize: '1.5rem' }}>
+                borderRadius: '8px',
+                transition: 'background 0.2s ease',
+                animation: `fadeIn 0.3s ease ${idx * 0.05}s both`,
+                cursor: 'default',
+              }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#FFF8F0'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                <div style={{
+                  fontSize: '1.3rem', width: '40px', height: '40px',
+                  borderRadius: '12px', background: '#FAFAF9',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
                   {typeEmoji[appt.type] || '📋'}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#3E2723' }}>
-                    {appt.animal?.name} - {appt.type}
+                    {appt.animal?.name} <span style={{ fontWeight: 400, color: '#78716C' }}>- {appt.type}</span>
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#78716C' }}>
+                  <div style={{ fontSize: '0.78rem', color: '#A8A29E' }}>
                     {new Date(appt.date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                     {appt.veterinarian && ` | Dr. ${appt.veterinarian.lastName}`}
                   </div>
@@ -231,6 +266,7 @@ const DashboardPage = () => {
                 <div style={{
                   width: '8px', height: '8px', borderRadius: '50%',
                   background: statusColors[appt.status] || '#6b7280',
+                  boxShadow: `0 0 0 3px ${(statusColors[appt.status] || '#6b7280')}20`,
                 }} />
               </div>
             ))
@@ -255,20 +291,39 @@ const DashboardPage = () => {
           ) : (
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.5rem', height: '160px', paddingTop: '1rem' }}>
               {months.map((m, i) => (
-                <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+                <div key={i} style={{
+                  flex: 1, display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', gap: '0.4rem',
+                  animation: `slideUp 0.5s cubic-bezier(0.4,0,0.2,1) ${i * 0.08}s both`,
+                }}>
                   <div style={{ fontSize: '0.7rem', color: '#3E2723', fontWeight: 600 }}>
                     {m.revenue > 0 ? `${m.revenue.toFixed(0)}` : ''}
                   </div>
                   <div style={{
-                    width: '100%', maxWidth: '40px',
+                    width: '100%', maxWidth: '44px',
                     height: `${Math.max((m.revenue / maxRevenue) * 120, 4)}px`,
                     background: i === months.length - 1
-                      ? 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)'
-                      : 'linear-gradient(135deg, #F5E6D3 0%, #FFF8F0 100%)',
-                    borderRadius: '6px 6px 0 0',
-                    transition: 'height 0.5s ease',
-                  }} />
-                  <div style={{ fontSize: '0.65rem', color: '#78716C' }}>{m.month}</div>
+                      ? 'linear-gradient(180deg, #B8704F 0%, #D4956C 100%)'
+                      : 'linear-gradient(180deg, #EDD5BC 0%, #F5E6D3 100%)',
+                    borderRadius: '8px 8px 2px 2px',
+                    transition: 'all 0.5s cubic-bezier(0.4,0,0.2,1)',
+                    cursor: 'pointer',
+                    position: 'relative',
+                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scaleY(1.05)';
+                      e.currentTarget.style.background = i === months.length - 1
+                        ? 'linear-gradient(180deg, #A35F3E 0%, #B8704F 100%)'
+                        : 'linear-gradient(180deg, #D4956C 0%, #EDD5BC 100%)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scaleY(1)';
+                      e.currentTarget.style.background = i === months.length - 1
+                        ? 'linear-gradient(180deg, #B8704F 0%, #D4956C 100%)'
+                        : 'linear-gradient(180deg, #EDD5BC 0%, #F5E6D3 100%)';
+                    }}
+                  />
+                  <div style={{ fontSize: '0.65rem', color: '#78716C', fontWeight: 500 }}>{m.month}</div>
                 </div>
               ))}
             </div>

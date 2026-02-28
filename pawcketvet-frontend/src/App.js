@@ -320,14 +320,22 @@ function AppContent() {
               padding: '2rem',
             }}>
               <div style={{
-                background: '#fff',
+                background: 'rgba(255,255,255,0.9)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
                 borderRadius: '28px',
                 padding: '3rem',
                 maxWidth: '600px',
                 textAlign: 'center',
+                animation: 'scaleInBounce 0.5s cubic-bezier(0.4,0,0.2,1)',
+                boxShadow: '0 12px 48px rgba(62,39,35,0.1)',
               }}>
-                <PawcketVetLogo size={80} style={{ marginBottom: '1rem' }} />
-                <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#3E2723' }}>
+                <PawcketVetLogo size={80} style={{ marginBottom: '1rem', animation: 'float 3s ease-in-out infinite' }} />
+                <h2 style={{
+                  fontFamily: "'Fraunces', serif",
+                  fontSize: '2.5rem', marginBottom: '1rem', color: '#3E2723',
+                  letterSpacing: '-0.02em',
+                }}>
                   Page non trouvée
                 </h2>
                 <p style={{ color: '#78716C', fontSize: '1.1rem', marginBottom: '2rem' }}>
@@ -344,7 +352,11 @@ function AppContent() {
                     fontSize: '1rem',
                     fontWeight: 600,
                     cursor: 'pointer',
+                    boxShadow: '0 4px 16px rgba(184,112,79,0.25)',
+                    transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(184,112,79,0.35)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(184,112,79,0.25)'; }}
                 >
                   Retour à l'accueil
                 </button>
@@ -354,7 +366,29 @@ function AppContent() {
         />
       </Routes>
       </Suspense>
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            borderRadius: '14px',
+            padding: '14px 18px',
+            fontSize: '0.9rem',
+            fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
+            boxShadow: '0 8px 32px rgba(62, 39, 35, 0.12)',
+            border: '1px solid rgba(184, 112, 79, 0.06)',
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(12px)',
+            color: '#3E2723',
+          },
+          success: {
+            iconTheme: { primary: '#059669', secondary: '#fff' },
+          },
+          error: {
+            iconTheme: { primary: '#DC2626', secondary: '#fff' },
+          },
+        }}
+      />
     </Router>
   );
 }

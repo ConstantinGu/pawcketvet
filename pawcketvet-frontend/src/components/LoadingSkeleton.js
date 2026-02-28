@@ -8,9 +8,9 @@ const Skeleton = ({ width = '100%', height = '1rem', borderRadius = '8px', style
     width,
     height,
     borderRadius,
-    background: 'linear-gradient(90deg, #F5E6D3 25%, #FFF8F0 50%, #F5E6D3 75%)',
-    backgroundSize: '200% 100%',
-    animation: 'shimmer 1.5s infinite',
+    background: 'linear-gradient(90deg, #F5E6D3 25%, #FFF8F0 37%, #EDD5BC 50%, #F5E6D3 75%)',
+    backgroundSize: '400% 100%',
+    animation: 'shimmer 1.8s ease-in-out infinite',
     ...style,
   }} />
 );
@@ -30,6 +30,7 @@ export const StatCardSkeleton = ({ count = 4 }) => (
         padding: '1.5rem',
         boxShadow: '0 2px 15px rgba(184, 112, 79, 0.06)',
         border: '1px solid rgba(184, 112, 79, 0.08)',
+        animation: `fadeIn 0.4s ease ${i * 0.08}s both`,
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ flex: 1 }}>

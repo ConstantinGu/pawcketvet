@@ -69,12 +69,26 @@ h1,h2,h3,h4 { line-height:1.25; letter-spacing:-0.02em; }
 
 @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeInDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
 @keyframes slideInRight { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideInLeft { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
 @keyframes slideDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
 @keyframes scaleIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
+@keyframes scaleInBounce { 0%{opacity:0;transform:scale(0.9)} 60%{transform:scale(1.02)} 100%{opacity:1;transform:scale(1)} }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
 @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
 @keyframes spin { to{transform:rotate(360deg)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes glow { 0%,100%{box-shadow:0 0 8px rgba(184,112,79,0.15)} 50%{box-shadow:0 0 20px rgba(184,112,79,0.3)} }
+@keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+@keyframes countUp { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
+@keyframes ripple { 0%{transform:scale(0);opacity:0.5} 100%{transform:scale(4);opacity:0} }
+@keyframes modalIn { from{opacity:0;transform:scale(0.92) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes overlayIn { from{opacity:0} to{opacity:1} }
+@keyframes checkmark { 0%{stroke-dashoffset:50} 100%{stroke-dashoffset:0} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+@keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
 
 input,textarea,select {
   font-family: var(--font-sans);
@@ -89,6 +103,56 @@ input:focus,textarea:focus,select:focus {
 button { font-family:var(--font-sans); cursor:pointer; }
 img { max-width:100%; height:auto; }
 code { font-family:'SF Mono','Fira Code',Menlo,Monaco,Consolas,monospace; }
+
+/* ==========================================
+   GLASSMORPHISM & PREMIUM EFFECTS
+   ========================================== */
+.glass { background:rgba(255,255,255,0.72); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border:1px solid rgba(255,255,255,0.35); }
+.glass-dark { background:rgba(62,39,35,0.75); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border:1px solid rgba(255,255,255,0.08); }
+.glass-card { background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(184,112,79,0.06); box-shadow:0 4px 24px rgba(62,39,35,0.05); }
+
+/* Premium card hover */
+.card-hover { transition:all 0.35s cubic-bezier(0.4,0,0.2,1); }
+.card-hover:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(62,39,35,0.12); }
+
+/* Gradient text */
+.gradient-text { background:linear-gradient(135deg,#B8704F 0%,#D4956C 50%,#B8704F 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+/* Stagger animations for lists */
+.stagger-1 { animation-delay:0.05s; } .stagger-2 { animation-delay:0.1s; } .stagger-3 { animation-delay:0.15s; }
+.stagger-4 { animation-delay:0.2s; } .stagger-5 { animation-delay:0.25s; } .stagger-6 { animation-delay:0.3s; }
+
+/* Premium button styles */
+.btn-primary { background:linear-gradient(135deg,#B8704F 0%,#D4956C 100%); color:#fff; border:none; border-radius:12px; font-weight:600; cursor:pointer; position:relative; overflow:hidden; transition:all 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow:0 4px 16px rgba(184,112,79,0.25); }
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(184,112,79,0.35); }
+.btn-primary:active { transform:translateY(0); box-shadow:0 2px 8px rgba(184,112,79,0.2); }
+
+/* Premium tooltip */
+.tooltip-trigger { position:relative; }
+.tooltip-trigger::after { content:attr(data-tooltip); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%) scale(0.8); background:#3E2723; color:#fff; padding:0.4rem 0.75rem; border-radius:8px; font-size:0.75rem; white-space:nowrap; opacity:0; pointer-events:none; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); z-index:100; }
+.tooltip-trigger:hover::after { opacity:1; transform:translateX(-50%) scale(1); }
+
+/* Status indicators */
+.status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+.status-dot.active { background:#10B981; box-shadow:0 0 0 3px rgba(16,185,129,0.2); }
+.status-dot.warning { background:#F59E0B; box-shadow:0 0 0 3px rgba(245,158,11,0.2); }
+.status-dot.error { background:#EF4444; box-shadow:0 0 0 3px rgba(239,68,68,0.2); }
+.status-dot.pulse { animation:pulse 2s ease-in-out infinite; }
+
+/* Skeleton loading */
+.skeleton { background:linear-gradient(90deg,#F5F5F4 25%,#E7E5E4 50%,#F5F5F4 75%); background-size:200% 100%; animation:shimmer 1.5s ease-in-out infinite; border-radius:8px; }
+
+/* Focus ring for accessibility */
+.focus-ring:focus-visible { outline:none; box-shadow:0 0 0 3px rgba(184,112,79,0.35); }
+
+/* Scroll shadows */
+.scroll-shadow { background:linear-gradient(#fff 30%,rgba(255,255,255,0)) center top, linear-gradient(rgba(255,255,255,0),#fff 70%) center bottom, radial-gradient(farthest-side at 50% 0,rgba(62,39,35,0.08),rgba(0,0,0,0)) center top, radial-gradient(farthest-side at 50% 100%,rgba(62,39,35,0.08),rgba(0,0,0,0)) center bottom; background-repeat:no-repeat; background-size:100% 40px,100% 40px,100% 12px,100% 12px; background-attachment:local,local,scroll,scroll; }
+
+/* Number counter animation */
+.counter { display:inline-block; animation:countUp 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+/* Divider styles */
+.divider-gradient { height:1px; background:linear-gradient(90deg,transparent,rgba(184,112,79,0.15),transparent); border:none; }
 
 @media print { body{background:white} .no-print{display:none !important} }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
@@ -179,5 +243,54 @@ code { font-family:'SF Mono','Fira Code',Menlo,Monaco,Consolas,monospace; }
   button, [role="button"], a {
     min-height: 44px;
     min-width: 44px;
+  }
+}
+
+/* ==========================================
+   ENHANCED HOVER & INTERACTION STATES
+   ========================================== */
+
+/* Row hover for tables and lists */
+.row-hover { transition:background 0.15s ease; }
+.row-hover:hover { background:rgba(184,112,79,0.04) !important; }
+
+/* Interactive card press effect */
+.press-effect { transition:transform 0.15s ease, box-shadow 0.15s ease; }
+.press-effect:active { transform:scale(0.98) !important; }
+
+/* Tab indicator animation */
+.tab-indicator { position:relative; }
+.tab-indicator::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:2px; background:#B8704F; transition:all 0.25s cubic-bezier(0.4,0,0.2,1); border-radius:1px; transform:translateX(-50%); }
+.tab-indicator.active::after, .tab-indicator:hover::after { width:60%; }
+
+/* Input field enhanced focus */
+.input-premium { transition:all 0.2s cubic-bezier(0.4,0,0.2,1); }
+.input-premium:focus { border-color:#B8704F !important; box-shadow:0 0 0 3px rgba(184,112,79,0.1), 0 2px 8px rgba(184,112,79,0.08) !important; }
+
+/* Badge pulse for notifications */
+.badge-pulse { animation:breathe 2.5s ease-in-out infinite; }
+
+/* Page transition */
+.page-enter { animation:fadeIn 0.4s cubic-bezier(0.4,0,0.2,1); }
+.page-enter-up { animation:slideUp 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+/* Modal overlay & content */
+.modal-overlay { animation:overlayIn 0.2s ease-out; }
+.modal-content { animation:modalIn 0.3s cubic-bezier(0.4,0,0.2,1); }
+
+/* Empty state illustrations */
+.empty-state-icon { animation:float 3s ease-in-out infinite; opacity:0.4; }
+
+/* Progress bar */
+.progress-bar { height:4px; border-radius:2px; background:#F5F5F4; overflow:hidden; }
+.progress-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#B8704F,#D4956C); transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+/* Notification toast enhancement */
+.Toastbar { border-radius:12px !important; }
+
+/* Dark mode support (preparation) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
   }
 }

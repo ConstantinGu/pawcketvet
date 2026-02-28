@@ -113,7 +113,7 @@ const LoginPage = () => {
     }}>
       {/* Left - Branding Panel */}
       <div aria-hidden="true" style={{
-        background: 'linear-gradient(135deg, #B8704F 0%, #8B4F33 100%)',
+        background: 'linear-gradient(135deg, #B8704F 0%, #9B5B3A 40%, #8B4F33 100%)',
         padding: isMobileView ? '2rem 1.5rem' : '3rem',
         display: isMobileView ? 'none' : 'flex',
         flexDirection: 'column',
@@ -121,18 +121,28 @@ const LoginPage = () => {
         position: 'relative',
         overflow: 'hidden',
       }}>
-        {/* Decorative shapes */}
+        {/* Decorative shapes with animation */}
         <div style={{
           position: 'absolute', top: '-10%', right: '-5%',
           width: '400px', height: '400px',
-          background: 'rgba(255,255,255,0.04)',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)',
           borderRadius: '50%',
+          animation: 'float 8s ease-in-out infinite',
         }} />
         <div style={{
           position: 'absolute', bottom: '-15%', left: '-10%',
           width: '500px', height: '500px',
-          background: 'rgba(255,255,255,0.03)',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)',
           borderRadius: '50%',
+          animation: 'float 10s ease-in-out infinite reverse',
+        }} />
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          width: '300px', height: '300px',
+          background: 'radial-gradient(circle, rgba(212,149,108,0.12) 0%, transparent 70%)',
+          borderRadius: '50%',
+          transform: 'translate(-50%, -50%)',
+          animation: 'breathe 6s ease-in-out infinite',
         }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '480px', margin: '0 auto' }}>
@@ -181,21 +191,37 @@ const LoginPage = () => {
                   background: 'rgba(255,255,255,0.08)',
                   borderRadius: '16px',
                   padding: '1.25rem',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                }}>
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                  animation: `fadeInUp 0.6s cubic-bezier(0.4,0,0.2,1) ${0.3 + i * 0.1}s both`,
+                  cursor: 'default',
+                }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.14)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                  }}
+                >
                   <div style={{
-                    width: '36px', height: '36px', borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.12)',
+                    width: '40px', height: '40px', borderRadius: '12px',
+                    background: 'rgba(255,255,255,0.15)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     marginBottom: '0.75rem',
+                    transition: 'transform 0.3s ease',
                   }}>
                     <Icon size={18} color="#fff" />
                   </div>
                   <div style={{ color: '#fff', fontWeight: 600, fontSize: '0.88rem', marginBottom: '0.25rem' }}>
                     {f.title}
                   </div>
-                  <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.78rem', lineHeight: 1.5 }}>
+                  <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.78rem', lineHeight: 1.6 }}>
                     {f.desc}
                   </div>
                 </div>
@@ -292,12 +318,22 @@ const LoginPage = () => {
               <button type="submit" disabled={loading} aria-busy={loading} style={{
                 width: '100%',
                 background: loading ? '#D4956C' : 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
-                color: '#fff', border: 'none', borderRadius: '12px', padding: '0.9rem',
+                color: '#fff', border: 'none', borderRadius: '12px', padding: '0.95rem',
                 fontSize: '0.95rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)', transition: 'all 0.2s',
-              }}>
-                {loading ? 'Connexion en cours...' : <>Se connecter <ArrowRight size={17} aria-hidden="true" /></>}
+                boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)',
+                transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                position: 'relative', overflow: 'hidden',
+              }}
+                onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(184, 112, 79, 0.35)'; } }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(184, 112, 79, 0.25)'; }}
+              >
+                {loading ? (
+                  <>
+                    <span style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.6s linear infinite', display: 'inline-block' }} />
+                    Connexion en cours...
+                  </>
+                ) : <>Se connecter <ArrowRight size={17} aria-hidden="true" /></>}
               </button>
             </form>
           )}
@@ -375,12 +411,22 @@ const LoginPage = () => {
               <button type="submit" disabled={loading} aria-busy={loading} style={{
                 width: '100%',
                 background: loading ? '#D4956C' : 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
-                color: '#fff', border: 'none', borderRadius: '12px', padding: '0.9rem',
+                color: '#fff', border: 'none', borderRadius: '12px', padding: '0.95rem',
                 fontSize: '0.95rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)', transition: 'all 0.2s',
-              }}>
-                {loading ? 'Inscription en cours...' : <>Créer mon compte <UserPlus size={17} aria-hidden="true" /></>}
+                boxShadow: '0 4px 16px rgba(184, 112, 79, 0.25)',
+                transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+                position: 'relative', overflow: 'hidden',
+              }}
+                onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(184, 112, 79, 0.35)'; } }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(184, 112, 79, 0.25)'; }}
+              >
+                {loading ? (
+                  <>
+                    <span style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.6s linear infinite', display: 'inline-block' }} />
+                    Inscription en cours...
+                  </>
+                ) : <>Créer mon compte <UserPlus size={17} aria-hidden="true" /></>}
               </button>
             </form>
           )}
