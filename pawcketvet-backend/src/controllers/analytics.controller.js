@@ -41,13 +41,8 @@ exports.getDashboardStats = async (req, res) => {
       prisma.message.count({
         where: { senderId: null, isRead: false },
       }),
-      // Stock faible
-      prisma.inventoryItem.count({
-        where: {
-          ...clinicFilter,
-          quantity: { lte: prisma.raw ? 0 : 5 },
-        },
-      }).catch(() => 0),
+      // Stock faible (placeholder - real count computed below)
+      Promise.resolve(0),
       // RDV ce mois
       prisma.appointment.count({
         where: { ...clinicFilter, date: { gte: thisMonth, lt: nextMonth } },

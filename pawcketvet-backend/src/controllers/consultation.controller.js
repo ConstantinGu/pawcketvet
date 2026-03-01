@@ -8,15 +8,14 @@ exports.create = async (req, res) => {
     const {
       appointmentId,
       animalId,
+      reason,
       symptoms,
       temperature,
       weight,
       heartRate,
       diagnosis,
       treatment,
-      prescriptions,
       notes,
-      nextAppointment,
     } = req.body;
 
     const userId = req.user.id;
@@ -26,15 +25,14 @@ exports.create = async (req, res) => {
         appointmentId,
         animalId,
         veterinarianId: userId,
+        reason: reason || 'Consultation',
         symptoms,
         temperature: temperature ? parseFloat(temperature) : null,
         weight: weight ? parseFloat(weight) : null,
         heartRate: heartRate ? parseInt(heartRate) : null,
         diagnosis,
         treatment,
-        prescriptions: prescriptions || {},
         notes,
-        nextAppointmentDate: nextAppointment ? new Date(nextAppointment) : null,
         date: new Date(),
       },
       include: {
@@ -146,29 +144,27 @@ exports.update = async (req, res) => {
   try {
     const { id } = req.params;
     const {
+      reason,
       symptoms,
       temperature,
       weight,
       heartRate,
       diagnosis,
       treatment,
-      prescriptions,
       notes,
-      nextAppointment,
     } = req.body;
 
     const consultation = await prisma.consultation.update({
       where: { id },
       data: {
+        reason,
         symptoms,
         temperature: temperature ? parseFloat(temperature) : undefined,
         weight: weight ? parseFloat(weight) : undefined,
         heartRate: heartRate ? parseInt(heartRate) : undefined,
         diagnosis,
         treatment,
-        prescriptions: prescriptions || undefined,
         notes,
-        nextAppointmentDate: nextAppointment ? new Date(nextAppointment) : undefined,
       },
       include: {
         animal: true,

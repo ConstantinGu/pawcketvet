@@ -51,8 +51,8 @@ const ClientLayout = ({ children }) => {
     }}>
       {/* Top Bar */}
       <header style={{
-        background: '#fff',
-        borderBottom: '1px solid rgba(184, 112, 79, 0.08)',
+        background: 'rgba(255,255,255,0.85)',
+        borderBottom: '1px solid rgba(184, 112, 79, 0.06)',
         padding: '0 1.5rem',
         height: '64px',
         display: 'flex',
@@ -61,8 +61,8 @@ const ClientLayout = ({ children }) => {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        backdropFilter: 'blur(12px)',
-        backgroundColor: 'rgba(255,255,255,0.92)',
+        backdropFilter: 'blur(16px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(180%)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
@@ -149,8 +149,11 @@ const ClientLayout = ({ children }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0,0,0,0.3)',
+            background: 'rgba(0,0,0,0.25)',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
             zIndex: 89,
+            animation: 'overlayIn 0.2s ease-out',
           }}
         />
       )}
@@ -164,8 +167,10 @@ const ClientLayout = ({ children }) => {
       }}>
         {/* Sidebar */}
         <nav style={{
-          background: '#fff',
-          borderRight: '1px solid rgba(184, 112, 79, 0.06)',
+          background: isMobile ? '#fff' : 'rgba(255,255,255,0.8)',
+          backdropFilter: isMobile ? undefined : 'blur(12px)',
+          WebkitBackdropFilter: isMobile ? undefined : 'blur(12px)',
+          borderRight: '1px solid rgba(184, 112, 79, 0.05)',
           padding: (isMobile || !collapsed) ? '1.25rem 0.75rem' : '1rem 0.5rem',
           position: isMobile ? 'fixed' : 'sticky',
           top: '64px',
@@ -179,7 +184,7 @@ const ClientLayout = ({ children }) => {
           flexDirection: 'column',
           zIndex: isMobile ? 90 : undefined,
           transform: isMobile ? (mobileOpen ? 'translateX(0)' : 'translateX(-100%)') : undefined,
-          boxShadow: isMobile && mobileOpen ? '4px 0 20px rgba(0,0,0,0.15)' : undefined,
+          boxShadow: isMobile && mobileOpen ? '4px 0 24px rgba(0,0,0,0.12)' : undefined,
         }}>
           <div style={{ flex: 1 }}>
             {menuItems.map(item => {

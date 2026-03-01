@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 exports.getAll = async (req, res) => {
   try {
     const links = await prisma.shareLink.findMany({
-      where: { createdById: req.user.userId },
+      where: { createdById: req.user.id },
       include: {
         animal: {
           select: { id: true, name: true, species: true, owner: { select: { firstName: true, lastName: true } } },
@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
       data: {
         code,
         animalId,
-        createdById: req.user.userId,
+        createdById: req.user.id,
         expiresAt,
         maxAccess: maxAccess || null,
       },

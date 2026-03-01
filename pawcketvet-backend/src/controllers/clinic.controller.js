@@ -4,17 +4,14 @@ const prisma = new PrismaClient();
 // Get clinic info (for the current user's clinic)
 exports.getMyClinic = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.userId },
-      select: { clinicId: true },
-    });
+    const clinicId = req.user.clinicId;
 
-    if (!user?.clinicId) {
+    if (!clinicId) {
       return res.status(404).json({ error: 'Aucune clinique associée' });
     }
 
     const clinic = await prisma.clinic.findUnique({
-      where: { id: user.clinicId },
+      where: { id: clinicId },
       include: {
         users: {
           where: { isActive: true },
@@ -42,23 +39,20 @@ exports.getMyClinic = async (req, res) => {
 // Update clinic info
 exports.update = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.userId },
-      select: { clinicId: true, role: true },
-    });
+    const clinicId = req.user.clinicId;
 
-    if (!user?.clinicId) {
+    if (!clinicId) {
       return res.status(404).json({ error: 'Aucune clinique associée' });
     }
 
-    if (user.role !== 'ADMIN') {
+    if (req.user.role !== 'ADMIN') {
       return res.status(403).json({ error: 'Seuls les admins peuvent modifier la clinique' });
     }
 
     const { name, address, city, postalCode, country, phone, email, website, description, openingHours } = req.body;
 
     const clinic = await prisma.clinic.update({
-      where: { id: user.clinicId },
+      where: { id: clinicId },
       data: {
         ...(name && { name }),
         ...(address && { address }),
@@ -83,16 +77,11 @@ exports.update = async (req, res) => {
 // Get clinic stats
 exports.getStats = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.userId },
-      select: { clinicId: true },
-    });
+    const clinicId = req.user.clinicId;
 
-    if (!user?.clinicId) {
+    if (!clinicId) {
       return res.status(404).json({ error: 'Aucune clinique associée' });
     }
-
-    const clinicId = user.clinicId;
 
     const [totalAnimals, totalAppointments, totalInvoices, reviews] = await Promise.all([
       prisma.animal.count({ where: { clinicId } }),

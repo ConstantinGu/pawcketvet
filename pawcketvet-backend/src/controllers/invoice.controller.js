@@ -78,7 +78,7 @@ exports.create = async (req, res) => {
         tax: parseFloat(tax) || 0,
         discount: parseFloat(discount) || 0,
         total: parseFloat(total),
-        items: { items },
+        items,
         notes,
         ownerId,
         clinicId: userClinicId,
@@ -116,7 +116,7 @@ exports.update = async (req, res) => {
     const invoice = await prisma.invoice.update({
       where: { id },
       data: {
-        items: items ? { items } : undefined,
+        items: items || undefined,
         subtotal: subtotal ? parseFloat(subtotal) : undefined,
         tax: tax !== undefined ? parseFloat(tax) : undefined,
         discount: discount !== undefined ? parseFloat(discount) : undefined,

@@ -40,18 +40,20 @@ const ClientDashboard = () => {
 
   const styles = {
     container: {
-      animation: 'fadeIn 0.5s ease',
+      animation: 'fadeIn 0.5s cubic-bezier(0.4,0,0.2,1)',
     },
     header: {
       maxWidth: '1200px',
       margin: '0 auto 3rem',
       textAlign: 'center',
+      animation: 'slideUp 0.6s cubic-bezier(0.4,0,0.2,1)',
     },
     welcomeTitle: {
       fontFamily: "'Fraunces', serif",
       fontSize: '3.5rem',
       marginBottom: '1rem',
-      background: 'linear-gradient(135deg, #B8704F 0%, #D4956C 100%)',
+      background: 'linear-gradient(135deg, #B8704F 0%, #D4956C 60%, #B8704F 100%)',
+      backgroundSize: '200% auto',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       fontWeight: 700,
@@ -80,11 +82,13 @@ const ClientDashboard = () => {
       gap: '2rem',
     },
     card: {
-      background: '#fff',
+      background: 'rgba(255,255,255,0.92)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
       borderRadius: '28px',
       padding: '2.5rem',
-      boxShadow: '0 8px 40px rgba(184, 112, 79, 0.12)',
-      border: '2px solid rgba(184, 112, 79, 0.08)',
+      boxShadow: '0 8px 40px rgba(184, 112, 79, 0.08)',
+      border: '1.5px solid rgba(184, 112, 79, 0.06)',
       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
       cursor: 'pointer',
       position: 'relative',
@@ -147,7 +151,8 @@ const ClientDashboard = () => {
       alignItems: 'center',
       gap: '1rem',
       boxShadow: '0 4px 20px rgba(220, 38, 38, 0.25)',
-      animation: 'slideDown 0.5s ease',
+      animation: 'scaleInBounce 0.5s cubic-bezier(0.4,0,0.2,1)',
+      transition: 'all 0.3s ease',
     },
   };
 

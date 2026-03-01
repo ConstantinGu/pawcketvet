@@ -110,8 +110,8 @@ const Layout = ({ children }) => {
     }}>
       {/* Top Bar */}
       <header style={{
-        background: '#fff',
-        borderBottom: '1px solid rgba(184, 112, 79, 0.08)',
+        background: 'rgba(255,255,255,0.85)',
+        borderBottom: '1px solid rgba(184, 112, 79, 0.06)',
         padding: '0 1.5rem',
         height: '64px',
         display: 'flex',
@@ -120,8 +120,8 @@ const Layout = ({ children }) => {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        backdropFilter: 'blur(12px)',
-        backgroundColor: 'rgba(255,255,255,0.92)',
+        backdropFilter: 'blur(16px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(180%)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
@@ -180,6 +180,8 @@ const Layout = ({ children }) => {
                   fontSize: '0.65rem', display: 'flex',
                   alignItems: 'center', justifyContent: 'center',
                   fontWeight: 700, border: '2px solid #fff',
+                  animation: 'scaleInBounce 0.4s cubic-bezier(0.4,0,0.2,1)',
+                  boxShadow: '0 2px 6px rgba(220,38,38,0.4)',
                 }}>
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </div>
@@ -189,10 +191,13 @@ const Layout = ({ children }) => {
             {showNotifications && (
               <div style={{
                 position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-                background: '#fff', borderRadius: '16px',
-                boxShadow: '0 12px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)',
+                background: 'rgba(255,255,255,0.95)',
+                backdropFilter: 'blur(20px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                borderRadius: '16px',
+                boxShadow: '0 12px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(184,112,79,0.06)',
                 width: '400px', maxHeight: '500px', overflow: 'hidden',
-                zIndex: 200, animation: 'scaleIn 0.2s ease-out',
+                zIndex: 200, animation: 'modalIn 0.25s cubic-bezier(0.4,0,0.2,1)',
               }}>
                 <div style={{
                   padding: '1rem 1.25rem', borderBottom: '1px solid #F5F5F4',
@@ -322,8 +327,10 @@ const Layout = ({ children }) => {
       }}>
         {/* Sidebar */}
         <nav style={{
-          background: '#fff',
-          borderRight: '1px solid rgba(184, 112, 79, 0.06)',
+          background: 'rgba(255,255,255,0.8)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRight: '1px solid rgba(184, 112, 79, 0.05)',
           padding: collapsed ? '1rem 0.5rem' : '1.25rem 0.75rem',
           position: 'sticky',
           top: '64px',
